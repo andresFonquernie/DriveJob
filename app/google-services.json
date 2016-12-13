@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "487775173752",
+    "firebase_url": "https://drivejob-5fe14.firebaseio.com",
+    "project_id": "drivejob-5fe14",
+    "storage_bucket": "drivejob-5fe14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487775173752:android:6d95a3cade96c3e9",
+        "android_client_info": {
+          "package_name": "es.fonkyprojects.drivejob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487775173752-9am4donluf3fp2qvkr2kbh5qr0tcg3h6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzWqXeuAW8QHSY9tdvT4ydP_KOWs2b5lo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
