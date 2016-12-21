@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.DarkAction">
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -23,23 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SignupActivity"
-            android:theme="@style/AppTheme.Dark" />
-        <activity
-            android:name=".MenuActivity"
-            android:theme="@style/AppTheme.DarkAction" />
-        <activity
-            android:name=".CreateRideActivity"
-            android:theme="@style/AppTheme.DarkAction" />
-        <activity
-            android:name=".SearchRideActivity"
-            android:theme="@style/AppTheme.DarkAction" />
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme.DarkAction" />
+        <activity android:name=".LoginSignupActivity" />
+        <activity android:name=".MenuActivity" />
+        <activity android:name=".RideCreateActivity" />
+        <activity android:name=".SearchRideActivity" />
         <activity android:name=".SearchResultActivity" />
-        <activity android:name=".RideDetailActivity"></activity>
+        <activity android:name=".RideDetailActivity" />
+        <activity
+            android:name=".MyProfileActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".MySettingsActivity" />
+        <activity android:name=".RideEditActivity"></activity>
     </application>
 
 </manifest>

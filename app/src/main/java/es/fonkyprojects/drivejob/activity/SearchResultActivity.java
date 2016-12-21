@@ -1,7 +1,7 @@
 package es.fonkyprojects.drivejob.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.viewholder.RideViewHolder;
 
-public class SearchResultActivity extends AppCompatActivity {
+public class SearchResultActivity extends Activity {
 
     public static final String EXTRA_TIME_GOING = "time_going";
     public static final String EXTRA_PLACE_GOING = "place_going";

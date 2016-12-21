@@ -21,8 +21,7 @@
             <EditText android:id="@+id/input_placeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
-                android:text="Bilbao"
+                android:inputType="text"
                 android:hint="@string/from"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -35,8 +34,7 @@
             <EditText android:id="@+id/input_placeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
-                android:text="Derio"
+                android:inputType="text"
                 android:hint="@string/to"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +48,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:text="9:00"
                 android:hint="@string/going" />
         </android.support.design.widget.TextInputLayout>
 
@@ -64,18 +61,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:text="15:00"
                 android:hint="@string/returning" />
         </android.support.design.widget.TextInputLayout>
 
+        <!--  Price Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp">
+            <EditText android:id="@+id/input_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/price"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <!--  Price Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp">
+            <EditText android:id="@+id/input_passengers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/passengers"/>
+        </android.support.design.widget.TextInputLayout>
+
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_search"
+            android:id="@+id/btn_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="@string/search_ride"/>
+            android:text="@string/edit_ride"/>
 
     </LinearLayout>
 </ScrollView>

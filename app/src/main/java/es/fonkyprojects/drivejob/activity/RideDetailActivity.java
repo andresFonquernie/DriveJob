@@ -1,8 +1,11 @@
 package es.fonkyprojects.drivejob.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +18,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
-import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
 public class RideDetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,6 +36,8 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
 
     private ValueEventListener mRideListener;
     private String mRideKey;
+    private String authorID;
+    public Map<String, Boolean> ridersJoin = new HashMap<>();
 
     private ImageView authorImage;
     private TextView authorView;
@@ -53,7 +60,6 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-        Log.i(TAG, mRideKey);
         // Initialize Database
         mRideReference = FirebaseDatabase.getInstance().getReference()
                 .child("rides").child(mRideKey);
@@ -79,13 +85,12 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
         super.onStart();
 
         // Add value event listener to the post
-        // [START post_value_event_listener]
         ValueEventListener rideListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 Ride ride = dataSnapshot.getValue(Ride.class);
-                // [START_EXCLUDE]
+                // Add information to views
                 Log.i(TAG, ride.toString());
                 timeGoingView.setText(ride.timeGoing);
                 placeGoingView.setText(ride.placeGoing);
@@ -93,32 +98,53 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                 placeReturnView.setText(ride.placeReturn);
                 priceView.setText(String.valueOf(ride.price));
                 passengersView.setText(String.valueOf(ride.passengers));
+                authorID = ride.authorID;
                 authorView.setText(ride.author);
-                // [END_EXCLUDE]
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                Log.w(TAG, "loadRide:onCancelled", databaseError.toException());
                 // [START_EXCLUDE]
-                Toast.makeText(RideDetailActivity.this, "Failed to load post.",
+                Toast.makeText(RideDetailActivity.this, "Failed to load ride",
                         Toast.LENGTH_SHORT).show();
                 // [END_EXCLUDE]
             }
         };
 
         mRideReference.addValueEventListener(rideListener);
-        // [END post_value_event_listener]
 
         // Keep copy of post listener so we can remove it when app stops
         mRideListener = rideListener;
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(authorID.equals(FirebaseUser.getUid())) {
+            getMenuInflater().inflate(R.menu.mnu_myride, menu);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // If changes OK, return new value in the result Intent back to the calling activity
+        switch (item.getItemId()) {
+            case R.id.mnu_edit:
+                Intent intent = new Intent(RideDetailActivity.this, RideEditActivity.class);
+                intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRideKey);
+                startActivity(intent);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
-
         // Remove post value event listener
         if (mRideListener != null) {
             mRideReference.removeEventListener(mRideListener);
@@ -137,7 +163,10 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
         final String uid = FirebaseUser.getUid();
         RideUser rideUser = new RideUser(uid, mRideKey);
 
+        ridersJoin.put(FirebaseUser.getUid(), true);
+
         // Push the comment, it will appear in the list
-        mRideUserReference.push().setValue(rideUser);
+        mRideUserReference.push().setValue(ridersJoin);
+
     }
 }

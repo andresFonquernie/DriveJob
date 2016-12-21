@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.content.Intent;
@@ -19,8 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -104,7 +101,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     //Go to SignUp Activity
     private void signUp() {
-        startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+        startActivity(new Intent(LoginActivity.this, LoginSignupActivity.class));
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 

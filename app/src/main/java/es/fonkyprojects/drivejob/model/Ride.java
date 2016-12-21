@@ -9,8 +9,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Ride {
 
-    public String uid;
     public String author;
+    public String authorID;
     public String timeGoing;
     public String placeGoing;
     public String timeReturn;
@@ -23,8 +23,8 @@ public class Ride {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Ride(String uid, String author, String timeGoing, String placeGoing, String timeReturn, String placeReturn, int price, int passengers ) {
-        this.uid = uid;
+    public Ride(String authorID, String author, String timeGoing, String placeGoing, String timeReturn, String placeReturn, int price, int passengers ) {
+        this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
         this.placeGoing = placeGoing;

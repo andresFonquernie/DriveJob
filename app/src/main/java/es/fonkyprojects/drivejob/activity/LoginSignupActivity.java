@@ -6,9 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,8 +25,8 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import es.fonkyprojects.drivejob.model.User;
 
-public class SignupActivity extends Activity implements View.OnClickListener {
-    private static final String TAG = "SignupActivity";
+public class LoginSignupActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "LoginSignupActivity";
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -64,7 +62,7 @@ public class SignupActivity extends Activity implements View.OnClickListener {
 
         signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
+        final ProgressDialog progressDialog = new ProgressDialog(LoginSignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating Account...");
@@ -87,7 +85,7 @@ public class SignupActivity extends Activity implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             onSignupSuccess(task.getResult().getUser(), name);
                         } else {
-                            Toast.makeText(SignupActivity.this, "Sign Up Failed",
+                            Toast.makeText(LoginSignupActivity.this, "Sign Up Failed",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -108,7 +106,7 @@ public class SignupActivity extends Activity implements View.OnClickListener {
         writeNewUser(user.getUid(), name, user.getEmail());
 
         // Go to MenuActivity
-        startActivity(new Intent(SignupActivity.this, MenuActivity.class));
+        startActivity(new Intent(LoginSignupActivity.this, MenuActivity.class));
         finish();
     }
 

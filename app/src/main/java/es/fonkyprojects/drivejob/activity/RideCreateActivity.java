@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -25,16 +26,16 @@ import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.User;
 
-public class CreateRideActivity extends Activity implements View.OnClickListener{
+public class RideCreateActivity extends Activity implements View.OnClickListener{
 
     private static final String TAG = "NewRideActivity";
 
     private DatabaseReference mDatabase;
 
-    @Bind(R.id.input_timeGoing) EditText etTimeGoing;
-    @Bind(R.id.input_placeGoing) EditText etPlaceGoing;
-    @Bind(R.id.input_timeReturn) EditText etTimeReturn;
-    @Bind(R.id.input_placeReturn) EditText etPlaceReturn;
+    @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
+    @Bind(R.id.input_placeReturn) EditText etPlaceTo;
+    private TextView etTimeGoing;
+    private TextView etTimeReturn;
     @Bind(R.id.input_price) EditText etPrice;
     @Bind(R.id.input_passengers) EditText etPassengers;
     @Bind(R.id.btn_create) Button btnCreate;
@@ -47,6 +48,10 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        etTimeGoing = (TextView) findViewById(R.id.input_timeGoing);
+        etTimeReturn = (TextView) findViewById(R.id.input_timeReturn);
+
+
         btnCreate.setOnClickListener(this);
         etTimeGoing.setOnClickListener(this);
         etTimeReturn.setOnClickListener(this);
@@ -54,10 +59,10 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
 
     private void createRide(){
 
+        final String placeG = etPlaceFrom.getText().toString();
+        final String placeR = etPlaceTo.getText().toString();
         final String timeG = etTimeGoing.getText().toString();
-        final String placeG = etPlaceGoing.getText().toString();
         final String timeR = etTimeReturn.getText().toString();
-        final String placeR = etPlaceReturn.getText().toString();
         final int price = Integer.parseInt(etPrice.getText().toString());
         final int passenger = Integer.parseInt(etPassengers.getText().toString());
 
@@ -81,16 +86,18 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
                             if (user == null) {
                                 // User is null, error out
                                 Log.e(TAG, "User " + userId + " is unexpectedly null");
-                                Toast.makeText(CreateRideActivity.this,
+                                Toast.makeText(RideCreateActivity.this,
                                         "Error: could not fetch user.",
                                         Toast.LENGTH_SHORT).show();
                                 btnCreate.setEnabled(true);
                             } else {
                                 // Write new post
-                                writeNewRide(userId, user.username, timeG, placeG, timeR, placeR, price, passenger);
+                                String postKey = writeNewRide(userId, user.username, timeG, placeG, timeR, placeR, price, passenger);
 
-                                // Go to MainActivity
-                                startActivity(new Intent(CreateRideActivity.this, MenuActivity.class));
+                                // Go to RideDetailActivity
+                                Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
+                                intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, postKey);
+                                startActivity(intent);
                                 finish();
                             }
 
@@ -100,7 +107,7 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                            Toast.makeText(CreateRideActivity.this,
+                            Toast.makeText(RideCreateActivity.this,
                                     "Error: No Internet connection",
                                     Toast.LENGTH_SHORT).show();
                             // [START_EXCLUDE]
@@ -113,12 +120,14 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
     }
 
     // [START write_fan_out]
-    private void writeNewRide(String userId, String username, String timeG, String placeG, String timeR, String placeR, int price,int passengers) {
+    private String writeNewRide(String userId, String username, String timeG, String placeG, String timeR, String placeR, int price,int passengers) {
         // Create new ride at // /ride/$rideid
         String key = mDatabase.child("rides").push().getKey();
         Ride ride = new Ride(userId, username, timeG, placeG, timeR, placeR, price, passengers);
 
         mDatabase.child("rides").child(key).setValue(ride);
+
+        return key;
     }
 
     private void showTime(final String text){
@@ -126,7 +135,7 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(CreateRideActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(RideCreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 if(text.equals("going"))
@@ -143,6 +152,13 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
     private boolean validate(String timeG, String placeG, String timeR, String placeR, int price, int passengers) {
         boolean valid = true;
 
+        if (placeG.isEmpty()) {
+            etPlaceFrom.setError("Not null");
+            valid = false;
+        } else {
+            etPlaceTo.setError(null);
+        }
+
         if (timeG.isEmpty()) {
             etTimeGoing.setError("Not null");
             valid = false;
@@ -150,25 +166,11 @@ public class CreateRideActivity extends Activity implements View.OnClickListener
             etTimeGoing.setError(null);
         }
 
-        if (placeG.isEmpty()) {
-            etPlaceGoing.setError("Not null");
-            valid = false;
-        } else {
-            etPlaceGoing.setError(null);
-        }
-
         if (timeR.isEmpty()) {
             etTimeReturn.setError("Not null");
             valid = false;
         } else {
             etTimeReturn.setError(null);
-        }
-
-        if (placeR.isEmpty()) {
-            etPlaceReturn.setError("Not null");
-            valid = false;
-        } else {
-            etPlaceReturn.setError(null);
         }
 
         if (price == 0) {

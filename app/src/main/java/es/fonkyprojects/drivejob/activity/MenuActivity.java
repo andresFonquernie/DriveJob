@@ -1,6 +1,5 @@
 package es.fonkyprojects.drivejob.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,10 +40,12 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mnu_profile:
+                Intent profileInt = new Intent(this, MyProfileActivity.class);
+                startActivity(profileInt);
                 break;
             case R.id.mnu_settings:
-                //Intent itemSettings = new Intent(this, MySettingsActivity.class);
-                //startActivity(itemSettings);
+                Intent itemSettings = new Intent(this, MySettingsActivity.class);
+                startActivity(itemSettings);
                 break;
             case R.id.mnu_logout:
                 FirebaseAuth.getInstance().signOut();
@@ -57,7 +58,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void create(){
-        startActivity(new Intent(MenuActivity.this, CreateRideActivity.class));
+        startActivity(new Intent(MenuActivity.this, RideCreateActivity.class));
     }
 
     private void search(){
