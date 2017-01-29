@@ -20,10 +20,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
-import butterknife.ButterKnife;
+import java.util.concurrent.ExecutionException;
+
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.restMethods.Users.UserPostTask;
+import es.fonkyprojects.drivejob.utils.Constants;
 
 public class LoginSignupActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LoginSignupActivity";
@@ -32,6 +37,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
     private FirebaseAuth mAuth;
 
     @Bind(R.id.input_name) EditText nameText;
+    @Bind(R.id.input_surname) EditText surnameText;
     @Bind(R.id.input_email) EditText emailText;
     @Bind(R.id.input_password) EditText passwordText;
     @Bind(R.id.input_reEnterPassword) EditText reEnterPasswordText;
@@ -70,6 +76,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
 
         //Get data
         final String name = nameText.getText().toString();
+        final String surname = surnameText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
         String reEnterPassword = reEnterPasswordText.getText().toString();
@@ -79,11 +86,9 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
                         progressDialog.dismiss();
-
                         if (task.isSuccessful()) {
-                            onSignupSuccess(task.getResult().getUser(), name);
+                            onSignupSuccess(task.getResult().getUser(), name, surname);
                         } else {
                             Toast.makeText(LoginSignupActivity.this, "Sign Up Failed",
                                     Toast.LENGTH_SHORT).show();
@@ -100,10 +105,10 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
     }
 
 
-    public void onSignupSuccess(FirebaseUser user, String name) {
+    public void onSignupSuccess(FirebaseUser user, String name, String surname) {
 
         // Write new user
-        writeNewUser(user.getUid(), name, user.getEmail());
+        writeNewUser(user.getUid(), name, surname, user.getEmail());
 
         // Go to MenuActivity
         startActivity(new Intent(LoginSignupActivity.this, MenuActivity.class));
@@ -111,10 +116,22 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
     }
 
     // [START basic_write]
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
+    private void writeNewUser(String userId, String name, String surname, String email) {
+        User user = new User(userId, name, surname, email);
 
-        mDatabase.child("users").child(userId).setValue(user);
+        UserPostTask upt = new UserPostTask(this);
+        upt.setUserPost(user);
+        String result = null;
+        try {
+            result = upt.execute(Constants.BASE_URL + "user").get();
+            Log.e(TAG, "RESULT: " + result);
+            User u = new Gson().fromJson(result, User.class);
+            Log.i(TAG, u.getUserId());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
     // [END basic_write]
 

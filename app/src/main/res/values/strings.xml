@@ -9,6 +9,7 @@
 
     <!-- SignUp Activity -->
     <string name="name">Name</string>
+    <string name="surname">Surname</string>
     <string name="re_password">Re-enter Password</string>
     <string name="create_account">Create Account</string>
     <string name="already_member">Already a member? Login</string>
@@ -16,7 +17,7 @@
     <!-- Menu Activity -->
     <string name="search_ride">Search</string>
     <string name="join_ride">Join</string>
-    <string name="create_ride">Create</string>
+    <string name="create_ride">Create Ride</string>
     <string name="edit_ride">Edit</string>
 
     <!-- CreateRide Activity -->
@@ -36,14 +37,14 @@
     <!-- Settings -->
     <string name="preferences">Preferences</string>
     <string name="distance">Max distance</string>
+    <string name="time">Max time</string>
     <string name="privacy">Privacy</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_my_settings">Settings</string>
+    <!-- Maps -->
+    <string name="title_activity_maps">Maps</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
 
@@ -116,5 +117,10 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps_activitya">Map</string>
+
 
 </resources>

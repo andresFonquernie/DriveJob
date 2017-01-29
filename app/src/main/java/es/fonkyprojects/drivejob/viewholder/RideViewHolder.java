@@ -2,7 +2,6 @@ package es.fonkyprojects.drivejob.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import es.fonkyprojects.drivejob.activity.R;
@@ -27,8 +26,8 @@ public class RideViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Ride ride) {
-        authorView.setText(ride.author);
-        placeGoingView.setText(ride.placeGoing);
-        placeReturnView.setText(ride.placeReturn);
+        authorView.setText(ride.getAuthor());
+        placeGoingView.setText("From: " + ride.getPlaceGoing());
+        placeReturnView.setText("To: " + ride.getPlaceReturn());
     }
 }

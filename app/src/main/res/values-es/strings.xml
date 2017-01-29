@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">DriveJob</string>
+
+    <!-- Login Activity -->
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Login</string>
+    <string name="not_account">¿No tienes cuenta? Create una</string>
+
+    <!-- SignUp Activity -->
+    <string name="name">Nombre</string>
+    <string name="surname">Apellido</string>
+    <string name="re_password">Vuelva a escribir la contraseña</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="already_member">¿Ya eres miembro? Inicia sesión</string>
+
+    <!-- Menu Activity -->
+    <string name="search_ride">Buscar</string>
+    <string name="join_ride">Unirse</string>
+    <string name="create_ride">Crear Ride</string>
+    <string name="edit_ride">Editar</string>
+
+    <!-- CreateRide Activity -->
+    <string name="from">Desde</string>
+    <string name="to">Hacia</string>
+    <string name="going">Ida</string>
+    <string name="returning">Vuelta</string>
+    <string name="price">Precio</string>
+    <string name="passengers">Pasajeros</string>
+
+    <!-- Menu -->
+    <string name="profile">Perfil</string>
+    <string name="settings">Ajustes</string>
+    <string name="logout">Desconectar</string>
+    <string name="edit">Editar</string>
+
+    <!-- Settings -->
+    <string name="preferences">Preferencias</string>
+    <string name="distance">Distancia máxima</string>
+    <string name="privacy">Privacidad</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <!-- Maps -->
+   <string name="title_activity_maps">Maps</string>
+    <string name="time">Tiempo maximp</string>
+    <string name="title_activity_settings">Preferencias</string>
+
+
+</resources>

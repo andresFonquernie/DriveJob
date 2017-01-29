@@ -3,7 +3,7 @@ package es.fonkyprojects.drivejob.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
-import es.fonkyprojects.drivejob.settings.mySettingsFragments;
+import es.fonkyprojects.drivejob.preference.myPreference;
 
 public class MySettingsActivity extends Activity {
 
@@ -12,7 +12,7 @@ public class MySettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_settings);
         getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new mySettingsFragments())
+                .replace(android.R.id.content, new myPreference())
                 .commit();
     }
 }

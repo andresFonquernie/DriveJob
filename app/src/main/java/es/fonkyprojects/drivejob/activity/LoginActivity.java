@@ -2,11 +2,10 @@ package es.fonkyprojects.drivejob.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class LoginActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
@@ -108,6 +107,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     //Login Success
     private void onLoginSuccess(FirebaseUser user) {
         // Go to MainActivity
+        Log.e(TAG, "LOGIN");
         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
         finish();
     }

@@ -2,7 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".RideCreateActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,7 +13,6 @@
         android:paddingTop="24dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
-
 
         <!--  PlaceGoing Label -->
         <android.support.design.widget.TextInputLayout
@@ -23,8 +24,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
-                android:text="Bilbao"
-                android:hint="@string/from"/>
+                android:hint="@string/from"
+                android:focusable="false"
+                android:onClick="startMaps"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  PlaceReturn Label -->
@@ -37,8 +39,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
-                android:text="Derio"
-                android:hint="@string/to"/>
+                android:hint="@string/to"
+                android:focusable="false"
+                android:onClick="startMaps"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  TimeGoing Picker -->
@@ -51,8 +54,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:text="9:00"
-                android:hint="@string/going" />
+                android:hint="@string/going"
+                android:focusable="false"
+                android:onClick="showTime" />
         </android.support.design.widget.TextInputLayout>
 
         <!--  TimeReturn Picker -->
@@ -65,8 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:text="15:00"
-                android:hint="@string/returning" />
+                android:hint="@string/returning"
+                android:focusable="false"
+                android:onClick="showTime" />
         </android.support.design.widget.TextInputLayout>
 
         <!--  Price Label -->
@@ -82,7 +87,7 @@
                 android:hint="@string/price"/>
         </android.support.design.widget.TextInputLayout>
 
-        <!--  Price Label -->
+        <!--  Passengers Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

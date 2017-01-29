@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <PreferenceCategory android:title="@string/distance">
-        <es.fonkyprojects.drivejob.settings.NumberPickerPreference
-            android:title="@string/from"
-            android:key="from"
-            android:defaultValue="5"/>
-        <SwitchPreference
-            android:title="@string/to"
-            android:key="to"
-            android:switchTextOn="@string/yes"
-            android:switchTextOff="@string/no"
-            android:defaultValue="true"/>
+        <es.fonkyprojects.drivejob.preference.IntEditTextPreference
+            android:key="distance"
+            android:numeric="integer"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/privacy">
-        <SwitchPreference
-            android:title="@string/to"
-            android:key="to"
-            android:switchTextOn="@string/yes"
-            android:switchTextOff="@string/no"
-            android:defaultValue="true"/>
+    <PreferenceCategory android:title="@string/time">
+        <EditTextPreference
+            android:key="time"
+            android:defaultValue="integer"/>
     </PreferenceCategory>
 </PreferenceScreen>

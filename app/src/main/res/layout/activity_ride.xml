@@ -24,34 +24,32 @@
         android:layout_marginTop="10dp" />
 
     <include
-        android:id="@+id/ride_time"
-        layout="@layout/include_ride_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ride_place"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/ride_place"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"/>
-
-    <include
         android:id="@+id/ride_info"
         layout="@layout/include_ride_extra_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/ride_place"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp" />
+        android:layout_below="@+id/ride_time"
+        android:layout_alignStart="@+id/ride_time"
+        android:layout_marginStart="13dp" />
+
+    <include
+        android:id="@+id/ride_time"
+        layout="@layout/include_ride_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_below="@+id/ride_place"
+        android:layout_alignEnd="@+id/ride_place" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_join"
-        android:layout_below="@+id/ride_info"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:padding="12dp"
-        android:text="@string/join_ride"/>
+        android:text="@string/join_ride"
+        android:layout_below="@+id/ride_info"
+        android:layout_alignStart="@+id/ride_place" />
 
 </RelativeLayout>

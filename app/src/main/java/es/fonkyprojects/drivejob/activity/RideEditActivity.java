@@ -88,14 +88,14 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
                 // Get Post object and use the values to update the UI
                 Ride ride = dataSnapshot.getValue(Ride.class);
                 // Add information to views
-                etTimeGoing.setText(ride.timeGoing);
-                etTimeReturn.setText(ride.timeReturn);
-                etPlaceFrom.setText(ride.timeReturn);
-                etPlaceTo.setText(ride.placeReturn);
-                etPrice.setText(String.valueOf(ride.price));
-                etPassengers.setText(String.valueOf(ride.passengers));
-                authorID = ride.authorID;
-                authorUsername = ride.author;
+                etTimeGoing.setText(ride.getTimeGoing());
+                etTimeReturn.setText(ride.getTimeReturn());
+                etPlaceFrom.setText(ride.getPlaceGoing());
+                etPlaceTo.setText(ride.getPlaceReturn());
+                etPrice.setText(String.valueOf(ride.getPrice()));
+                etPassengers.setText(String.valueOf(ride.getPassengers()));
+                authorID = ride.getAuthorID();
+                authorUsername = ride.getAuthor();
             }
 
             @Override
@@ -154,7 +154,7 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
     // [START write_fan_out]
     private void postRide(String userId, String username, String timeG, String placeG, String timeR, String placeR, int price,int passengers) {
         // Create new ride at // /ride/$rideid
-        Ride ride = new Ride(userId, username, timeG, placeG, timeR, placeR, price, passengers);
+        Ride ride = new Ride(userId, username, timeG, placeG, timeR, placeR, 0,0,0,0,price, passengers);
 
         mDatabase.child("rides").child(mRideKey).setValue(ride);
     }

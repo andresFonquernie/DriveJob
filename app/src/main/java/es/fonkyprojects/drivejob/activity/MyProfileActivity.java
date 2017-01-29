@@ -65,9 +65,9 @@ public class MyProfileActivity extends Activity {
                 User user = dataSnapshot.getValue(User.class);
                 // Add information to views
                 //userImage.setText(user.image);
-                userEmail.setText(user.email);
+                userEmail.setText(user.getEmail());
                 //userPhone.setText(user.phone);
-                userToolbar.setTitle(user.username);
+                userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
 
             }
 
