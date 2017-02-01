@@ -33,6 +33,7 @@
     <string name="settings">Settings</string>
     <string name="logout">Log out</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
     <!-- Settings -->
     <string name="preferences">Preferences</string>

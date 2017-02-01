@@ -12,38 +12,44 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
+import es.fonkyprojects.drivejob.utils.Constants;
 
-public class RideEditActivity extends Activity implements View.OnClickListener {
+public class RideEditActivity extends Activity {
 
     private static final String TAG = "RideEditActivity";
+    public static final String EXTRA_RIDE = "ride";
     public static final String EXTRA_RIDE_KEY = "ride_key";
 
-    private DatabaseReference mDatabase;
-    private DatabaseReference mRideReference;
-
-    private ValueEventListener mRideListener;
-    private String mRideKey;
-    private String authorID;
-    private String authorUsername;
-
-    @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
-    @Bind(R.id.input_placeReturn) EditText etPlaceTo;
+    @Bind(R.id.edit_input_placeGoing) EditText etEditPlaceFrom;
+    @Bind(R.id.edit_input_placeReturn) EditText etEditPlaceTo;
     private TextView etTimeGoing;
     private TextView etTimeReturn;
-    @Bind(R.id.input_price) EditText etPrice;
-    @Bind(R.id.input_passengers) EditText etPassengers;
+    @Bind(R.id.edit_input_price) EditText etPrice;
+    @Bind(R.id.edit_input_passengers) EditText etPassengers;
     @Bind(R.id.btn_edit) Button btnEdit;
+
+
+    public static final int MAP_ACTIVITY = 0;
+    public static final String MAPLOC = "MAPLOC";
+
+    private Ride mRide;
+
+    public double latGoing;
+    public double latReturning;
+    public double lngGoing;
+    public double lngReturning;
+    public String timeG;
+    public String timeR;
+    int mapsGR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,125 +58,146 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
         ButterKnife.bind(this);
 
         // Get post key from intent
-        mRideKey = getIntent().getStringExtra(EXTRA_RIDE_KEY);
-        if (mRideKey == null) {
+        mRide = (Ride) getIntent().getSerializableExtra(EXTRA_RIDE);
+        if (mRide == null) {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-
-        // Initialize Database
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mRideReference = FirebaseDatabase.getInstance().getReference()
-                .child("rides").child(mRideKey);
-
         // Initialize Views
-        etTimeGoing = (EditText) findViewById(R.id.input_timeGoing);
-        etTimeReturn = (EditText) findViewById(R.id.input_timeReturn);
-        etPlaceFrom = (EditText) findViewById(R.id.input_placeGoing);
-        etPlaceTo = (EditText) findViewById(R.id.input_placeReturn);
-        etPrice = (EditText) findViewById(R.id.input_price);
-        etPassengers = (EditText) findViewById(R.id.input_passengers);
-        btnEdit = (Button) findViewById(R.id.btn_edit);
+        etTimeGoing = (EditText) findViewById(R.id.edit_input_timeGoing);
+        etTimeReturn = (EditText) findViewById(R.id.edit_input_timeReturn);
 
-        btnEdit.setOnClickListener(this);
-        etTimeGoing.setOnClickListener(this);
-        etTimeReturn.setOnClickListener(this);
+        btnEdit = (Button) findViewById(R.id.btn_edit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editRide(view);
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        // Add value event listener to the post
-        ValueEventListener rideListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                Ride ride = dataSnapshot.getValue(Ride.class);
-                // Add information to views
-                etTimeGoing.setText(ride.getTimeGoing());
-                etTimeReturn.setText(ride.getTimeReturn());
-                etPlaceFrom.setText(ride.getPlaceGoing());
-                etPlaceTo.setText(ride.getPlaceReturn());
-                etPrice.setText(String.valueOf(ride.getPrice()));
-                etPassengers.setText(String.valueOf(ride.getPassengers()));
-                authorID = ride.getAuthorID();
-                authorUsername = ride.getAuthor();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadRide:onCancelled", databaseError.toException());
-                // [START_EXCLUDE]
-                Toast.makeText(RideEditActivity.this, "Failed to load ride",
-                        Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
-            }
-        };
-
-        mRideReference.addValueEventListener(rideListener);
-
-        // Keep copy of post listener so we can remove it when app stops
-        mRideListener = rideListener;
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        // Remove post value event listener
-        if (mRideListener != null) {
-            mRideReference.removeEventListener(mRideListener);
+        if(mRide != null) {
+            etTimeGoing.setText(mRide.getTimeGoing());
+            etTimeReturn.setText(mRide.getTimeReturn());
+            etEditPlaceFrom.setText(mRide.getPlaceGoing());
+            etEditPlaceTo.setText(mRide.getPlaceReturn());
+            etPrice.setText(String.valueOf(mRide.getPrice()));
+            etPassengers.setText(String.valueOf(mRide.getPassengers()));
+            latGoing = mRide.getLatGoing();
+            latReturning = mRide.getLatReturn();
+            lngGoing = mRide.getLngGoing();
+            lngReturning = mRide.getLngReturn();
         }
     }
 
-    private void editRide(){
+    public void editRide(View view){
 
-        final String placeG = etPlaceFrom.getText().toString();
-        final String placeR = etPlaceTo.getText().toString();
+        final String placeG = etEditPlaceFrom.getText().toString();
+        final String placeR = etEditPlaceTo.getText().toString();
         final String timeG = etTimeGoing.getText().toString();
         final String timeR = etTimeReturn.getText().toString();
         final int price = Integer.parseInt(etPrice.getText().toString());
-        final int passenger = Integer.parseInt(etPassengers.getText().toString());
+        final int passengers = Integer.parseInt(etPassengers.getText().toString());
 
-        if(validate(timeG, placeG, timeR, placeR, price, passenger)) {
+
+        if (validate(timeG, placeG, timeR, placeR, price, passengers)) {
 
             btnEdit.setEnabled(false);
-            Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Put", Toast.LENGTH_LONG).show();
 
-            // Edit ride
-            postRide(authorID, authorUsername, timeG, placeG, timeR, placeR, price, passenger);
+            String putKey = writeEditRide(placeG, placeR, price, passengers);
+            Ride r = new Ride(putKey,mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers);
+            //SQLConnect sc = new SQLConnect();
+            //sc.editRide(r);
+            //sc.closeConnect();
+            Log.e(TAG, "PUTKEY RESULT: " + putKey);
 
-            // Go to RideDetailActivity
-            Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
-            intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRideKey);
-            startActivity(intent);
-            finish();
-
+            if (putKey.equals("Update")) {
+                // Go to RideDetailActivity
+                Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
+                intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRide.getID());
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(getBaseContext(), "Error. Try again later", Toast.LENGTH_LONG).show();
+                btnEdit.setEnabled(true);
+            }
         }
     }
 
-    // [START write_fan_out]
-    private void postRide(String userId, String username, String timeG, String placeG, String timeR, String placeR, int price,int passengers) {
-        // Create new ride at // /ride/$rideid
-        Ride ride = new Ride(userId, username, timeG, placeG, timeR, placeR, 0,0,0,0,price, passengers);
+    private String writeEditRide(String placeG, String placeR,
+                                int price,int passengers) {
+        String result = "";
+        try {
+            Ride ride = new Ride("", "", timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers);
+            RidePutTask rpt = new RidePutTask(this);
+            rpt.setRidePost(ride);
+            result = rpt.execute(Constants.BASE_URL + "ride/" + mRide.getID()).get();
 
-        mDatabase.child("rides").child(mRideKey).setValue(ride);
+            Log.e(TAG, "RESULT PUT RIDE: " + result);
+            return result;
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
-    private void showTime(final String text){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MAP_ACTIVITY){
+            if(resultCode == Activity.RESULT_OK){
+                Bundle MBuddle = data.getExtras();
+                MapLocation ml = (MapLocation) MBuddle .getSerializable(MAPLOC);
+                Log.e("ENTRAMOS EN RESULT EDIT", ml.getAddress());
+                if (ml != null) {
+                    Log.e(TAG + "PG", String.valueOf(R.id.edit_input_placeGoing));
+                    Log.e(TAG + "PR", String.valueOf(R.id.edit_input_placeReturn));
+                    if(mapsGR == R.id.edit_input_placeGoing) {
+                        Log.e(TAG + " IN", "SE MODIFICA ");
+                        etEditPlaceFrom.setText("");
+                        lngGoing = ml.getLongitude();
+                        latGoing = ml.getLatitude();
+                    }
+                    if(mapsGR == R.id.edit_input_placeReturn) {
+                        etEditPlaceTo.setText(ml.getAddress());
+                        lngReturning = ml.getLongitude();
+                        latReturning = ml.getLatitude();
+                    }
+                }
+            }
+        }
+    }
+
+    public void showTime(final View view){
         Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        mcurrentTime.getTime();
+        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(RideEditActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                if(text.equals("going"))
-                    etTimeGoing.setText( selectedHour + ":" + selectedMinute);
-                else if(text.equals("return"))
-                    etTimeReturn.setText( selectedHour + ":" + selectedMinute);
+                int result = view.getId();
+                Calendar c = Calendar.getInstance();
+                c.set(Calendar.HOUR_OF_DAY, selectedHour);
+                c.set(Calendar.MINUTE, selectedMinute);
+                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
+                if(result == R.id.edit_input_timeGoing){
+                    timeG = formatTime.format(c.getTime());
+                    etTimeGoing.setText(timeG);
+                }
+                else if(result == R.id.edit_input_timeReturn){
+                    timeR = formatTime.format(c.getTime());
+                    etTimeReturn.setText(timeR);
+                }
             }
 
         }, hour, minute, true);//Yes 24 hour time
@@ -178,21 +205,21 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
         mTimePicker.show();
     }
 
+    public void startMaps(View v){
+        mapsGR = v.getId();
+        Log.e(TAG + " MapsGR", String.valueOf(mapsGR));
+        Intent intent = new Intent(RideEditActivity.this, MapsActivity.class);
+        startActivityForResult(intent, MAP_ACTIVITY);
+    }
+
     private boolean validate(String timeG, String placeG, String timeR, String placeR, int price, int passengers) {
         boolean valid = true;
 
         if (placeG.isEmpty()) {
-            etPlaceFrom.setError("Not null");
+            etEditPlaceFrom.setError("Not null");
             valid = false;
         } else {
-            etPlaceFrom.setError(null);
-        }
-
-        if (placeR.isEmpty()) {
-            etPlaceTo.setError("Not null");
-            valid = false;
-        } else {
-            etPlaceTo.setError(null);
+            etEditPlaceTo.setError(null);
         }
 
         if (timeG.isEmpty()) {
@@ -205,7 +232,6 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
         if (timeR.isEmpty()) {
             etTimeReturn.setError("Not null");
             valid = false;
-            Log.w(TAG, "TimeR");
         } else {
             etTimeReturn.setError(null);
         }
@@ -220,23 +246,10 @@ public class RideEditActivity extends Activity implements View.OnClickListener {
         if (passengers == 0) {
             etPassengers.setError("Not 0");
             valid = false;
-            Log.w(TAG, "Passengers");
         } else {
             etPassengers.setError(null);
         }
 
         return valid;
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_edit) {
-            editRide();
-        } else if (i == R.id.input_timeGoing) {
-            showTime("going");
-        } else if (i == R.id.input_timeReturn) {
-            showTime("return");
-        }
     }
 }

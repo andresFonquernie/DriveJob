@@ -2,12 +2,14 @@ package es.fonkyprojects.drivejob.model;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by andre on 07/12/2016.
  */
 // [START trip_class]
 @IgnoreExtraProperties
-public class Ride {
+public class Ride implements Serializable {
 
     private String _id;
     private String authorID;

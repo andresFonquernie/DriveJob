@@ -9,28 +9,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
+import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
 public class MyProfileActivity extends Activity {
 
     private static final String TAG = "MyProfileActivity";
-
-    private DatabaseReference mUserReference;
-    private ValueEventListener mUserListener;
-
+    public static final String EXTRA_USER_ID = "userId";
 
     private CollapsingToolbarLayout userToolbar;
+    private Toolbar toolbar;
+
+    private String userId;
     private ImageView userImage;
     private TextView userEmail;
     private TextView userPhone;
@@ -40,11 +42,14 @@ public class MyProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        mUserReference = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(FirebaseUser.getUid());
+        // Get post key from intent
+        userId = (String) getIntent().getSerializableExtra(EXTRA_USER_ID);
+        if (userId == null) {
+            userId = FirebaseUser.getUid();
+        }
 
         // Initialize Views
         userImage = (ImageView) findViewById(R.id.userImage);;
@@ -58,50 +63,41 @@ public class MyProfileActivity extends Activity {
         super.onStart();
 
         // Add value event listener to the post
-        ValueEventListener userListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                User user = dataSnapshot.getValue(User.class);
-                // Add information to views
-                //userImage.setText(user.image);
-                userEmail.setText(user.getEmail());
-                //userPhone.setText(user.phone);
-                userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // [START_EXCLUDE]
-                Toast.makeText(MyProfileActivity.this, "Failed to load post.",
-                        Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
-            }
-        };
-
-        mUserReference.addValueEventListener(userListener);
-
-        // Keep copy of post listener so we can remove it when app stops
-        mUserListener = userListener;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        // Remove post value event listener
-        if (mUserListener != null) {
-            mUserReference.removeEventListener(mUserListener);
+        User user = null;
+        try {
+            user = getUser(userId);
+            toolbar.setTitle(user.getUsername() + " " + user.getSurname());
+            userEmail.setText(user.getEmail());
+            userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
+    private User getUser(String userId) throws ExecutionException, InterruptedException {
+        String result;
+        UserGetTask ugt = new UserGetTask(this);
+        result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
+        Log.e(TAG, "RESULT GET USER: " + result);
+        Type type = new TypeToken<List<User>>(){}.getType();
+        List<User> inpList = new Gson().fromJson(result, type);
+        User u = inpList.get(0);
+        Log.i(TAG, u.getUsername());
+
+        return u;
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mnu_profile, menu);
-        return true;
+        if(userId.equals(FirebaseUser.getUid())) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.mnu_profile, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override

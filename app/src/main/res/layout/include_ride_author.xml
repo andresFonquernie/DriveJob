@@ -10,7 +10,8 @@
         android:id="@+id/ride_author_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_account_circle_white_24dp" />
+        android:src="@drawable/ic_account_circle_white_24dp"
+        android:onClick="goProfile"/>
 
     <TextView
         android:id="@+id/ride_author"
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:gravity="center_vertical"
-        tools:text="someauthor" />
+        tools:text="someauthor"
+        android:onClick="goProfile"/>
 
 </LinearLayout>
