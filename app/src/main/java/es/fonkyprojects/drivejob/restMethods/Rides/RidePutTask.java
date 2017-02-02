@@ -83,6 +83,7 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
         dataToSend.put("lngReturn", ride.getLngReturn());
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
+        dataToSend.put("avSeats", ride.getAvSeats());
 
         try {
             //Initialize and config request, the connect to server

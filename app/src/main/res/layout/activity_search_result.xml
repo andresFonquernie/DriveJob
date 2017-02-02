@@ -5,14 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".SearchResultActivity">
 
+    <TextView
+        android:id="@+id/resulttitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:text="@string/searchresults"
+        />
+
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/messages_list"
+        android:id="@+id/ride_list"
+        tools:listitem="@layout/searchresult_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:clipToPadding="false"
-        android:padding="5dp"
         android:scrollbars="vertical"
-        tools:listitem="@layout/item_ride" />
+        android:layout_below="@+id/resulttitle"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

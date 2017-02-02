@@ -5,31 +5,34 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import java.util.List;
 
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.viewholder.RideViewHolder;
+import es.fonkyprojects.drivejob.model.RideSearch;
+import es.fonkyprojects.drivejob.viewholder.RideViewAdapter;
 
 public class SearchResultActivity extends Activity {
 
-    public static final String EXTRA_TIME_GOING = "time_going";
-    public static final String EXTRA_PLACE_GOING = "place_going";
-    public static final String EXTRA_TIME_RETURN = "time_going";
-    public static final String EXTRA_PLACE_RETURN = "place_return";
+    private static final String TAG = "SearchResultActivity";
 
-    private DatabaseReference mDatabase;
+    public RecyclerView recyclerView;
+    public RecyclerView.Adapter adapter;
+    public RecyclerView.LayoutManager layoutManager;
 
+    private List<Ride> listRides;
 
-    private FirebaseRecyclerAdapter<Ride, RideViewHolder> mAdapter;
-    private RecyclerView mRecycler;
-    private LinearLayoutManager mManager;
+    public static final String EXTRA_RIDE_SEARCH = "ride_search";
 
+    private String authorId;
+    private String timeGoing;
+    private String timeReturn;
+    private double latGoing;
+    private double latReturning;
+    private double lngGoign;
+    private double lngReturning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,47 +40,38 @@ public class SearchResultActivity extends Activity {
         setContentView(R.layout.activity_search_result);
         ButterKnife.bind(this);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mRecycler = (RecyclerView) findViewById(R.id.messages_list);
-        mRecycler.setHasFixedSize(true);
+        getValues();
 
-        // Set up Layout Manager, reverse layout
-        mManager = new LinearLayoutManager(this);
-        mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
-        mRecycler.setLayoutManager(mManager);
-
-        // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = getQuery(mDatabase);
-        mAdapter = new FirebaseRecyclerAdapter<Ride, RideViewHolder>(Ride.class, R.layout.item_ride,
-                RideViewHolder.class, postsQuery) {
-            @Override
-            protected void populateViewHolder(final RideViewHolder viewHolder, final Ride model, final int position) {
-                final DatabaseReference postRef = getRef(position);
-
-                // Set click listener for the whole post view
-                final String postKey = postRef.getKey();
-
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Launch RideDetailActivity
-                        Intent intent = new Intent(SearchResultActivity.this, RideDetailActivity.class);
-                        intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, postKey);
-                        startActivity(intent);
-                    }
-                });
-
-                // Bind Post to ViewHolder, setting OnClickListener for the star button
-                viewHolder.bindToPost(model);
-            }
-        };
-        mRecycler.setAdapter(mAdapter);
+        recyclerView = (RecyclerView) findViewById(R.id.ride_list);
     }
 
-    public Query getQuery(DatabaseReference databaseReference){
-        String placeGoing = getIntent().getStringExtra(EXTRA_PLACE_GOING);
-        Query result = databaseReference.child("rides");
-        return result;
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn);
+        adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Ride item) {
+                Intent intent = new Intent(SearchResultActivity.this, RideDetailActivity.class);
+                intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
+                startActivity(intent);
+                finish();
+            }
+        });
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void getValues(){
+        RideSearch rs = (RideSearch) getIntent().getSerializableExtra(EXTRA_RIDE_SEARCH);
+        authorId = rs.getAuthorID();
+        timeGoing = rs.getTimeGoing();
+        timeReturn = rs.getTimeReturn();
+        latGoing = rs.getLatGoing();
+        latReturning = rs.getLatReturn();
+        lngGoign = rs.getLngGoing();
+        lngReturning = rs.getLngReturn();
     }
 }

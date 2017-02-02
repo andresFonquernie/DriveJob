@@ -100,6 +100,20 @@
                 android:hint="@string/passengers"/>
         </android.support.design.widget.TextInputLayout>
 
+        <!--  AvSeats Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp">
+            <EditText android:id="@+id/edit_input_avseats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:focusable="false"
+                android:hint="@string/avseats"/>
+        </android.support.design.widget.TextInputLayout>
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_edit"
             android:layout_width="fill_parent"

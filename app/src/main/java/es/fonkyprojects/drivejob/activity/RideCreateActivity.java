@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -23,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.User;
@@ -37,8 +37,8 @@ public class RideCreateActivity extends Activity{
 
     @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
     @Bind(R.id.input_placeReturn) EditText etPlaceTo;
-    private TextView etTimeGoing;
-    private TextView etTimeReturn;
+    @Bind(R.id.input_timeGoing)  EditText etTimeGoing;
+    @Bind(R.id.input_timeReturn) EditText etTimeReturn;
     @Bind(R.id.input_price) EditText etPrice;
     @Bind(R.id.input_passengers) EditText etPassengers;
     @Bind(R.id.btn_create) Button btnCreate;
@@ -64,14 +64,10 @@ public class RideCreateActivity extends Activity{
         setContentView(R.layout.activity_create_ride);
         ButterKnife.bind(this);
 
-        etTimeGoing = (TextView) findViewById(R.id.input_timeGoing);
-        etTimeReturn = (TextView) findViewById(R.id.input_timeReturn);
-
-        btnCreate = (Button) findViewById(R.id.btn_create);
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                createRide(v);
+            public void onClick(View view) {
+                createRide(view);
             }
         });
     }
@@ -80,26 +76,32 @@ public class RideCreateActivity extends Activity{
 
         final String placeG = etPlaceFrom.getText().toString();
         final String placeR = etPlaceTo.getText().toString();
-        final String timeG = etTimeGoing.getText().toString();
-        final String timeR = etTimeReturn.getText().toString();
-        final int price = Integer.parseInt(etPrice.getText().toString());
-        final int passengers = Integer.parseInt(etPassengers.getText().toString());
 
+        String sPrice = etPrice.getText().toString();
+        final int price;
+        if(sPrice.length()>0)
+            price = Integer.parseInt(sPrice);
+        else
+            price = 0;
 
-        if (validate(timeG, placeG, timeR, placeR, price, passengers)) {
+        String sPassengers = etPassengers.getText().toString();
+        final int passengers;
+        if(sPassengers.length()>0)
+            passengers = Integer.parseInt(sPassengers);
+        else
+            passengers = 0;
+
+        if (validate(placeG, placeR, sPrice, sPassengers)) {
 
             btnCreate.setEnabled(false);
             Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
 
             String postKey = writeNewRide(placeG, placeR, price, passengers);
-            Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers);
-            //SQLConnect sc = new SQLConnect();
-            //sc.insertRide(r);
-            //sc.closeConnect();
+            Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers, passengers);
+            (new SQLConnect()).insertRide(r);
             Log.e(TAG, "POSTKEY: " + postKey);
 
             if (!postKey.equals("Error")) {
-                // Go to RideDetailActivity
                 Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
                 intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, postKey);
                 startActivity(intent);
@@ -111,17 +113,13 @@ public class RideCreateActivity extends Activity{
         }
     }
 
-    // [START write_fan_out]
-    private String writeNewRide(String placeG, String placeR,
-                                int price,int passengers) {
-        // Create new ride at // /ride/$rideid
-
+     private String writeNewRide(String placeG, String placeR, int price,int passengers) {
         String result = "";
         try {
             userID = FirebaseUser.getUid();
             username = getUsername(userID);
 
-            Ride ride = new Ride(userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers);
+            Ride ride = new Ride(userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers, passengers);
             RidePostTask rpt = new RidePostTask(this);
             rpt.setRidePost(ride);
             result = rpt.execute(Constants.BASE_URL + "ride").get();
@@ -135,7 +133,6 @@ public class RideCreateActivity extends Activity{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
@@ -150,6 +147,13 @@ public class RideCreateActivity extends Activity{
         Log.i(TAG, u.getUsername());
 
         return u.getUsername() + " " + u.getSurname();
+    }
+
+
+    public void startMaps(View v){
+        mapsGR = v.getId();
+        Intent intent = new Intent(RideCreateActivity.this, MapsActivity.class);
+        startActivityForResult(intent, MAP_ACTIVITY);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -204,50 +208,50 @@ public class RideCreateActivity extends Activity{
         mTimePicker.show();
     }
 
-    public void startMaps(View v){
-        mapsGR = v.getId();
-        Intent intent = new Intent(RideCreateActivity.this, MapsActivity.class);
-        startActivityForResult(intent, MAP_ACTIVITY);
-    }
-
-    private boolean validate(String timeG, String placeG, String timeR, String placeR, int price, int passengers) {
+    private boolean validate(String placeG, String placeR, String price, String passengers) {
         boolean valid = true;
 
         if (placeG.isEmpty()) {
             etPlaceFrom.setError("Not null");
             valid = false;
         } else {
+            etPlaceFrom.setError(null);
+        }
+
+        if (placeR.isEmpty()) {
+            etPlaceTo.setError("Not null");
+            valid = false;
+        } else {
             etPlaceTo.setError(null);
         }
 
-        if (timeG.isEmpty()) {
+        if (timeG != null  && timeG.isEmpty()) {
             etTimeGoing.setError("Not null");
             valid = false;
         } else {
             etTimeGoing.setError(null);
         }
 
-        if (timeR.isEmpty()) {
+        if (timeR != null && timeR.isEmpty()) {
             etTimeReturn.setError("Not null");
             valid = false;
         } else {
             etTimeReturn.setError(null);
         }
 
-        if (price == 0) {
+        if (price.isEmpty()) {
             etPrice.setError("Not 0");
             valid = false;
         } else {
             etPrice.setError(null);
         }
 
-        if (passengers == 0) {
+        if (passengers.isEmpty()) {
             etPassengers.setError("Not 0");
             valid = false;
         } else {
             etPassengers.setError(null);
         }
-
         return valid;
     }
 }

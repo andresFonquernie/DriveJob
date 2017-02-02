@@ -24,6 +24,7 @@ public class Ride implements Serializable {
     private double lngReturn;
     private int price;
     private int passengers;
+    private int avSeats;
 
 
     public Ride() {
@@ -31,7 +32,7 @@ public class Ride implements Serializable {
     }
 
     public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers ) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers, int avSeats) {
         this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
@@ -44,10 +45,11 @@ public class Ride implements Serializable {
         this.lngReturn = lngReturn;
         this.price = price;
         this.passengers = passengers;
+        this.avSeats = avSeats;
     }
 
-    public Ride(String _id, String authorID, String author, String placeGoing, String placeReturn, String timeGoing, String timeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers ) {
+    public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
+                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers, int avSeats ) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -61,6 +63,7 @@ public class Ride implements Serializable {
         this.lngReturn = lngReturn;
         this.price = price;
         this.passengers = passengers;
+        this.avSeats = avSeats;
     }
 
     public String toString(){
@@ -119,6 +122,10 @@ public class Ride implements Serializable {
         return passengers;
     }
 
+    public int getAvSeats() {
+        return avSeats;
+    }
+
     public void setID(String id){
         this._id = id;
     }
@@ -169,6 +176,10 @@ public class Ride implements Serializable {
 
     public void setPassengers(int passengers) {
         this.passengers = passengers;
+    }
+
+    public void setAvSeats(int avSeats) {
+        this.avSeats = avSeats;
     }
 }
 // [END ride_class]

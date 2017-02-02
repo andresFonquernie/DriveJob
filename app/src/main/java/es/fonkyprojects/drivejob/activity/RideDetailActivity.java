@@ -3,7 +3,6 @@ package es.fonkyprojects.drivejob.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideDeleteTask;
@@ -47,7 +47,7 @@ public class RideDetailActivity extends AppCompatActivity{
     private TextView timeReturnView;
     private TextView placeReturnView;
     private TextView priceView;
-    private TextView passengersView;
+    private TextView avSeats;
     private Button joinButton;
 
     @Override
@@ -69,8 +69,12 @@ public class RideDetailActivity extends AppCompatActivity{
         timeReturnView = (TextView) findViewById(R.id.ride_timeReturn);
         placeReturnView = (TextView) findViewById(R.id.ride_placeReturn);
         priceView = (TextView) findViewById(R.id.ride_prize);
-        passengersView = (TextView) findViewById(R.id.ride_passengers);
+        avSeats = (TextView) findViewById(R.id.ride_passengers);
         joinButton = (Button) findViewById(R.id.btn_join);
+
+        if(FirebaseUser.getUid().equals(authorID)) {
+            joinButton.setVisibility(View.INVISIBLE);
+        }
 
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +97,6 @@ public class RideDetailActivity extends AppCompatActivity{
         if (mRideKey != null) {
             //GET request
             String result = null;
-            Log.e(TAG, mRideKey);
             try {
                 result = new RideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
             } catch (InterruptedException e) {
@@ -103,14 +106,13 @@ public class RideDetailActivity extends AppCompatActivity{
             }
 
             if(!result.equals("Error") && result!=null){
-                Log.e(TAG, "RESULT: " + result);
                 ride = new Gson().fromJson(result, Ride.class);
                 timeGoingView.setText("Time Going: " + ride.getTimeGoing());
                 timeReturnView.setText("Time Return: " + ride.getTimeReturn());
                 placeGoingView.setText("From " + ride.getPlaceGoing());
                 placeReturnView.setText("To: " + ride.getPlaceReturn());
                 priceView.setText("Price: " + String.valueOf(ride.getPrice()));
-                passengersView.setText("Seats: " + String.valueOf(ride.getPassengers()));
+                avSeats.setText("Seats left: " + String.valueOf(ride.getAvSeats()));
                 authorID = ride.getAuthorID();
                 authorView.setText(ride.getAuthor());
             }
@@ -155,6 +157,7 @@ public class RideDetailActivity extends AppCompatActivity{
                 String result = "";
                 try {
                     result =  rdt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
+                    (new SQLConnect()).deleteRide(mRideKey);
                     if(result.equals("Ok")){
                         intent = new Intent(RideDetailActivity.this, MenuActivity.class);
                         startActivity(intent);
