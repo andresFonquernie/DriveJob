@@ -3,6 +3,9 @@ package es.fonkyprojects.drivejob.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,18 +15,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
+import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserGetTask;
+import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPutTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideDeleteTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideGetTask;
+import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
+import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
+import es.fonkyprojects.drivejob.viewholder.UserViewAdapter;
 
 public class RideDetailActivity extends AppCompatActivity{
 
@@ -33,12 +44,18 @@ public class RideDetailActivity extends AppCompatActivity{
     public static final String EXTRA_RIDE_KEY = "ride_key";
     public static final String EXTRA_USER_ID = "userId";
 
-
-
     private String mRideKey;
     private String authorID;
     private Ride ride;
-    public Map<String, Boolean> ridersJoin = new HashMap<>();
+    private RideUser rideUser;
+
+    public String[] ridersJoin;
+
+    public RecyclerView recyclerView;
+    public RecyclerView.Adapter adapter;
+    public RecyclerView.LayoutManager layoutManager;
+
+    private List<User> listUsers = new ArrayList<>();
 
     private ImageView authorImage;
     private TextView authorView;
@@ -49,6 +66,7 @@ public class RideDetailActivity extends AppCompatActivity{
     private TextView priceView;
     private TextView avSeats;
     private Button joinButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +88,10 @@ public class RideDetailActivity extends AppCompatActivity{
         placeReturnView = (TextView) findViewById(R.id.ride_placeReturn);
         priceView = (TextView) findViewById(R.id.ride_prize);
         avSeats = (TextView) findViewById(R.id.ride_passengers);
-        joinButton = (Button) findViewById(R.id.btn_join);
 
-        if(FirebaseUser.getUid().equals(authorID)) {
-            joinButton.setVisibility(View.INVISIBLE);
-        }
+        recyclerView = (RecyclerView) findViewById(R.id.user_list);
+
+        joinButton = (Button) findViewById(R.id.btn_join);
 
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,20 +133,111 @@ public class RideDetailActivity extends AppCompatActivity{
                 authorID = ride.getAuthorID();
                 authorView.setText(ride.getAuthor());
             }
+
+            if(FirebaseUser.getUid().equals(authorID)) {
+                joinButton.setVisibility(View.INVISIBLE);
+            }
+
+            try {
+                boolean joined = false;
+                result = new RideUserGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?rideId=" + mRideKey).get();
+                Type type = new TypeToken<List<RideUser>>(){}.getType();
+                List<RideUser> inpList = new Gson().fromJson(result, type);
+                if(inpList.size()>0) {
+                    rideUser = inpList.get(0);
+                    ridersJoin = rideUser.getUserId().split(",");
+                    for (int i = 0; i < ridersJoin.length; i++) {
+                        User u = getUser(ridersJoin[i]);
+                        if (FirebaseUser.getUid().equals(u.getUserId()))
+                            joined = true;
+                        listUsers.add(u);
+                    }
+
+                    if (joined) {
+                        joinButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+
+                adapter = new UserViewAdapter(listUsers, new UserViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(User item) {
+                        Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
+                        intent.putExtra(MyProfileActivity.EXTRA_USER_ID, item.getUserId());
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                layoutManager = new LinearLayoutManager(this);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            } catch (InterruptedException e) {
+                Log.e(TAG + " IE", e.getStackTrace().toString());
+            } catch (ExecutionException e) {
+                Log.e(TAG + " EE", e.getStackTrace().toString());
+            }
         }
     }
 
-
     private void joinRide(View view) {
         final String uid = FirebaseUser.getUid();
-        RideUser rideUser = new RideUser(uid, mRideKey);
+        String userJoin = rideUser.getUserId();
+        if(userJoin == null || userJoin.length()==0){
+            userJoin = uid;
+        }
+        else{
+            userJoin = userJoin +"," + uid;
+        }
+
+        String result = "";
+        try {
+            rideUser.setUserId(userJoin);
+            RideUserPutTask rupt = new RideUserPutTask(this);
+            rupt.setRideUserPost(rideUser);
+            result = rupt.execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/" + rideUser.get_id()).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if(result.equals("Update")){
+            try {
+                ride.setAvSeats(ride.getAvSeats() - 1);
+                RidePutTask rpt = new RidePutTask(this);
+                rpt.setRidePost(ride);
+                result = rpt.execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
+                if(result.equals("Update"))
+                    joinButton.setVisibility(View.INVISIBLE);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public User getUser(String userId){
+        User user = new User();
+        try {
+            UserGetTask ugt = new UserGetTask(this);
+            String result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
+            Type type = new TypeToken<List<User>>(){}.getType();
+            List<User> inpList = new Gson().fromJson(result, type);
+            user = inpList.get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return user;
     }
 
     private void goProfile(View view){
         Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
-        intent.putExtra(RideDetailActivity.EXTRA_USER_ID, authorID);
+        intent.putExtra(MyProfileActivity.EXTRA_USER_ID, authorID);
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -150,7 +258,6 @@ public class RideDetailActivity extends AppCompatActivity{
                 intent = new Intent(RideDetailActivity.this, RideEditActivity.class);
                 intent.putExtra(RideDetailActivity.EXTRA_RIDE, ride);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.mnu_delete:
                 RideDeleteTask rdt = new RideDeleteTask(this);

@@ -44,7 +44,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(profileInt);
                 break;
             case R.id.mnu_settings:
-                Intent itemSettings = new Intent(this, MySettingsActivity.class);
+                Intent itemSettings = new Intent(this, SettingsActivity.class);
                 startActivity(itemSettings);
                 break;
             case R.id.mnu_logout:

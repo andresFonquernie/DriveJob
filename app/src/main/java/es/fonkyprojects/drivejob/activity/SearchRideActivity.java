@@ -57,7 +57,6 @@ public class SearchRideActivity extends Activity {
 
     public void searchRide(final View view){
         if(validate()) {
-            btnSearch.setEnabled(false);
             Log.e(TAG, timeG + " " + timeR + " " + latGoing + " " + latReturning + " " + lngGoing + " " + lngReturning);
             RideSearch rs = new RideSearch(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning);
             Intent intent = new Intent(this, SearchResultActivity.class);

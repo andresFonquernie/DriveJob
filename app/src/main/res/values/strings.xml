@@ -6,6 +6,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="not_account">No account yet? Create one</string>
+    <string name="phone">Phone</string>
 
     <!-- SignUp Activity -->
     <string name="name">Name</string>
@@ -29,6 +30,7 @@
     <string name="passengers">Passengers</string>
     <string name="avseats">Seats left</string>
     <string name="searchresults">Search Results</string>
+    <string name="users">Users</string>
 
     <!-- Menu -->
     <string name="profile">Profile</string>
@@ -41,11 +43,16 @@
     <string name="preferences">Preferences</string>
     <string name="distance">Max distance</string>
     <string name="time">Max time</string>
-    <string name="privacy">Privacy</string>
-    <string name="yes">Yes</string>
+    <string name="goDis" translatable="false">$1</string>
+    <string name="metres">Metres</string>
+    <string name="goTime" translatable="false">$1</string>
+    <string name="minutes">Minutes</string>
     <string name="no">No</string>
+    <string name="yes">Si</string>
+    <string name="privacy">Privacidad</string>
 
     <!-- Maps -->
     <string name="title_activity_maps">Maps</string>
     <string name="title_activity_settings">Settings</string>
- </resources>
+
+</resources>

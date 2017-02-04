@@ -20,13 +20,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp">
-            <EditText android:id="@+id/edit_input_placeGoing"
+            <EditText android:id="@+id/edit_placeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
+                android:inputType="text"
                 android:hint="@string/from"
                 android:focusable="false"
-                android:onClick="startMaps"/>
+                android:onClick="startMapsEdit"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  PlaceReturn Label -->
@@ -35,13 +35,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp">
-            <EditText android:id="@+id/edit_input_placeReturn"
+            <EditText android:id="@+id/edit_placeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
                 android:hint="@string/to"
                 android:focusable="false"
-                android:onClick="startMaps"/>
+                android:onClick="startMapsEdit"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  TimeGoing Picker -->
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/edit_input_timeGoing"
+            <EditText android:id="@+id/edit_timeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp">
-            <EditText android:id="@+id/edit_input_timeReturn"
+            <EditText android:id="@+id/edit_timeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp">
-            <EditText android:id="@+id/edit_input_price"
+            <EditText android:id="@+id/edit_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp">
-            <EditText android:id="@+id/edit_input_passengers"
+            <EditText android:id="@+id/edit_passengers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp">
-            <EditText android:id="@+id/edit_input_avseats"
+            <EditText android:id="@+id/edit_avseats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"

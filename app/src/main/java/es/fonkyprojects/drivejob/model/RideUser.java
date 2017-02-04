@@ -9,18 +9,39 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class RideUser {
 
-    public String userID;
-    public String rideID;
-
+    private String _id;
+    private String rideId;
+    private String userId;
 
     public RideUser() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public RideUser(String userID, String rideID) {
-        this.userID = userID;
-        this.rideID = rideID;
+    public RideUser(String rideId, String userId) {
+        this.rideId = rideId;
+        this.userId = userId;
     }
 
+    public String toString(){
+        return rideId + " " + userId;
+    }
+
+    public String get_id() { return _id; }
+
+    public String getRideId() {
+        return rideId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setRideId(String rideId) {
+        this.rideId = rideId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }
 // [END user_class]

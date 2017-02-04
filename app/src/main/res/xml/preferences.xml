@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/distance">
-        <es.fonkyprojects.drivejob.preference.IntEditTextPreference
-            android:key="distance"
-            android:numeric="integer"/>
+        <es.fonkyprojects.drivejob.preference.SeekBarPreference
+            android:defaultValue="500"
+            android:key="DISTANCE"
+            android:max="1000"
+            android:summary="@string/goDis"
+            android:text="@string/metres"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/time">
-        <EditTextPreference
-            android:key="time"
-            android:defaultValue="integer"/>
+        <es.fonkyprojects.drivejob.preference.SeekBarPreference
+                android:defaultValue="15"
+                android:key="TIME"
+                android:max="60"
+                android:summary="@string/goTime"
+                android:text="@string/minutes"/>
     </PreferenceCategory>
 </PreferenceScreen>

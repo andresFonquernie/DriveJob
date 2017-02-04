@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -29,17 +28,17 @@ public class RideEditActivity extends Activity {
     private static final String TAG = "RideEditActivity";
     public static final String EXTRA_RIDE = "ride";
 
-    @Bind(R.id.edit_input_placeGoing) EditText etEditPlaceFrom;
-    @Bind(R.id.edit_input_placeReturn) EditText etEditPlaceTo;
-    private TextView etTimeGoing;
-    private TextView etTimeReturn;
-    @Bind(R.id.edit_input_price) EditText etPrice;
-    @Bind(R.id.edit_input_passengers) EditText etPassengers;
-    @Bind(R.id.edit_input_avseats) EditText etAvSeats;
+    @Bind(R.id.edit_placeGoing) EditText etEditPlaceFrom;
+    @Bind(R.id.edit_placeReturn) EditText etEditPlaceTo;
+    @Bind(R.id.edit_timeGoing) EditText etTimeGoing;
+    @Bind(R.id.edit_timeReturn) EditText etTimeReturn;
+    @Bind(R.id.edit_price) EditText etPrice;
+    @Bind(R.id.edit_passengers) EditText etPassengers;
+    @Bind(R.id.edit_avseats) EditText etAvSeats;
     @Bind(R.id.btn_edit) Button btnEdit;
 
 
-    public static final int MAP_ACTIVITY = 0;
+    public static final int MAP_ACTIVITY_EDIT = 0;
     public static final String MAPLOC = "MAPLOC";
 
     private Ride mRide;
@@ -62,12 +61,8 @@ public class RideEditActivity extends Activity {
         // Get post key from intent
         mRide = (Ride) getIntent().getSerializableExtra(EXTRA_RIDE);
         if (mRide == null) {
-            throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
+            throw new IllegalArgumentException("Must pass EXTRA_RIDE");
         }
-
-        // Initialize Views
-        etTimeGoing = (EditText) findViewById(R.id.edit_input_timeGoing);
-        etTimeReturn = (EditText) findViewById(R.id.edit_input_timeReturn);
 
         btnEdit = (Button) findViewById(R.id.btn_edit);
         btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +143,6 @@ public class RideEditActivity extends Activity {
             RidePutTask rpt = new RidePutTask(this);
             rpt.setRidePost(ride);
             result = rpt.execute(Constants.BASE_URL + "ride/" + mRide.getID()).get();
-
             Log.e(TAG, "RESULT PUT RIDE: " + result);
             return result;
         } catch (ExecutionException e) {
@@ -159,23 +153,25 @@ public class RideEditActivity extends Activity {
         return result;
     }
 
+    public void startMapsEdit(View v){
+        mapsGR = v.getId();
+        Intent intent = new Intent(RideEditActivity.this, MapsActivity.class);
+        startActivityForResult(intent, MAP_ACTIVITY_EDIT);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MAP_ACTIVITY){
+        if (requestCode == MAP_ACTIVITY_EDIT){ // If it was an ADD_ITEM, then add the new item and update the list
             if(resultCode == Activity.RESULT_OK){
                 Bundle MBuddle = data.getExtras();
-                MapLocation ml = (MapLocation) MBuddle .getSerializable(MAPLOC);
-                Log.e("ENTRAMOS EN RESULT EDIT", ml.getAddress());
+                MapLocation ml = (MapLocation) MBuddle.getSerializable(MAPLOC);
                 if (ml != null) {
-                    Log.e(TAG + "PG", String.valueOf(R.id.edit_input_placeGoing));
-                    Log.e(TAG + "PR", String.valueOf(R.id.edit_input_placeReturn));
-                    if(mapsGR == R.id.edit_input_placeGoing) {
-                        Log.e(TAG + " IN", "SE MODIFICA ");
+                    if(mapsGR == R.id.edit_placeGoing) {
                         etEditPlaceFrom.setText("");
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
-                    if(mapsGR == R.id.edit_input_placeReturn) {
+                    if(mapsGR == R.id.edit_placeReturn) {
                         etEditPlaceTo.setText(ml.getAddress());
                         lngReturning = ml.getLongitude();
                         latReturning = ml.getLatitude();
@@ -184,7 +180,6 @@ public class RideEditActivity extends Activity {
             }
         }
     }
-
     public void showTime(final View view){
         Calendar mcurrentTime = Calendar.getInstance();
         mcurrentTime.getTime();
@@ -199,11 +194,11 @@ public class RideEditActivity extends Activity {
                 c.set(Calendar.HOUR_OF_DAY, selectedHour);
                 c.set(Calendar.MINUTE, selectedMinute);
                 SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
-                if(result == R.id.edit_input_timeGoing){
+                if(result == R.id.edit_timeGoing){
                     timeG = formatTime.format(c.getTime());
                     etTimeGoing.setText(timeG);
                 }
-                else if(result == R.id.edit_input_timeReturn){
+                else if(result == R.id.edit_timeReturn){
                     timeR = formatTime.format(c.getTime());
                     etTimeReturn.setText(timeR);
                 }
@@ -212,13 +207,6 @@ public class RideEditActivity extends Activity {
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
-    }
-
-    public void startMaps(View v){
-        mapsGR = v.getId();
-        Log.e(TAG + " MapsGR", String.valueOf(mapsGR));
-        Intent intent = new Intent(RideEditActivity.this, MapsActivity.class);
-        startActivityForResult(intent, MAP_ACTIVITY);
     }
 
     private boolean validate(String placeG, String placeR, String price, String passengers, int avSeats) {
@@ -266,7 +254,7 @@ public class RideEditActivity extends Activity {
             etPassengers.setError(null);
             int checkPass = avSeats+Integer.parseInt(passengers);
             if(checkPass<oldPassengers){
-                Toast.makeText(this, "Minimun passengers: " + (oldPassengers-avSeats), Toast.LENGTH_LONG);
+                Toast.makeText(this, "Minimun passengers: " + (oldPassengers-avSeats), Toast.LENGTH_LONG).show();
             }
         }
 

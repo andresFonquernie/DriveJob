@@ -48,13 +48,16 @@ public class SQLConnect {
         }
     }
 
-    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn) {
+    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, int maxDistance, int maxTime) {
 
         Log.e("SQLConnect", authorId + " " + myLatGo + " " + myLatReturn + " " + myLngGo + " " + myLngReturn + " " + myTimeGo + " " + myTimeReturn);
         List<Ride> rides = new ArrayList<>();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        float maxDistanceF = (float) maxDistance/1000;
+        maxTime = maxTime*100;
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -70,8 +73,9 @@ public class SQLConnect {
                     "SUBTIME(timeGoing,'" + myTimeGo + "') AS 'DifGo', " +
                     "SUBTIME(timeReturn,'" + myTimeReturn + "') AS 'DifReturn' " +
                     "FROM Ride " +
-                    "HAVING (distanceGo BETWEEN -0.5 AND 0.5) AND (distanceReturn BETWEEN -0.5 AND 0.5) " +
-                    "AND (DifGo BETWEEN -1500 AND 1500) AND (DifReturn BETWEEN -1500 AND 1500)";
+                    "HAVING (distanceGo BETWEEN -" + maxDistance + " AND " + maxDistance + ") " +
+                    "AND (distanceReturn BETWEEN -" + maxDistance + " AND " + maxDistance + ") " +
+                    "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")";
 
             Log.e("SQLConnect", sql);
 

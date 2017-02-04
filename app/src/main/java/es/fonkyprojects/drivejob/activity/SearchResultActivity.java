@@ -2,9 +2,12 @@ package es.fonkyprojects.drivejob.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.List;
 
@@ -34,11 +37,15 @@ public class SearchResultActivity extends Activity {
     private double lngGoign;
     private double lngReturning;
 
+    SharedPreferences sharedPref;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
         ButterKnife.bind(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         getValues();
 
@@ -49,7 +56,13 @@ public class SearchResultActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn);
+        int maxDistance = sharedPref.getInt("DISTANCE",0);
+        int maxTime = sharedPref.getInt("TIME",0);
+
+        Log.e(TAG, maxDistance + " " + maxTime);
+
+
+        listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn, maxDistance, maxTime);
         adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Ride item) {

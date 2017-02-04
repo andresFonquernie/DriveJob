@@ -43,8 +43,17 @@
 
     <!-- Maps -->
    <string name="title_activity_maps">Maps</string>
-    <string name="time">Tiempo maximp</string>
+    <string name="time">Tiempo maximo</string>
     <string name="title_activity_settings">Preferencias</string>
+    <string name="google_maps_key" translatable="false"></string>
+    <string name="goTime"></string>
+    <string name="avseats">Asientos disponibles</string>
+    <string name="delete">Eliminar</string>
+    <string name="metres">Metros</string>
+    <string name="minutes">Minutos</string>
+    <string name="searchresults">Resultados</string>
+    <string name="users">Usuarios</string>
+    <string name="phone">Teléfono</string>
 
 
 </resources>

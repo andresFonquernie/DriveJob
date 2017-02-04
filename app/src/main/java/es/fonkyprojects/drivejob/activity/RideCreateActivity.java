@@ -25,7 +25,9 @@ import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPostTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePostTask;
 import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
@@ -99,6 +101,7 @@ public class RideCreateActivity extends Activity{
             String postKey = writeNewRide(placeG, placeR, price, passengers);
             Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers, passengers);
             (new SQLConnect()).insertRide(r);
+            String rideUserKey = writeNewRideUser(postKey);
             Log.e(TAG, "POSTKEY: " + postKey);
 
             if (!postKey.equals("Error")) {
@@ -123,6 +126,26 @@ public class RideCreateActivity extends Activity{
             RidePostTask rpt = new RidePostTask(this);
             rpt.setRidePost(ride);
             result = rpt.execute(Constants.BASE_URL + "ride").get();
+
+            Log.e(TAG, "RESULT WRITE RIDE: " + result);
+            Ride r = new Gson().fromJson(result, Ride.class);
+            result = r.getID();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private String writeNewRideUser(String rideKey) {
+        String result = "";
+        try {
+            RideUser rideUser = new RideUser(rideKey, "");
+            RideUserPostTask rupt = new RideUserPostTask(this);
+            rupt.setRideUserPost(rideUser);
+            result = rupt.execute(Constants.BASE_URL + "rideuser").get();
 
             Log.e(TAG, "RESULT WRITE RIDE: " + result);
             Ride r = new Gson().fromJson(result, Ride.class);
@@ -161,8 +184,7 @@ public class RideCreateActivity extends Activity{
         if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
             if(resultCode == Activity.RESULT_OK){
                 Bundle MBuddle = data.getExtras();
-                MapLocation ml = (MapLocation) MBuddle .getSerializable(MAPLOC);
-                Log.i("ENTRAMOS EN RESULT", ml.getAddress());
+                MapLocation ml = (MapLocation) MBuddle.getSerializable(MAPLOC);
                 if (ml != null) {
                     if(mapsGR == R.id.input_placeGoing) {
                         etPlaceFrom.setText(ml.getAddress());

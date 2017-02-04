@@ -34,9 +34,11 @@ public class MyProfileActivity extends Activity {
 
     private String userId;
     private ImageView userImage;
+    private TextView userName;
     private TextView userEmail;
     private TextView userPhone;
-    private String username;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,9 @@ public class MyProfileActivity extends Activity {
         }
 
         // Initialize Views
-        userImage = (ImageView) findViewById(R.id.userImage);;
-        userEmail = (TextView) findViewById(R.id.emailText);;
+        userImage = (ImageView) findViewById(R.id.userImage);
+        userName = (TextView) findViewById(R.id.nameText);
+        userEmail = (TextView) findViewById(R.id.emailText);
         userPhone = (TextView) findViewById(R.id.phoneText);
         userToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
     }
@@ -62,11 +65,10 @@ public class MyProfileActivity extends Activity {
     public void onStart() {
         super.onStart();
 
-        // Add value event listener to the post
-        User user = null;
         try {
             user = getUser(userId);
             toolbar.setTitle(user.getUsername() + " " + user.getSurname());
+            userName.setText(user.getUsername() + " " + user.getSurname());
             userEmail.setText(user.getEmail());
             userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
         } catch (ExecutionException e) {
@@ -83,10 +85,9 @@ public class MyProfileActivity extends Activity {
         Log.e(TAG, "RESULT GET USER: " + result);
         Type type = new TypeToken<List<User>>(){}.getType();
         List<User> inpList = new Gson().fromJson(result, type);
-        User u = inpList.get(0);
-        Log.i(TAG, u.getUsername());
+        user = inpList.get(0);
 
-        return u;
+        return user;
     }
 
 
@@ -103,9 +104,14 @@ public class MyProfileActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.mnu_edit:
+                Intent intent = new Intent(MyProfileActivity.this, ProfileEditActivity.class);
+                intent.putExtra(ProfileEditActivity.EXTRA_USER, user);
+                startActivity(intent);
+                break;
             case R.id.mnu_settings:
-                //Intent itemSettings = new Intent(this, MySettingsActivity.class);
-                //startActivity(itemSettings);
+                Intent itemSettings = new Intent(this, SettingsActivity.class);
+                startActivity(itemSettings);
                 break;
             case R.id.mnu_logout:
                 FirebaseAuth.getInstance().signOut();

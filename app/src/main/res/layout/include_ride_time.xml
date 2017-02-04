@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textStyle="bold"
         tools:text="7:00" />
 
     <TextView
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textStyle="bold"
         tools:text="15:30" />
 
 </LinearLayout>

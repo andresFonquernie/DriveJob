@@ -7,12 +7,12 @@
     tools:context=".RideCreateActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        android:orientation="vertical">
 
         <!--  PlaceGoing Label -->
         <android.support.design.widget.TextInputLayout
