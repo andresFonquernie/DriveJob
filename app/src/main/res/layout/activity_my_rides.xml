@@ -2,27 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MyRidesActivity">
 
     <TextView
-        android:id="@+id/resulttitle"
+        android:id="@+id/myrides"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="20dp"
-        android:textSize="30dp"
+        android:layout_marginStart="20dp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:text="@string/searchresults"
+        android:text="@string/myrides"
         />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/ride_list"
+        android:id="@+id/myrides_list"
         tools:listitem="@layout/listride_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:scrollbars="vertical"
-        android:layout_below="@+id/resulttitle"
+        android:layout_below="@+id/myrides"
         android:layout_alignParentStart="true" />
 
 </RelativeLayout>

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">DriveJob</string>
 
+    <!-- Logo -->
+    <string name="logoname" translatable="false">Name</string>
+    <string name="logoimage" translatable="false">Image</string>
+    <string name="logocomplete" translatable="false">Complete</string>
+
     <!-- Login Activity -->
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -38,6 +43,7 @@
     <string name="logout">Log out</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="myrides">My rides</string>
 
     <!-- Settings -->
     <string name="preferences">Preferences</string>

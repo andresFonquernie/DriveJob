@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.model.UserRide;
+import es.fonkyprojects.drivejob.restMethods.UserRide.UserRidePostTask;
 import es.fonkyprojects.drivejob.restMethods.Users.UserPostTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 
@@ -109,6 +111,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
 
         // Write new user
         writeNewUser(user.getUid(), name, surname, user.getEmail());
+        writeNewUserRide(user.getUid());
 
         // Go to MenuActivity
         startActivity(new Intent(LoginSignupActivity.this, MenuActivity.class));
@@ -134,6 +137,23 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         }
     }
     // [END basic_write]
+
+    private String writeNewUserRide(String userId) {
+        String result = "";
+        try {
+            UserRide userRide = new UserRide(userId, "");
+            UserRidePostTask urpt = new UserRidePostTask(this);
+            urpt.setUserRidePost(userRide);
+            result = urpt.execute(Constants.BASE_URL + "userride").get();
+
+            Log.e(TAG, "RESULT WRITE USERRIDE: " + result);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Error in form", Toast.LENGTH_LONG).show();

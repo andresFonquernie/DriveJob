@@ -20,7 +20,6 @@ import es.fonkyprojects.drivejob.model.Ride;
 public class SQLConnect {
 
     public void insertRide(Ride r){
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -50,7 +49,6 @@ public class SQLConnect {
 
     public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, int maxDistance, int maxTime) {
 
-        Log.e("SQLConnect", authorId + " " + myLatGo + " " + myLatReturn + " " + myLngGo + " " + myLngReturn + " " + myTimeGo + " " + myTimeReturn);
         List<Ride> rides = new ArrayList<>();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -77,8 +75,6 @@ public class SQLConnect {
                     "AND (distanceReturn BETWEEN -" + maxDistance + " AND " + maxDistance + ") " +
                     "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")";
 
-            Log.e("SQLConnect", sql);
-
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 //Retrieve by column name
@@ -98,7 +94,6 @@ public class SQLConnect {
                 r.setPassengers(rs.getInt("passengers"));
                 rides.add(r);
             }
-
             st.close();
             con.close();
         } catch (IllegalAccessException e) {

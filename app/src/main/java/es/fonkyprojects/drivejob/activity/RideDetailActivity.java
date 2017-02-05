@@ -26,11 +26,14 @@ import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.model.UserRide;
 import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserGetTask;
 import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPutTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideDeleteTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideGetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
+import es.fonkyprojects.drivejob.restMethods.UserRide.UserRideGetTask;
+import es.fonkyprojects.drivejob.restMethods.UserRide.UserRidePutTask;
 import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
@@ -191,14 +194,40 @@ public class RideDetailActivity extends AppCompatActivity{
 
         String result = "";
         try {
-            rideUser.setUserId(userJoin);
-            RideUserPutTask rupt = new RideUserPutTask(this);
-            rupt.setRideUserPost(rideUser);
-            result = rupt.execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/" + rideUser.get_id()).get();
+            String ru = new UserRideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + uid).get();
+            Type type = new TypeToken<List<UserRide>>(){}.getType();
+            List<UserRide> inpList = new Gson().fromJson(ru, type);
+
+            UserRide userRide = inpList.get(0);
+            String rideJoin = userRide.getRideId();
+            if(rideJoin == null || rideJoin.length()==0){
+                rideJoin = mRideKey;
+            }
+            else{
+                rideJoin = userJoin +"," + mRideKey;
+            }
+            userRide.setRideId(rideJoin);
+            UserRidePutTask urpt = new UserRidePutTask(this);
+            urpt.setUserRidePut(userRide);
+            result = urpt.execute("https://secret-meadow-74492.herokuapp.com/api/userride/" + userRide.get_id()).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+
+        if(result.equals("Update")) {
+            try {
+
+                rideUser.setUserId(userJoin);
+                RideUserPutTask rupt = new RideUserPutTask(this);
+                rupt.setRideUserPost(rideUser);
+                result = rupt.execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/" + rideUser.get_id()).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
         if(result.equals("Update")){

@@ -1,4 +1,4 @@
-package es.fonkyprojects.drivejob.restMethods.RideUser;
+package es.fonkyprojects.drivejob.restMethods.UserRide;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -17,27 +17,27 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import es.fonkyprojects.drivejob.model.RideUser;
+import es.fonkyprojects.drivejob.model.UserRide;
 
 /**
- * Created by andre on 03/02/2017.
+ * Created by andre on 05/02/2017.
  */
 
-public class RideUserPostTask extends AsyncTask<String, Void, String> {
+public class UserRidePostTask extends AsyncTask<String, Void, String> {
 
     private Context context;
     private String result;
 
-    private static final String TAG = "RideUserPostTask";
+    private static final String TAG = "UserRidePostTask";
 
-    private RideUser rideUser;
+    private UserRide userRide;
 
-    public RideUserPostTask(Context c) {
+    public UserRidePostTask(Context c) {
         this.context = c;
     }
 
-    public void setRideUserPost(RideUser ru){
-        this.rideUser = ru;
+    public void setUserRidePost(UserRide ur){
+        this.userRide = ur;
     }
 
 
@@ -69,12 +69,12 @@ public class RideUserPostTask extends AsyncTask<String, Void, String> {
         BufferedWriter bufferedWriter = null;
         BufferedReader bufferedReader = null;
 
-        Log.e(TAG, rideUser.getRideId());
+        Log.e(TAG, userRide.getUserId());
 
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
-        dataToSend.put("rideId", rideUser.getRideId());
-        dataToSend.put("userId", rideUser.getUserId());
+        dataToSend.put("userId", userRide.getUserId());
+        dataToSend.put("rideId", userRide.getRideId());
 
         try {
             //Initialize and config request, the connect to server

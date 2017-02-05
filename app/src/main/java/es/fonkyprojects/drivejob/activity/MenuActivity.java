@@ -15,9 +15,9 @@ import butterknife.ButterKnife;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener{
 
-
     @Bind(R.id.btn_create) Button btnCreate;
     @Bind(R.id.btn_search) Button btnSearch;
+    @Bind(R.id.btn_myrides) Button btnMyRides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,8 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
         btnCreate.setOnClickListener(this);
         btnSearch.setOnClickListener(this);
+        btnMyRides.setOnClickListener(this);
+
     }
 
     @Override
@@ -65,6 +67,10 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(new Intent(MenuActivity.this, SearchRideActivity.class));
     }
 
+    private void myRides(){
+        startActivity(new Intent(MenuActivity.this, MyRidesActivity.class));
+    }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -72,6 +78,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             create();
         } else if (i == R.id.btn_search) {
             search();
+        }
+        else if (i == R.id.btn_myrides){
+            myRides();
         }
 
     }

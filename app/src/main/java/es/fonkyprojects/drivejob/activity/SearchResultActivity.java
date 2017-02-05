@@ -39,7 +39,6 @@ public class SearchResultActivity extends Activity {
 
     SharedPreferences sharedPref;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

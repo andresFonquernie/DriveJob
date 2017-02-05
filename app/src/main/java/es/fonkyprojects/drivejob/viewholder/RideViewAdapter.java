@@ -33,7 +33,7 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
 
     @Override
     public RideHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.searchresult_holder, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listride_holder, parent, false);
         RideHolder rh = new RideHolder(view);
         return rh;
     }

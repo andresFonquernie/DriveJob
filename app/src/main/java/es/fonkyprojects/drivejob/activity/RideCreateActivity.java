@@ -101,7 +101,7 @@ public class RideCreateActivity extends Activity{
             String postKey = writeNewRide(placeG, placeR, price, passengers);
             Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, price, passengers, passengers);
             (new SQLConnect()).insertRide(r);
-            String rideUserKey = writeNewRideUser(postKey);
+            writeNewRideUser(postKey);
             Log.e(TAG, "POSTKEY: " + postKey);
 
             if (!postKey.equals("Error")) {
@@ -140,23 +140,20 @@ public class RideCreateActivity extends Activity{
     }
 
     private String writeNewRideUser(String rideKey) {
-        String result = "";
         try {
             RideUser rideUser = new RideUser(rideKey, "");
             RideUserPostTask rupt = new RideUserPostTask(this);
             rupt.setRideUserPost(rideUser);
-            result = rupt.execute(Constants.BASE_URL + "rideuser").get();
+            String result = rupt.execute(Constants.BASE_URL + "rideuser").get();
 
             Log.e(TAG, "RESULT WRITE RIDE: " + result);
-            Ride r = new Gson().fromJson(result, Ride.class);
-            result = r.getID();
 
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+        return "";
     }
 
     private String getUsername(String userId) throws ExecutionException, InterruptedException {

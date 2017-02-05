@@ -23,26 +23,56 @@
         android:icon="@mipmap/ic_mylauncher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.DarkAction">
-        <activity android:name=".LoginActivity" android:label="@string/app_name" android:theme="@style/AppTheme.Dark" android:screenOrientation="portrait">
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginSignupActivity" android:screenOrientation="portrait" />
-        <activity android:name=".MenuActivity" android:screenOrientation="portrait" />
-        <activity android:name=".RideCreateActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginSignupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RideCreateActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".RideEditActivity" />
-        <activity android:name=".SearchRideActivity" android:screenOrientation="portrait" />
-        <activity android:name=".SearchResultActivity" android:screenOrientation="portrait" />
-        <activity android:name=".RideDetailActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".MyProfileActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".ProfileEditActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SettingsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".MapsActivity" android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".SearchRideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SearchResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RideDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MyProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".MyRidesActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ProfileEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
     </application>
 
 </manifest>
