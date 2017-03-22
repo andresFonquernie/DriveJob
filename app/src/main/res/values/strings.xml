@@ -31,11 +31,38 @@
     <string name="to">To</string>
     <string name="going">Going</string>
     <string name="returning">Returning</string>
+    <string name="days">Days</string>
     <string name="price">Price</string>
     <string name="passengers">Passengers</string>
     <string name="avseats">Seats left</string>
     <string name="searchresults">Search Results</string>
     <string name="users">Users</string>
+    <string name="selectTime">Select Time</string>
+
+    <!-- Days -->
+    <string name="ok_label">Ok</string>
+    <string name="dismiss_label">Dismiss</string>
+    <string name="clear_all_label">Clear all</string>
+
+    <string-array name="daysofweek">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
+    <string-array name="shortdaysofweek">
+        <item>Mo</item>
+        <item>Tu</item>
+        <item>We</item>
+        <item>Th</item>
+        <item>Fr</item>
+        <item>Sa</item>
+        <item>Su</item>
+    </string-array>
 
     <!-- Menu -->
     <string name="profile">Profile</string>

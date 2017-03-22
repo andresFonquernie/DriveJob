@@ -6,13 +6,22 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/ride_days"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="@string/days" />
+
+    <TextView
         android:id="@+id/ride_prize"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="10" />
+        tools:text="@string/price" />
 
     <TextView
         android:id="@+id/ride_passengers"
@@ -21,6 +30,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="5" />
+        tools:text="@string/passengers" />
 
 </LinearLayout>

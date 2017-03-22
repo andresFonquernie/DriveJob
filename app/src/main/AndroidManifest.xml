@@ -67,7 +67,7 @@
             android:name=".SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MapsActivity"
+            android:name="es.fonkyprojects.drivejob.utils.MapsActivity"
             android:label="@string/title_activity_maps" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"

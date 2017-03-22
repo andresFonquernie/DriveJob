@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.RideSearch;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
+import es.fonkyprojects.drivejob.utils.MapsActivity;
 
 public class SearchRideActivity extends Activity {
 

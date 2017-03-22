@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -27,6 +28,8 @@ import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.model.UserRide;
+
+import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserDeleteTask;
 import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserGetTask;
 import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPutTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RideDeleteTask;
@@ -35,6 +38,7 @@ import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
 import es.fonkyprojects.drivejob.restMethods.UserRide.UserRideGetTask;
 import es.fonkyprojects.drivejob.restMethods.UserRide.UserRidePutTask;
 import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
+
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.viewholder.UserViewAdapter;
@@ -45,7 +49,6 @@ public class RideDetailActivity extends AppCompatActivity{
 
     public static final String EXTRA_RIDE = "ride";
     public static final String EXTRA_RIDE_KEY = "ride_key";
-    public static final String EXTRA_USER_ID = "userId";
 
     private String mRideKey;
     private String authorID;
@@ -66,6 +69,7 @@ public class RideDetailActivity extends AppCompatActivity{
     private TextView placeGoingView;
     private TextView timeReturnView;
     private TextView placeReturnView;
+    private TextView daysView;
     private TextView priceView;
     private TextView avSeats;
     private Button joinButton;
@@ -83,11 +87,12 @@ public class RideDetailActivity extends AppCompatActivity{
         }
 
         // Initialize Views
-        authorImage = (ImageView) findViewById(R.id.ride_author_photo);;
-        authorView = (TextView) findViewById(R.id.ride_author);;
+        authorImage = (ImageView) findViewById(R.id.ride_author_photo);
+        authorView = (TextView) findViewById(R.id.ride_author);
         timeGoingView = (TextView) findViewById(R.id.ride_timeGoing);
         placeGoingView = (TextView) findViewById(R.id.ride_placeGoing);
         timeReturnView = (TextView) findViewById(R.id.ride_timeReturn);
+        daysView = (TextView) findViewById(R.id.ride_days);
         placeReturnView = (TextView) findViewById(R.id.ride_placeReturn);
         priceView = (TextView) findViewById(R.id.ride_prize);
         avSeats = (TextView) findViewById(R.id.ride_passengers);
@@ -119,22 +124,30 @@ public class RideDetailActivity extends AppCompatActivity{
             String result = null;
             try {
                 result = new RideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
-            if(!result.equals("Error") && result!=null){
+            if( result!=null && !result.equals("Error")){
                 ride = new Gson().fromJson(result, Ride.class);
-                timeGoingView.setText("Time Going: " + ride.getTimeGoing());
-                timeReturnView.setText("Time Return: " + ride.getTimeReturn());
-                placeGoingView.setText("From " + ride.getPlaceGoing());
-                placeReturnView.setText("To: " + ride.getPlaceReturn());
-                priceView.setText("Price: " + String.valueOf(ride.getPrice()));
-                avSeats.setText("Seats left: " + String.valueOf(ride.getAvSeats()));
+                timeGoingView.setText(getString(R.string.going) + ": " + ride.getTimeGoing());
+                timeReturnView.setText(getString(R.string.returning) + ": " + ride.getTimeReturn());
+                placeGoingView.setText(getString(R.string.from) + ": " + ride.getPlaceGoing());
+                placeReturnView.setText(getString(R.string.to) + ": " + ride.getPlaceReturn());
+                priceView.setText(getString(R.string.price) + ": " + String.valueOf(ride.getPrice()));
+                avSeats.setText(getString(R.string.avseats) + ": " + String.valueOf(ride.getAvSeats()));
                 authorID = ride.getAuthorID();
                 authorView.setText(ride.getAuthor());
+
+                String[] items = ride.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+                String[] shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
+                String days = "";
+                for (int i=0; i<items.length; i++){
+                    if(items[i].equals("true")){
+                        days = days + shortListDays[i] + ",";
+                    }
+                }
+                daysView.setText(getString(R.string.days) + ": " + days.substring(0,days.length()-1));
             }
 
             if(FirebaseUser.getUid().equals(authorID)) {
@@ -149,11 +162,13 @@ public class RideDetailActivity extends AppCompatActivity{
                 if(inpList.size()>0) {
                     rideUser = inpList.get(0);
                     ridersJoin = rideUser.getUserId().split(",");
-                    for (int i = 0; i < ridersJoin.length; i++) {
-                        User u = getUser(ridersJoin[i]);
-                        if (FirebaseUser.getUid().equals(u.getUserId()))
-                            joined = true;
-                        listUsers.add(u);
+                    if(!ridersJoin[0].equals("")) {
+                        for (int i = 0; i < ridersJoin.length; i++) {
+                            User u = getUser(ridersJoin[i]);
+                            if (FirebaseUser.getUid().equals(u.getUserId()))
+                                joined = true;
+                            listUsers.add(u);
+                        }
                     }
 
                     if (joined) {
@@ -174,10 +189,8 @@ public class RideDetailActivity extends AppCompatActivity{
                 layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
-            } catch (InterruptedException e) {
-                Log.e(TAG + " IE", e.getStackTrace().toString());
-            } catch (ExecutionException e) {
-                Log.e(TAG + " EE", e.getStackTrace().toString());
+            } catch (InterruptedException | ExecutionException e) {
+                Log.e(TAG + " IE", Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -193,6 +206,7 @@ public class RideDetailActivity extends AppCompatActivity{
         }
 
         String result = "";
+        (new SQLConnect()).updateAvSeats(ride.getAvSeats() - 1, mRideKey);
         try {
             String ru = new UserRideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + uid).get();
             Type type = new TypeToken<List<UserRide>>(){}.getType();
@@ -210,9 +224,7 @@ public class RideDetailActivity extends AppCompatActivity{
             UserRidePutTask urpt = new UserRidePutTask(this);
             urpt.setUserRidePut(userRide);
             result = urpt.execute("https://secret-meadow-74492.herokuapp.com/api/userride/" + userRide.get_id()).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -223,9 +235,7 @@ public class RideDetailActivity extends AppCompatActivity{
                 RideUserPutTask rupt = new RideUserPutTask(this);
                 rupt.setRideUserPost(rideUser);
                 result = rupt.execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/" + rideUser.get_id()).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -238,9 +248,7 @@ public class RideDetailActivity extends AppCompatActivity{
                 result = rpt.execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
                 if(result.equals("Update"))
                     joinButton.setVisibility(View.INVISIBLE);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -254,9 +262,7 @@ public class RideDetailActivity extends AppCompatActivity{
             Type type = new TypeToken<List<User>>(){}.getType();
             List<User> inpList = new Gson().fromJson(result, type);
             user = inpList.get(0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -290,10 +296,35 @@ public class RideDetailActivity extends AppCompatActivity{
                 break;
             case R.id.mnu_delete:
                 RideDeleteTask rdt = new RideDeleteTask(this);
-                String result = "";
                 try {
-                    result =  rdt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
+                    String result =  rdt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
                     (new SQLConnect()).deleteRide(mRideKey);
+                    (new RideUserDeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
+                    for(int i=0; i<listUsers.size(); i++){
+                        String s = (new UserRideGetTask(this)).execute(Constants.BASE_URL + "userride/?userId=" + listUsers.get(i).getUserId()).get();
+                        Log.e(TAG, "STRING: " + s);
+                        Type type = new TypeToken<List<UserRide>>(){}.getType();
+                        List<UserRide> l = new Gson().fromJson(s, type);
+                        UserRide ur = l.get(0);
+                        String[] rides = ur.getRideId().split(",");
+                        Log.e(TAG + "rides", rides[0]);
+                        String newRides = "";
+                        for(int j=0; j<rides.length; j++){
+                            if(!rides[j].equals(mRideKey)){
+                                if(newRides == null || newRides.length()==0){
+                                    newRides = rides[j];
+                                }
+                                else{
+                                    newRides = newRides +"," + rides[j];
+                                }
+                            }
+                        }
+                        ur.setRideId(newRides);
+                        UserRidePutTask urpt = new UserRidePutTask(this);
+                        urpt.setUserRidePut(ur);
+                        urpt.execute("https://secret-meadow-74492.herokuapp.com/api/userride/" + ur.get_id()).get();
+                        Log.e(TAG + " Id", ur.getRideId());
+                    }
                     if(result.equals("Ok")){
                         intent = new Intent(RideDetailActivity.this, MenuActivity.class);
                         startActivity(intent);
@@ -302,9 +333,7 @@ public class RideDetailActivity extends AppCompatActivity{
                     else{
                         Toast.makeText(this, "Error deleting", Toast.LENGTH_LONG).show();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
         }

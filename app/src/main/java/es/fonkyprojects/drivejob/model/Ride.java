@@ -22,6 +22,7 @@ public class Ride implements Serializable {
     private double latReturn;
     private double lngGoing;
     private double lngReturn;
+    private String days;
     private int price;
     private int passengers;
     private int avSeats;
@@ -32,7 +33,7 @@ public class Ride implements Serializable {
     }
 
     public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers, int avSeats) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats) {
         this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
@@ -43,13 +44,14 @@ public class Ride implements Serializable {
         this.latReturn = latReturn;
         this.lngGoing = lngGoing;
         this.lngReturn = lngReturn;
+        this.days = days;
         this.price = price;
         this.passengers = passengers;
         this.avSeats = avSeats;
     }
 
     public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, int price, int passengers, int avSeats ) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats ) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -61,6 +63,7 @@ public class Ride implements Serializable {
         this.latReturn = latReturn;
         this.lngGoing = lngGoing;
         this.lngReturn = lngReturn;
+        this.days = days;
         this.price = price;
         this.passengers = passengers;
         this.avSeats = avSeats;
@@ -110,9 +113,9 @@ public class Ride implements Serializable {
         return lngGoing;
     }
 
-    public double getLngReturn() {
-        return lngReturn;
-    }
+    public double getLngReturn() { return lngReturn; }
+
+    public String getDays() { return days; }
 
     public int getPrice() {
         return price;
@@ -170,9 +173,9 @@ public class Ride implements Serializable {
         this.lngReturn = lngReturn;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
+    public void  setDays(String days) { this.days = days; }
+
+    public void setPrice(int price) { this.price = price; }
 
     public void setPassengers(int passengers) {
         this.passengers = passengers;

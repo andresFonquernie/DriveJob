@@ -17,7 +17,7 @@
     <!-- Menu Activity -->
     <string name="search_ride">Buscar</string>
     <string name="join_ride">Unirse</string>
-    <string name="create_ride">Crear Ride</string>
+    <string name="create_ride">Crear Ruta</string>
     <string name="edit_ride">Editar</string>
 
     <!-- CreateRide Activity -->
@@ -53,6 +53,29 @@
     <string name="users">Usuarios</string>
     <string name="phone">Teléfono</string>
     <string name="myrides">Mis rutas</string>
+    <string name="ok_label">Ok</string>
+    <string name="dismiss_label">Descartar</string>
+    <string name="days">Dias</string>
+    <string name="clear_all_label">Limpiar</string>
 
+    <string-array name="daysofweek">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
 
+    <string-array name="shortdaysofweek">
+        <item>L</item>
+        <item>M</item>
+        <item>X</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+    <string name="selectTime">Establecer hora</string>
 </resources>

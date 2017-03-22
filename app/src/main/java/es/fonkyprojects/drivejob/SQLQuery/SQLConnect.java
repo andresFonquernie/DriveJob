@@ -71,10 +71,13 @@ public class SQLConnect {
                     "SUBTIME(timeGoing,'" + myTimeGo + "') AS 'DifGo', " +
                     "SUBTIME(timeReturn,'" + myTimeReturn + "') AS 'DifReturn' " +
                     "FROM Ride " +
-                    "HAVING (distanceGo BETWEEN -" + maxDistance + " AND " + maxDistance + ") " +
-                    "AND (distanceReturn BETWEEN -" + maxDistance + " AND " + maxDistance + ") " +
-                    "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")";
+                    "HAVING (distanceGo BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
+                    "AND (distanceReturn BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
+                    "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")" +
+                    "AND authorID <> '" + authorId + "' " +
+                    "AND avSeats > 0";
 
+            Log.e("SearchResultActivity", sql);
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 //Retrieve by column name
@@ -124,6 +127,31 @@ public class SQLConnect {
                     ", lngGoing = " + r.getLngGoing() + ", lngReturn = " + r.getLngReturn() +
                     ", price = " + r.getPrice() + ", passengers = " + r.getPassengers() + ", avSeats = " + r.getAvSeats() +
                     " WHERE _id = '" + r.getID() + "'";
+            st.executeUpdate(sql);
+
+            st.close();
+            con.close();
+        }catch (SQLException e) {
+            Log.e("FATAL ERROR",Log.getStackTraceString(e));
+        } catch (ClassNotFoundException e) {
+            Log.e("FATAL ERROR",Log.getStackTraceString(e));
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAvSeats(int i, String key){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
+            Statement st = con.createStatement();
+
+            String sql = "UPDATE Ride SET avSeats = " + i + " WHERE _id = '" + key + "'";
             st.executeUpdate(sql);
 
             st.close();

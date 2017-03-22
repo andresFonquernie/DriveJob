@@ -94,6 +94,7 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         dataToSend.put("latReturn", ride.getLatReturn());
         dataToSend.put("lngGoing", ride.getLngGoing());
         dataToSend.put("lngReturn", ride.getLngReturn());
+        dataToSend.put("days", ride.getDays());
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
         dataToSend.put("avSeats", ride.getAvSeats());

@@ -1,4 +1,4 @@
-package es.fonkyprojects.drivejob.activity;
+package es.fonkyprojects.drivejob.utils;
 
 import android.Manifest;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
+import es.fonkyprojects.drivejob.activity.R;
 import es.fonkyprojects.drivejob.model.MapLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks,

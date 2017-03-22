@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="Bilbao" />
+        tools:text="@string/from" />
 
     <TextView
         android:id="@+id/ride_placeReturn"
@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="Derio" />
+        tools:text="@string/to" />
 
 </LinearLayout>

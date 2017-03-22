@@ -3,6 +3,7 @@ package es.fonkyprojects.drivejob.restMethods.UserRide;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +76,7 @@ public class UserRidePutTask extends AsyncTask<String, Void, String> {
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
         dataToSend.put("rideId", userRide.getRideId());
+        Log.e("RIDEID", userRide.getRideId());
 
         try {
             //Initialize and config request, the connect to server

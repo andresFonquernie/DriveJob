@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="7:00" />
+        tools:text="@string/going" />
 
     <TextView
         android:id="@+id/ride_timeReturn"
@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="15:30" />
+        tools:text="@string/returning" />
 
 </LinearLayout>

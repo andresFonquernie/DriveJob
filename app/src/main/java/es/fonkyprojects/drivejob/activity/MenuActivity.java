@@ -25,11 +25,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
 
-
         btnCreate.setOnClickListener(this);
         btnSearch.setOnClickListener(this);
         btnMyRides.setOnClickListener(this);
-
     }
 
     @Override
