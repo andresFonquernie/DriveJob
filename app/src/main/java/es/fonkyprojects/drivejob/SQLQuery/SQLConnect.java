@@ -19,7 +19,16 @@ import es.fonkyprojects.drivejob.model.Ride;
 
 public class SQLConnect {
 
-    public void insertRide(Ride r){
+    private static final String TAG = "SQL Connect";
+
+
+    public String insertRide(Ride r){
+        String sql = "INSERT INTO Ride VALUES('" + r.getID() + "', '" + r.getAuthorID() + "', '" + r.getAuthor() + "', '" + r.getTimeGoing() +
+                "', '" + r.getTimeReturn() + "', '" + r.getPlaceGoing() + "', '" + r.getPlaceReturn() + "', " + r.getLatGoing() +
+                ", " + r.getLatReturn() + ", " + r.getLngGoing() + ", " + r.getLngReturn() + ", " + r.getPrice() +
+                ", " + r.getPassengers() + ", " + r.getAvSeats() + ", '" + r.getDays() + "')";
+        Log.e(TAG, sql);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -27,11 +36,6 @@ public class SQLConnect {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
             Statement st = con.createStatement();
-
-            String sql = "INSERT INTO Ride VALUES('" + r.getID() + "', '" + r.getAuthorID() + "', '" + r.getAuthor() + "', '" + r.getTimeGoing() +
-                    "', '" + r.getTimeReturn() + "', '" + r.getPlaceGoing() + "', '" + r.getPlaceReturn() + "', " + r.getLatGoing() +
-                    ", " + r.getLatReturn() + ", " + r.getLngGoing() + ", " + r.getLngReturn() + ", " + r.getPrice() +
-                    ", " + r.getPassengers() + ", " + r.getAvSeats() + ")";
             st.executeUpdate(sql);
 
             st.close();
@@ -45,9 +49,11 @@ public class SQLConnect {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        return sql;
     }
 
-    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, int maxDistance, int maxTime) {
+    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, String days, int maxDistance, int maxTime) {
 
         List<Ride> rides = new ArrayList<>();
 
@@ -74,10 +80,11 @@ public class SQLConnect {
                     "HAVING (distanceGo BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
                     "AND (distanceReturn BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
                     "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")" +
-                    "AND authorID <> '" + authorId + "' " +
+                    //"AND authorID <> '" + authorId + "' " +
+                    "AND days = '" + days + "' " +
                     "AND avSeats > 0";
 
-            Log.e("SearchResultActivity", sql);
+            Log.e(TAG, sql);
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 //Retrieve by column name

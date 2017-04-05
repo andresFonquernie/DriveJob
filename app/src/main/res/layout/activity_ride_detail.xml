@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <include
+            android:id="@+id/ride_author_layout"
+            layout="@layout/include_ride_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <include
+            android:id="@+id/ride_place"
+            layout="@layout/include_ride_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ride_author_layout"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"/>
+
+        <include
+            android:id="@+id/ride_time"
+            layout="@layout/include_ride_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_place"
+            android:layout_alignStart="@+id/ride_place" />
+
+        <include
+            android:id="@+id/ride_info"
+            layout="@layout/include_ride_extra_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_time"
+            android:layout_alignStart="@+id/ride_time" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_join"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_below="@+id/ride_info"
+            android:text="@string/join_ride" />
+
+        <TextView
+            android:id="@+id/usersRequestText"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_below="@+id/btn_join"
+            android:text="@string/usersrequest" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/userrequest_list"
+            tools:listitem="@layout/userjoin_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/usersRequestText"
+            android:layout_alignParentStart="true"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
+
+        <TextView
+            android:id="@+id/usersJoinText"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_below="@+id/userrequest_list"
+            android:text="@string/usersjoin" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/userjoin_list"
+            tools:listitem="@layout/userjoin_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/usersJoinText"
+            android:layout_alignParentStart="true"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
+
+    </RelativeLayout>
+</ScrollView>

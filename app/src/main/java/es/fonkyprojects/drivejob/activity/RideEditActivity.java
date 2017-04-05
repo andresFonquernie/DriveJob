@@ -141,8 +141,6 @@ public class RideEditActivity extends Activity {
     public void editRide(View view) {
         final String placeG = etEditPlaceFrom.getText().toString();
         final String placeR = etEditPlaceTo.getText().toString();
-        final String timeG = etTimeGoing.getText().toString();
-        final String timeR = etTimeReturn.getText().toString();
         final int avSeats = Integer.parseInt(etAvSeats.getText().toString());
         String days = Arrays.toString(checkedDays);
         String checkDays = etDays.getText().toString();
@@ -170,7 +168,7 @@ public class RideEditActivity extends Activity {
 
             int newAvSeats = avSeats - (oldPassengers - passengers);
             String putKey = writeEditRide(placeG, placeR, days, price, passengers, newAvSeats);
-            Ride r = new Ride(mRide.getID(), mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, newAvSeats);
+            //Ride r = new Ride(mRide.getID(), mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, newAvSeats);
             //(new SQLConnect()).updateRide(r);
 
             if (putKey.equals("Update")) {
@@ -190,13 +188,11 @@ public class RideEditActivity extends Activity {
         try {
             Ride ride = new Ride("", "", timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, newAvSeats);
             RidePutTask rpt = new RidePutTask(this);
-            rpt.setRidePost(ride);
+            rpt.setRidePut(ride);
             result = rpt.execute(Constants.BASE_URL + "ride/" + mRide.getID()).get();
             Log.e(TAG, "RESULT PUT RIDE: " + result);
             return result;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return result;

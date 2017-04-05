@@ -39,6 +39,12 @@
     <string name="users">Users</string>
     <string name="selectTime">Select Time</string>
 
+    <!-- RideDetail Activity -->
+    <string name="usersjoin">Joined</string>
+    <string name="usersrequest">Requests</string>
+    <string name="accept">Accept</string>
+    <string name="refuse">Refuse</string>
+
     <!-- Days -->
     <string name="ok_label">Ok</string>
     <string name="dismiss_label">Dismiss</string>

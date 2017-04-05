@@ -84,7 +84,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             String putKey = writeEditUser(txtName, txtSurname);
 
             if (putKey.equals("Update")) {
-                Intent intent = new Intent(ProfileEditActivity.this, MyProfileActivity.class);
+                Intent intent = new Intent(this, MyProfileActivity.class);
                 intent.putExtra(MyProfileActivity.EXTRA_USER_ID, userId);
                 startActivity(intent);
                 finish();
@@ -104,9 +104,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             result = upt.execute(Constants.BASE_URL + "user/" + user_id).get();
             Log.e(TAG, "RESULT PUT RIDE: " + result);
             return result;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return result;

@@ -16,9 +16,8 @@ import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.model.UserRide;
-import es.fonkyprojects.drivejob.restMethods.Rides.RideGetTask;
-import es.fonkyprojects.drivejob.restMethods.UserRide.UserRideGetTask;
+import es.fonkyprojects.drivejob.model.RideUser;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.viewholder.RideViewAdapter;
@@ -30,8 +29,6 @@ public class MyRidesActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public RecyclerView.Adapter adapter;
     public RecyclerView.LayoutManager layoutManager;
-
-    private List<Ride> listRides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +45,20 @@ public class MyRidesActivity extends AppCompatActivity {
 
         try {
 
-            //RidesCreate
+            //MyRides
             String userId = FirebaseUser.getUid();
-            String result = new RideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
+            String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
             Log.e(TAG, result);
             Type type = new TypeToken<List<Ride>>(){}.getType();
-            listRides = new Gson().fromJson(result, type);
+            List<Ride> listRides = new Gson().fromJson(result, type);
 
             //RidesJoin
-            result = new UserRideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + userId).get();
-            type = new TypeToken<List<UserRide>>(){}.getType();
-            List<UserRide> inpList = new Gson().fromJson(result, type);
+            result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + userId).get();
+            type = new TypeToken<List<RideUser>>(){}.getType();
+            List<RideUser> inpList = new Gson().fromJson(result, type);
             if(inpList.size()>0) {
-                UserRide userRide = inpList.get(0);
-                String[] ridesJoin = userRide.getRideId().split(",");
+                RideUser rideUser = inpList.get(0);
+                String[] ridesJoin = rideUser.getRideId().split(",");
                 for (int i = 0; i < ridesJoin.length; i++) {
                     if(!ridesJoin[i].equals("")) {
                         Ride r = getRide(ridesJoin[i]);
@@ -70,6 +67,7 @@ public class MyRidesActivity extends AppCompatActivity {
                 }
             }
 
+            //Add to ListView
             adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(Ride item) {
@@ -90,13 +88,11 @@ public class MyRidesActivity extends AppCompatActivity {
     public Ride getRide(String rideId){
         Ride ride = new Ride();
         try {
-            RideGetTask rgt = new RideGetTask(this);
+            GetTask rgt = new GetTask(this);
             String result = rgt.execute(Constants.BASE_URL + "ride/" + rideId).get();
             Type type = new TypeToken<Ride>(){}.getType();
             ride = new Gson().fromJson(result, type);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 

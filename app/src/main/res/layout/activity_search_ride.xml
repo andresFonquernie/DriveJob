@@ -74,6 +74,21 @@
                 android:onClick="showTime" />
         </android.support.design.widget.TextInputLayout>
 
+        <!--  Days Picker -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp">
+            <EditText android:id="@+id/input_days"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:hint="@string/days"
+                android:focusable="false"
+                android:onClick="selectDays" />
+        </android.support.design.widget.TextInputLayout>
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_search"
             android:layout_width="fill_parent"

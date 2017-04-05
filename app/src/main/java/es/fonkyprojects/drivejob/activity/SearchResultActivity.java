@@ -25,8 +25,6 @@ public class SearchResultActivity extends Activity {
     public RecyclerView.Adapter adapter;
     public RecyclerView.LayoutManager layoutManager;
 
-    private List<Ride> listRides;
-
     public static final String EXTRA_RIDE_SEARCH = "ride_search";
 
     private String authorId;
@@ -36,6 +34,7 @@ public class SearchResultActivity extends Activity {
     private double latReturning;
     private double lngGoign;
     private double lngReturning;
+    private String days;
 
     SharedPreferences sharedPref;
 
@@ -61,7 +60,7 @@ public class SearchResultActivity extends Activity {
         Log.e(TAG, maxDistance + " " + maxTime);
 
 
-        listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn, maxDistance, maxTime);
+        List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn, days, maxDistance, maxTime);
         adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Ride item) {
@@ -85,5 +84,6 @@ public class SearchResultActivity extends Activity {
         latReturning = rs.getLatReturn();
         lngGoign = rs.getLngGoing();
         lngReturning = rs.getLngReturn();
+        days = rs.getDays();
     }
 }

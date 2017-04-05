@@ -32,7 +32,7 @@ public class RideUserPutTask extends AsyncTask<String, Void, String> {
         this.context = c;
     }
 
-    public void setRideUserPost(RideUser ru){
+    public void setRideUserPut(RideUser ru){
         this.rideUser = ru;
     }
 

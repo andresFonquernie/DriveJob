@@ -27,13 +27,12 @@ import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.model.User;
-import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPostTask;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePostTask;
-import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
@@ -76,7 +75,7 @@ public class RideCreateActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_ride);
+        setContentView(R.layout.activity_ride_create);
         ButterKnife.bind(this);
 
         listDays = getResources().getStringArray(R.array.daysofweek);
@@ -121,8 +120,8 @@ public class RideCreateActivity extends Activity{
 
             String postKey = writeNewRide(placeG, placeR, days, price, passengers);
             Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, passengers);
-            //(new SQLConnect()).insertRide(r);
-            writeNewRideUser(postKey);
+            String s = (new SQLConnect()).insertRide(r);
+            Log.e(TAG, s);
             Log.e(TAG, "POSTKEY: " + postKey);
 
             if (!postKey.equals("Error")) {
@@ -158,21 +157,6 @@ public class RideCreateActivity extends Activity{
          return result;
     }
 
-    private String writeNewRideUser(String rideKey) {
-        try {
-            RideUser rideUser = new RideUser(rideKey, "");
-            RideUserPostTask rupt = new RideUserPostTask(this);
-            rupt.setRideUserPost(rideUser);
-            String result = rupt.execute(Constants.BASE_URL + "rideuser").get();
-
-            Log.e(TAG, "RESULT WRITE RIDE: " + result);
-
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
@@ -197,7 +181,7 @@ public class RideCreateActivity extends Activity{
 
     private String getUsername(String userId) throws ExecutionException, InterruptedException {
         String result;
-        UserGetTask ugt = new UserGetTask(this);
+        GetTask ugt = new GetTask(this);
         result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
         Log.e(TAG, "RESULT GET USER: " + result);
         Type type = new TypeToken<List<User>>(){}.getType();
@@ -243,7 +227,7 @@ public class RideCreateActivity extends Activity{
         mTimePicker.show();
     }
 
-    public void selectDays(View v){
+    public void selectDays(View v) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(v.getContext());
         mBuilder.setTitle(R.string.days);
         mBuilder.setMultiChoiceItems(listDays, checkedDays, new DialogInterface.OnMultiChoiceClickListener() {
@@ -265,8 +249,10 @@ public class RideCreateActivity extends Activity{
                 Collections.sort(mUserDays);
                 for (int i = 0; i < mUserDays.size(); i++) {
                     item = item + shortListDays[mUserDays.get(i)];
+                    if (i != mUserDays.size() - 1) {
+                        item = item + ", ";
+                    }
                 }
-                item = item.substring(0,item.length()-1);
                 etDays.setText(item);
             }
         });

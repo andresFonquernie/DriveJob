@@ -2,7 +2,6 @@ package es.fonkyprojects.drivejob.restMethods.RideUser;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,11 +24,10 @@ import es.fonkyprojects.drivejob.model.RideUser;
 
 public class RideUserPostTask extends AsyncTask<String, Void, String> {
 
-    private Context context;
-    private String result;
-
     private static final String TAG = "RideUserPostTask";
 
+    private Context context;
+    private String result;
     private RideUser rideUser;
 
     public RideUserPostTask(Context c) {
@@ -68,8 +66,6 @@ public class RideUserPostTask extends AsyncTask<String, Void, String> {
         StringBuilder result = new StringBuilder();
         BufferedWriter bufferedWriter = null;
         BufferedReader bufferedReader = null;
-
-        Log.e(TAG, rideUser.getRideId());
 
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();

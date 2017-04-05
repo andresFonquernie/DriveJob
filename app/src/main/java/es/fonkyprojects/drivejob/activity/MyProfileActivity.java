@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import es.fonkyprojects.drivejob.model.User;
-import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
@@ -71,16 +71,14 @@ public class MyProfileActivity extends Activity {
             userName.setText(user.getUsername() + " " + user.getSurname());
             userEmail.setText(user.getEmail());
             userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     private User getUser(String userId) throws ExecutionException, InterruptedException {
         String result;
-        UserGetTask ugt = new UserGetTask(this);
+        GetTask ugt = new GetTask(this);
         result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
         Log.e(TAG, "RESULT GET USER: " + result);
         Type type = new TypeToken<List<User>>(){}.getType();

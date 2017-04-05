@@ -15,13 +15,14 @@ public class RideSearch implements Serializable {
     private double latReturn;
     private double lngGoing;
     private double lngReturn;
+    private String days;
 
     public RideSearch() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
     public RideSearch(String authorID, String timeGoing, String timeReturn, double latGoing, double latReturn,
-                      double lngGoing, double lngReturn) {
+                      double lngGoing, double lngReturn, String days) {
         this.authorID = authorID;
         this.timeGoing = timeGoing;
         this.timeReturn = timeReturn;
@@ -29,6 +30,7 @@ public class RideSearch implements Serializable {
         this.latReturn = latReturn;
         this.lngGoing = lngGoing;
         this.lngReturn = lngReturn;
+        this.days = days;
     }
 
     public String getAuthorID() {
@@ -59,6 +61,10 @@ public class RideSearch implements Serializable {
         return lngReturn;
     }
 
+    public String getDays() {
+        return days;
+    }
+
     public void setAuthorID(String authorID) {
         this.authorID = authorID;
     }
@@ -86,4 +92,9 @@ public class RideSearch implements Serializable {
     public void setLngReturn(double lngReturn) {
         this.lngReturn = lngReturn;
     }
+
+    public void setDays (String days) {
+        this.days = days;
+    }
+
 }

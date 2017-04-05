@@ -27,8 +27,6 @@ import java.util.concurrent.ExecutionException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
-import es.fonkyprojects.drivejob.model.UserRide;
-import es.fonkyprojects.drivejob.restMethods.UserRide.UserRidePostTask;
 import es.fonkyprojects.drivejob.restMethods.Users.UserPostTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 
@@ -49,7 +47,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_login_signup);
         ButterKnife.bind(this);
 
         //Firebase
@@ -81,7 +79,6 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         final String surname = surnameText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
-        String reEnterPassword = reEnterPasswordText.getText().toString();
 
         // Auth user and email
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -111,7 +108,6 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
 
         // Write new user
         writeNewUser(user.getUid(), name, surname, user.getEmail());
-        writeNewUserRide(user.getUid());
 
         // Go to MenuActivity
         startActivity(new Intent(LoginSignupActivity.this, MenuActivity.class));
@@ -124,36 +120,16 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
 
         UserPostTask upt = new UserPostTask(this);
         upt.setUserPost(user);
-        String result = null;
         try {
-            result = upt.execute(Constants.BASE_URL + "user").get();
+            String result = upt.execute(Constants.BASE_URL + "user").get();
             Log.e(TAG, "RESULT: " + result);
             User u = new Gson().fromJson(result, User.class);
             Log.i(TAG, u.getUserId());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
     // [END basic_write]
-
-    private String writeNewUserRide(String userId) {
-        String result = "";
-        try {
-            UserRide userRide = new UserRide(userId, "");
-            UserRidePostTask urpt = new UserRidePostTask(this);
-            urpt.setUserRidePost(userRide);
-            result = urpt.execute(Constants.BASE_URL + "userride").get();
-
-            Log.e(TAG, "RESULT WRITE USERRIDE: " + result);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Error in form", Toast.LENGTH_LONG).show();

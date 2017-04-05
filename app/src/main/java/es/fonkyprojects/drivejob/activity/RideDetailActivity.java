@@ -26,42 +26,38 @@ import java.util.concurrent.ExecutionException;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
+import es.fonkyprojects.drivejob.model.RideUserRequest;
 import es.fonkyprojects.drivejob.model.User;
-import es.fonkyprojects.drivejob.model.UserRide;
-
-import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserDeleteTask;
-import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserGetTask;
-import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPutTask;
-import es.fonkyprojects.drivejob.restMethods.Rides.RideDeleteTask;
-import es.fonkyprojects.drivejob.restMethods.Rides.RideGetTask;
+import es.fonkyprojects.drivejob.restMethods.DeleteTask;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPostTask;
+import es.fonkyprojects.drivejob.restMethods.RideUserRequest.RideUserRequestPostTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
-import es.fonkyprojects.drivejob.restMethods.UserRide.UserRideGetTask;
-import es.fonkyprojects.drivejob.restMethods.UserRide.UserRidePutTask;
-import es.fonkyprojects.drivejob.restMethods.Users.UserGetTask;
-
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
-import es.fonkyprojects.drivejob.viewholder.UserViewAdapter;
+import es.fonkyprojects.drivejob.viewholder.UserJoinViewAdapter;
+import es.fonkyprojects.drivejob.viewholder.UserRequestViewAdapter;
 
-public class RideDetailActivity extends AppCompatActivity{
+public class RideDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "RideDetailActivity";
 
-    public static final String EXTRA_RIDE = "ride";
     public static final String EXTRA_RIDE_KEY = "ride_key";
 
     private String mRideKey;
     private String authorID;
     private Ride ride;
-    private RideUser rideUser;
 
-    public String[] ridersJoin;
+    private List<User> listUsersRequest = new ArrayList<>();
+    private List<User> listUsersJoin = new ArrayList<>();
 
-    public RecyclerView recyclerView;
-    public RecyclerView.Adapter adapter;
-    public RecyclerView.LayoutManager layoutManager;
+    public RecyclerView requestRecyclerView;
+    public RecyclerView.Adapter requestAdapter;
+    public RecyclerView.LayoutManager requestLayoutManager;
 
-    private List<User> listUsers = new ArrayList<>();
+    public RecyclerView joinRecyclerView;
+    public RecyclerView.Adapter joinAdapter;
+    public RecyclerView.LayoutManager joinLayoutManager;
 
     private ImageView authorImage;
     private TextView authorView;
@@ -78,7 +74,7 @@ public class RideDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ride);
+        setContentView(R.layout.activity_ride_detail);
 
         // Get post key from intent
         mRideKey = getIntent().getStringExtra(EXTRA_RIDE_KEY);
@@ -97,14 +93,14 @@ public class RideDetailActivity extends AppCompatActivity{
         priceView = (TextView) findViewById(R.id.ride_prize);
         avSeats = (TextView) findViewById(R.id.ride_passengers);
 
-        recyclerView = (RecyclerView) findViewById(R.id.user_list);
+        requestRecyclerView = (RecyclerView) findViewById(R.id.userrequest_list);
+        joinRecyclerView = (RecyclerView) findViewById(R.id.userjoin_list);
 
         joinButton = (Button) findViewById(R.id.btn_join);
-
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                joinRide(view);
+                requestJoin();
             }
         });
         authorView.setOnClickListener(new View.OnClickListener() {
@@ -123,12 +119,12 @@ public class RideDetailActivity extends AppCompatActivity{
             //GET request
             String result = null;
             try {
-                result = new RideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
+                result = new GetTask(this).execute(Constants.BASE_URL + "ride/" + mRideKey).get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
-            if( result!=null && !result.equals("Error")){
+            if (result != null && !result.equals("Error")) {
                 ride = new Gson().fromJson(result, Ride.class);
                 timeGoingView.setText(getString(R.string.going) + ": " + ride.getTimeGoing());
                 timeReturnView.setText(getString(R.string.returning) + ": " + ride.getTimeReturn());
@@ -142,42 +138,82 @@ public class RideDetailActivity extends AppCompatActivity{
                 String[] items = ride.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
                 String[] shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
                 String days = "";
-                for (int i=0; i<items.length; i++){
-                    if(items[i].equals("true")){
+                for (int i = 0; i < items.length; i++) {
+                    if (items[i].equals("true")) {
                         days = days + shortListDays[i] + ",";
                     }
                 }
-                daysView.setText(getString(R.string.days) + ": " + days.substring(0,days.length()-1));
+                daysView.setText(getString(R.string.days) + ": " + days.substring(0, days.length() - 1));
             }
 
-            if(FirebaseUser.getUid().equals(authorID)) {
-                joinButton.setVisibility(View.INVISIBLE);
-            }
+            boolean request = false;
+            boolean join = false;
 
+            //Get UserRequest
             try {
-                boolean joined = false;
-                result = new RideUserGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?rideId=" + mRideKey).get();
-                Type type = new TypeToken<List<RideUser>>(){}.getType();
-                List<RideUser> inpList = new Gson().fromJson(result, type);
-                if(inpList.size()>0) {
-                    rideUser = inpList.get(0);
-                    ridersJoin = rideUser.getUserId().split(",");
-                    if(!ridersJoin[0].equals("")) {
-                        for (int i = 0; i < ridersJoin.length; i++) {
-                            User u = getUser(ridersJoin[i]);
-                            if (FirebaseUser.getUid().equals(u.getUserId()))
-                                joined = true;
-                            listUsers.add(u);
-                        }
+                result = new GetTask(this).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
+                Type type = new TypeToken<List<RideUserRequest>>() {
+                }.getType();
+                List<RideUserRequest> listRideUserRequests = new Gson().fromJson(result, type);
+                for (int i = 0; i < listRideUserRequests.size(); i++) { //Get Users
+                    User u = getUser(listRideUserRequests.get(i).getUserId());
+                    if (listRideUserRequests.get(i).getUserId().equals(FirebaseUser.getUid())) {
+                        request = true;
                     }
+                    listUsersRequest.add(u);
+                }
 
-                    if (joined) {
-                        joinButton.setVisibility(View.INVISIBLE);
+                requestAdapter = new UserRequestViewAdapter(listUsersRequest, new UserRequestViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(User item) {
+                        Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
+                        intent.putExtra(MyProfileActivity.EXTRA_USER_ID, item.getUserId());
+                        startActivity(intent);
+                        finish();
                     }
+                }, new UserRequestViewAdapter.OnAcceptClickListener() {
+                    @Override
+                    public void onAcceptClick(User item) {
+                        acceptJoin(item);
+                        listUsersRequest.remove(item);
+                        listUsersJoin.add(item);
+                        requestAdapter.notifyDataSetChanged();
+                        joinAdapter.notifyDataSetChanged();
+                    }
+                }, new UserRequestViewAdapter.OnRefuseClickListener() {
+                    @Override
+                    public void onRefuseClick(User item) {
+                        refuseJoin(item);
+                        listUsersRequest.remove(item);
+                        requestAdapter.notifyDataSetChanged();
+                    }
+                });
+
+
+                requestLayoutManager = new LinearLayoutManager(this);
+                requestRecyclerView.setLayoutManager(requestLayoutManager);
+                requestRecyclerView.setAdapter(requestAdapter);
+
+            } catch (InterruptedException | ExecutionException e) {
+                Log.e(TAG + " Req", Arrays.toString(e.getStackTrace()));
+            }
+
+            //Get Users join
+            try {
+                result = new GetTask(this).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
+                Type type = new TypeToken<List<RideUser>>() {
+                }.getType();
+                List<RideUser> listRideUser = new Gson().fromJson(result, type);
+                for (int i = 0; i < listRideUser.size(); i++) { //Get Users
+                    User u = getUser(listRideUser.get(i).getUserId());
+                    if (listRideUser.get(i).getUserId().equals(FirebaseUser.getUid())) {
+                        request = true;
+                    }
+                    listUsersJoin.add(u);
                 }
 
 
-                adapter = new UserViewAdapter(listUsers, new UserViewAdapter.OnItemClickListener() {
+                joinAdapter = new UserJoinViewAdapter(listUsersJoin, new UserJoinViewAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(User item) {
                         Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
@@ -186,90 +222,125 @@ public class RideDetailActivity extends AppCompatActivity{
                         finish();
                     }
                 });
-                layoutManager = new LinearLayoutManager(this);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
+                joinLayoutManager = new LinearLayoutManager(this);
+                joinRecyclerView.setLayoutManager(joinLayoutManager);
+                joinRecyclerView.setAdapter(joinAdapter);
             } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG + " IE", Arrays.toString(e.getStackTrace()));
+                Log.e(TAG + " Join", Arrays.toString(e.getStackTrace()));
             }
+
+            if (request || join || ride.getAvSeats() == 0 || FirebaseUser.getUid().equals(authorID))
+                joinButton.setVisibility(View.GONE);
         }
     }
 
-    private void joinRide(View view) {
-        final String uid = FirebaseUser.getUid();
-        String userJoin = rideUser.getUserId();
-        if(userJoin == null || userJoin.length()==0){
-            userJoin = uid;
-        }
-        else{
-            userJoin = userJoin +"," + uid;
-        }
-
-        String result = "";
-        (new SQLConnect()).updateAvSeats(ride.getAvSeats() - 1, mRideKey);
-        try {
-            String ru = new UserRideGetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + uid).get();
-            Type type = new TypeToken<List<UserRide>>(){}.getType();
-            List<UserRide> inpList = new Gson().fromJson(ru, type);
-
-            UserRide userRide = inpList.get(0);
-            String rideJoin = userRide.getRideId();
-            if(rideJoin == null || rideJoin.length()==0){
-                rideJoin = mRideKey;
-            }
-            else{
-                rideJoin = userJoin +"," + mRideKey;
-            }
-            userRide.setRideId(rideJoin);
-            UserRidePutTask urpt = new UserRidePutTask(this);
-            urpt.setUserRidePut(userRide);
-            result = urpt.execute("https://secret-meadow-74492.herokuapp.com/api/userride/" + userRide.get_id()).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        if(result.equals("Update")) {
-            try {
-
-                rideUser.setUserId(userJoin);
-                RideUserPutTask rupt = new RideUserPutTask(this);
-                rupt.setRideUserPost(rideUser);
-                result = rupt.execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/" + rideUser.get_id()).get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(result.equals("Update")){
-            try {
-                ride.setAvSeats(ride.getAvSeats() - 1);
-                RidePutTask rpt = new RidePutTask(this);
-                rpt.setRidePost(ride);
-                result = rpt.execute("https://secret-meadow-74492.herokuapp.com/api/ride/" + mRideKey).get();
-                if(result.equals("Update"))
-                    joinButton.setVisibility(View.INVISIBLE);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public User getUser(String userId){
+    public User getUser(String userId) {
         User user = new User();
         try {
-            UserGetTask ugt = new UserGetTask(this);
-            String result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
-            Type type = new TypeToken<List<User>>(){}.getType();
+            GetTask gt = new GetTask(this);
+            String result = gt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
+            Type type = new TypeToken<List<User>>() {
+            }.getType();
             List<User> inpList = new Gson().fromJson(result, type);
             user = inpList.get(0);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         return user;
     }
 
-    private void goProfile(View view){
+    public void requestJoin() {
+        String uid = FirebaseUser.getUid();
+        String result = "";
+        RideUserRequest ruq = new RideUserRequest(mRideKey, uid);
+        try {
+            RideUserRequestPostTask rupt = new RideUserRequestPostTask(getApplicationContext());
+            rupt.setRideUserRequestPost(ruq);
+            result = rupt.execute(Constants.BASE_URL + "rideuserrequest").get();
+
+            RidePutTask rpt = new RidePutTask(getApplicationContext());
+            ride.setAvSeats(ride.getAvSeats() - 1);
+            rpt.setRidePut(ride);
+            result = rpt.execute(Constants.BASE_URL + "ride/" + ride.getID()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
+        User u = getUser(uid);
+        listUsersRequest.add(u);
+        requestAdapter.notifyDataSetChanged();
+    }
+
+    public void acceptJoin(User u) {
+        String uid = u.getUserId();
+        String result = "";
+        RideUser ru = new RideUser(mRideKey, uid);
+        try {
+            RideUserPostTask rupt = new RideUserPostTask(getApplicationContext());
+            rupt.setRideUserPost(ru);
+            result = rupt.execute(Constants.BASE_URL + "rideuser").get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        deleteRequest(uid);
+    }
+
+    private void refuseJoin(User u) {
+        Log.e(TAG, "ENTRAMOS EN REFUSE");
+
+        String result = "";
+        deleteRequest(u.getUserId());
+        try {
+            RidePutTask rpt = new RidePutTask(getApplicationContext());
+            ride.setAvSeats(ride.getAvSeats() + 1);
+            rpt.setRidePut(ride);
+            result = rpt.execute(Constants.BASE_URL + "ride/" + ride.getID()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
+    }
+
+    private void deleteRequest(String uid) {
+        String result = "";
+        try {
+            DeleteTask dt = new DeleteTask(getApplicationContext());
+            Log.e(TAG, Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey + "&userId=" + uid);
+            result = dt.execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey + "&userId=" + uid).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void kickJoin() {
+        String uid = FirebaseUser.getUid();
+        String result = "";
+        try {
+            DeleteTask dt = new DeleteTask(getApplicationContext());
+            result = dt.execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey + "&userId=" + uid).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String deleteRide() {
+        String result = "";
+
+        DeleteTask dt = new DeleteTask(this);
+        try {
+            result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
+            if (result.equals("Ok")) {
+                (new SQLConnect()).deleteRide(mRideKey);
+                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
+                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private void goProfile(View view) {
         Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
         intent.putExtra(MyProfileActivity.EXTRA_USER_ID, authorID);
         startActivity(intent);
@@ -277,7 +348,7 @@ public class RideDetailActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(FirebaseUser.getUid().equals(authorID)) {
+        if (FirebaseUser.getUid().equals(authorID)) {
             getMenuInflater().inflate(R.menu.mnu_myride, menu);
             return true;
         }
@@ -286,55 +357,21 @@ public class RideDetailActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // If changes OK, return new value in the result Intent back to the calling activity
         Intent intent;
         switch (item.getItemId()) {
             case R.id.mnu_edit:
                 intent = new Intent(RideDetailActivity.this, RideEditActivity.class);
-                intent.putExtra(RideDetailActivity.EXTRA_RIDE, ride);
+                intent.putExtra(RideEditActivity.EXTRA_RIDE, ride);
                 startActivity(intent);
                 break;
             case R.id.mnu_delete:
-                RideDeleteTask rdt = new RideDeleteTask(this);
-                try {
-                    String result =  rdt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
-                    (new SQLConnect()).deleteRide(mRideKey);
-                    (new RideUserDeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
-                    for(int i=0; i<listUsers.size(); i++){
-                        String s = (new UserRideGetTask(this)).execute(Constants.BASE_URL + "userride/?userId=" + listUsers.get(i).getUserId()).get();
-                        Log.e(TAG, "STRING: " + s);
-                        Type type = new TypeToken<List<UserRide>>(){}.getType();
-                        List<UserRide> l = new Gson().fromJson(s, type);
-                        UserRide ur = l.get(0);
-                        String[] rides = ur.getRideId().split(",");
-                        Log.e(TAG + "rides", rides[0]);
-                        String newRides = "";
-                        for(int j=0; j<rides.length; j++){
-                            if(!rides[j].equals(mRideKey)){
-                                if(newRides == null || newRides.length()==0){
-                                    newRides = rides[j];
-                                }
-                                else{
-                                    newRides = newRides +"," + rides[j];
-                                }
-                            }
-                        }
-                        ur.setRideId(newRides);
-                        UserRidePutTask urpt = new UserRidePutTask(this);
-                        urpt.setUserRidePut(ur);
-                        urpt.execute("https://secret-meadow-74492.herokuapp.com/api/userride/" + ur.get_id()).get();
-                        Log.e(TAG + " Id", ur.getRideId());
-                    }
-                    if(result.equals("Ok")){
-                        intent = new Intent(RideDetailActivity.this, MenuActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else{
-                        Toast.makeText(this, "Error deleting", Toast.LENGTH_LONG).show();
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                String result = deleteRide();
+                if (result.equals("Ok")) {
+                    intent = new Intent(RideDetailActivity.this, MenuActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Error deleting", Toast.LENGTH_LONG).show();
                 }
         }
         return super.onOptionsItemSelected(item);

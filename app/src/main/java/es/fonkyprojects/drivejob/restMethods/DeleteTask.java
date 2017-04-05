@@ -1,6 +1,5 @@
-package es.fonkyprojects.drivejob.restMethods.RideUser;
+package es.fonkyprojects.drivejob.restMethods;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -12,23 +11,18 @@ import java.net.URL;
  * Created by andre on 03/02/2017.
  */
 
-public class RideUserDeleteTask extends AsyncTask<String, Void, String> {
+public class DeleteTask extends AsyncTask<String, Void, String> {
 
-    ProgressDialog progressDialog;
     Context context;
     String result;
 
-    public RideUserDeleteTask(Context c){
+    public DeleteTask(Context c){
         this.context = c;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Deleting data");
-        progressDialog.show();
     }
 
     @Override
@@ -45,10 +39,6 @@ public class RideUserDeleteTask extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
 
         this.result = result;
-
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     private String deleteData(String uriPath) throws IOException {

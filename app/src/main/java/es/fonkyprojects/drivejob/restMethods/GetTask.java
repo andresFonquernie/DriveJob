@@ -1,4 +1,4 @@
-package es.fonkyprojects.drivejob.restMethods.UserRide;
+package es.fonkyprojects.drivejob.restMethods;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,19 +12,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by andre on 03/02/2017.
+ * Created by andre on 28/01/2017.
  */
 
-public class UserRideGetTask extends AsyncTask<String, Void, String> {
+public class GetTask extends AsyncTask<String, Void, String> {
 
     private ProgressDialog progressDialog;
     private Context context;
     private String result;
 
-    private static final String TAG = "UserRideGetTask";
+    private static final String TAG = "GetTask";
 
-
-    public UserRideGetTask(Context c){
+    public GetTask(Context c){
         this.context = c;
     }
 

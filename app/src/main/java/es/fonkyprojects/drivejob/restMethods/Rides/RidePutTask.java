@@ -1,6 +1,5 @@
 package es.fonkyprojects.drivejob.restMethods.Rides;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -22,7 +21,6 @@ import es.fonkyprojects.drivejob.model.Ride;
 
 public class RidePutTask extends AsyncTask<String, Void, String> {
 
-    ProgressDialog progressDialog;
     Context context;
     String result;
 
@@ -32,17 +30,13 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
         this.context = c;
     }
 
-    public void setRidePost(Ride r){
+    public void setRidePut(Ride r){
         this.ride = r;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Updating data");
-        progressDialog.show();
     }
 
     @Override
@@ -61,10 +55,6 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
 
         this.result = result;
-
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     private String putData(String uriPath) throws IOException, JSONException {
