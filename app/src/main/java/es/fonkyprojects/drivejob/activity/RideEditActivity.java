@@ -8,74 +8,81 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
+import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
+import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
-public class RideEditActivity extends Activity {
+public class RideEditActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "RideEditActivity";
     public static final String EXTRA_RIDE = "ride";
 
-    @Bind(R.id.edit_placeGoing)
-    EditText etEditPlaceFrom;
-    @Bind(R.id.edit_placeReturn)
-    EditText etEditPlaceTo;
-    @Bind(R.id.edit_timeGoing)
-    EditText etTimeGoing;
-    @Bind(R.id.edit_timeReturn)
-    EditText etTimeReturn;
-    @Bind(R.id.input_days)
-    EditText etDays;
-    @Bind(R.id.edit_price)
-    EditText etPrice;
-    @Bind(R.id.edit_passengers)
-    EditText etPassengers;
-    @Bind(R.id.edit_avseats)
-    EditText etAvSeats;
-    @Bind(R.id.btn_edit)
-    Button btnEdit;
+    @Bind(R.id.edit_placeGoing)  EditText etEditPlaceFrom;
+    @Bind(R.id.edit_placeReturn) EditText etEditPlaceTo;
+    @Bind(R.id.edit_timeGoing) EditText etTimeGoing;
+    @Bind(R.id.edit_timeReturn) EditText etTimeReturn;
+    @Bind(R.id.input_days) EditText etDays;
+    @Bind(R.id.edit_price) EditText etPrice;
+    @Bind(R.id.edit_passengers) EditText etPassengers;
+    @Bind(R.id.edit_avseats) EditText etAvSeats;
+    Spinner spinCar;
+    @Bind(R.id.btn_edit) Button btnEdit;
 
-
-    public static final int MAP_ACTIVITY_EDIT = 0;
+    public static final int MAP_ACTIVITY = 0;
     public static final String MAPLOC = "MAPLOC";
 
     private Ride mRide;
 
     //Form
-    public double latGoing;
-    public double latReturning;
-    public double lngGoing;
-    public double lngReturning;
-    public String timeG;
-    public String timeR;
-    public int oldPassengers;
-    public String days;
+    private double latGoing;
+    private double latReturning;
+    private double lngGoing;
+    private double lngReturning;
+    private String timeG;
+    private String timeR;
+    private int oldPassengers;
+    private String days;
+    private String carID;
 
     //Google Maps
-    int mapsGR;
+    private int mapsGR;
 
     //Days of week
     String[] listDays;
     String[] shortListDays;
     boolean[] checkedDays;
     ArrayList<Integer> mUserDays = new ArrayList<>();
+
+    private List<Car> inpList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,21 +100,13 @@ public class RideEditActivity extends Activity {
         listDays = getResources().getStringArray(R.array.daysofweek);
         shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
         checkedDays = new boolean[listDays.length];
-
-        //Buttons
-        btnEdit = (Button) findViewById(R.id.btn_edit);
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editRide(view);
-            }
-        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        List<CharSequence> listCar = new ArrayList<>();
         //Check if Ride exists
         if (mRide != null) {
             etTimeGoing.setText(mRide.getTimeGoing());
@@ -118,10 +117,37 @@ public class RideEditActivity extends Activity {
             oldPassengers = mRide.getPassengers();
             etPassengers.setText(String.valueOf(mRide.getPassengers()));
             etAvSeats.setText(String.valueOf(mRide.getAvSeats()));
+
+            timeG = mRide.getTimeGoing();
+            timeR = mRide.getTimeReturn();
             latGoing = mRide.getLatGoing();
             latReturning = mRide.getLatReturn();
             lngGoing = mRide.getLngGoing();
             lngReturning = mRide.getLngReturn();
+
+            String userId = FirebaseUser.getUid();
+            int pos = 0;
+            try {
+                GetTask ugt = new GetTask(this);
+                String result = ugt.execute(Constants.BASE_URL + "car/?authorID=" + userId).get();
+                Type type = new TypeToken<List<Car>>() {}.getType();
+                inpList = new Gson().fromJson(result, type);
+                for (int i = 0; i < inpList.size(); i++) {
+                    Car c = inpList.get(i);
+                    listCar.add(c.toString());
+                    if(mRide.getCarID().equals(c.getId()))
+                        pos=i;
+                }
+
+                spinCar = (Spinner) findViewById(R.id.spinner_car);
+                ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listCar);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinCar.setAdapter(adapter);
+                spinCar.setSelection(pos);
+                spinCar.setOnItemSelectedListener(this);
+            }catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
 
             //Convert from array boolean to string of days
             String[] items = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
@@ -139,6 +165,7 @@ public class RideEditActivity extends Activity {
     }
 
     public void editRide(View view) {
+        Log.e(TAG, "GOING " + lngGoing + " " + latGoing);
         final String placeG = etEditPlaceFrom.getText().toString();
         final String placeR = etEditPlaceTo.getText().toString();
         final int avSeats = Integer.parseInt(etAvSeats.getText().toString());
@@ -167,9 +194,11 @@ public class RideEditActivity extends Activity {
             Toast.makeText(this, "Put", Toast.LENGTH_LONG).show();
 
             int newAvSeats = avSeats - (oldPassengers - passengers);
-            String putKey = writeEditRide(placeG, placeR, days, price, passengers, newAvSeats);
-            //Ride r = new Ride(mRide.getID(), mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, newAvSeats);
-            //(new SQLConnect()).updateRide(r);
+            Ride r = new Ride(mRide.getID(), mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning,
+                    lngGoing, lngReturning, days, price, passengers, newAvSeats, carID);
+            Log.e(TAG, "GOING " + lngGoing + " " + latGoing);
+            String putKey = writeEditRide(r);
+            (new SQLConnect()).updateRide(r);
 
             if (putKey.equals("Update")) {
                 Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
@@ -183,14 +212,12 @@ public class RideEditActivity extends Activity {
         }
     }
 
-    private String writeEditRide(String placeG, String placeR, String days, int price, int passengers, int newAvSeats) {
+    private String writeEditRide(Ride ride) {
         String result = "";
         try {
-            Ride ride = new Ride("", "", timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, newAvSeats);
             RidePutTask rpt = new RidePutTask(this);
             rpt.setRidePut(ride);
             result = rpt.execute(Constants.BASE_URL + "ride/" + mRide.getID()).get();
-            Log.e(TAG, "RESULT PUT RIDE: " + result);
             return result;
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -200,23 +227,23 @@ public class RideEditActivity extends Activity {
 
     public void startMapsEdit(View v) {
         mapsGR = v.getId();
-        Intent intent = new Intent(RideEditActivity.this, MapsActivity.class);
-        startActivityForResult(intent, MAP_ACTIVITY_EDIT);
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivityForResult(intent, MAP_ACTIVITY);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MAP_ACTIVITY_EDIT) { // If it was an ADD_ITEM, then add the new item and update the list
-            if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
+            if(resultCode == Activity.RESULT_OK){
                 Bundle MBuddle = data.getExtras();
                 MapLocation ml = (MapLocation) MBuddle.getSerializable(MAPLOC);
                 if (ml != null) {
-                    if (mapsGR == R.id.edit_placeGoing) {
-                        etEditPlaceFrom.setText("");
+                    if(mapsGR == R.id.edit_placeGoing) {
+                        etEditPlaceFrom.setText(ml.getAddress());
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
-                    if (mapsGR == R.id.edit_placeReturn) {
+                    if(mapsGR == R.id.edit_placeReturn) {
                         etEditPlaceTo.setText(ml.getAddress());
                         lngReturning = ml.getLongitude();
                         latReturning = ml.getLatitude();
@@ -343,15 +370,12 @@ public class RideEditActivity extends Activity {
         } else {
             etDays.setError(null);
         }
-
-
         if (price.isEmpty()) {
             etPrice.setError("Not 0");
             valid = false;
         } else {
             etPrice.setError(null);
         }
-
         if (passengers.isEmpty()) {
             etPassengers.setError("Not 0");
             valid = false;
@@ -362,8 +386,14 @@ public class RideEditActivity extends Activity {
                 Toast.makeText(this, "Minimun passengers: " + (oldPassengers - avSeats), Toast.LENGTH_LONG).show();
             }
         }
-
-        Log.i("EDIT", String.valueOf(valid));
         return valid;
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        carID = inpList.get(position).getId();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 }

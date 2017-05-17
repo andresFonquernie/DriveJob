@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/textNormal"
         tools:text="@string/days" />
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/textNormal"
         tools:text="@string/price" />
 
     <TextView
@@ -30,6 +32,17 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/textNormal"
         tools:text="@string/passengers" />
+
+    <TextView
+        android:id="@+id/ride_car"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/textNormal"
+        tools:text="@string/car" />
 
 </LinearLayout>

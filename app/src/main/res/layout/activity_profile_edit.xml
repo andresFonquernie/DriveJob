@@ -4,29 +4,27 @@
     android:id="@+id/activity_profile_edit"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:fitsSystemWindows="true"
-    tools:context="es.fonkyprojects.drivejob.activity.ProfileEditActivity">
+    tools:context="es.fonkyprojects.drivejob.activity.MyProfileEditActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="24dp">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/edit_userImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/ln_logo"/>
+            android:src="@drawable/ln_logo"
+            android:contentDescription="@string/pictureUsername"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginTop="3dp">
+            android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/edit_userName"
                 android:layout_width="match_parent"
@@ -37,9 +35,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginTop="3dp">
+            android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/edit_userSurname"
                 android:layout_width="match_parent"
@@ -50,9 +46,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/edit_userEmail"
@@ -60,14 +54,12 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:hint="@string/email"
-                android:inputType="text" />
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginTop="3dp">
+            android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/edit_userPhone"
                 android:layout_width="match_parent"
@@ -79,12 +71,9 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_editUser"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="24dp"
-            android:padding="12dp"
-            android:text="@string/edit_ride" />
+            android:text="@string/edit" />
 
     </LinearLayout>
 </ScrollView>

@@ -3,27 +3,24 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RideEditActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="24dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:layout_height="wrap_content">
 
         <!--  PlaceGoing Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_placeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textAutoComplete"
                 android:hint="@string/from"
                 android:focusable="false"
                 android:onClick="startMapsEdit"/>
@@ -32,9 +29,7 @@
         <!--  PlaceReturn Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_placeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,9 +42,7 @@
         <!--  TimeGoing Picker -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_timeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,9 +55,7 @@
         <!--  TimeReturn Picker -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_timeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,9 +68,7 @@
         <!--  Days Picker -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/input_days"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,9 +81,7 @@
         <!--  Price Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,9 +92,7 @@
         <!--  Passengers Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_passengers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,25 +103,26 @@
         <!--  AvSeats Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/edit_avseats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:focusable="false"
-                android:hint="@string/avseats"/>
+                android:hint="@string/avSeats"/>
         </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/spinner_car"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="@string/edit_ride"/>
+            android:text="@string/edit"
+            android:onClick="editRide"/>
 
     </LinearLayout>
 </ScrollView>

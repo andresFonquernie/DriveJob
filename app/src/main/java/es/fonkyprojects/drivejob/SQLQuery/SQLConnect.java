@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.utils.Constants;
 
 /**
  * Created by andre on 29/01/2017.
@@ -26,31 +27,87 @@ public class SQLConnect {
         String sql = "INSERT INTO Ride VALUES('" + r.getID() + "', '" + r.getAuthorID() + "', '" + r.getAuthor() + "', '" + r.getTimeGoing() +
                 "', '" + r.getTimeReturn() + "', '" + r.getPlaceGoing() + "', '" + r.getPlaceReturn() + "', " + r.getLatGoing() +
                 ", " + r.getLatReturn() + ", " + r.getLngGoing() + ", " + r.getLngReturn() + ", " + r.getPrice() +
-                ", " + r.getPassengers() + ", " + r.getAvSeats() + ", '" + r.getDays() + "')";
-        Log.e(TAG, sql);
+                ", " + r.getPassengers() + ", " + r.getAvSeats() + ", '" + r.getDays() + "', '" + r.getCarID() + "')";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
+            Connection con = DriverManager.getConnection(Constants.SQL_TABLE, Constants.SQL_USER, Constants.SQL_PASS);
             Statement st = con.createStatement();
             st.executeUpdate(sql);
 
             st.close();
             con.close();
-        }catch (SQLException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (ClassNotFoundException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
         return sql;
+    }
+
+    public void updateRide(Ride r){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection(Constants.SQL_TABLE, Constants.SQL_USER, Constants.SQL_PASS);
+            Statement st = con.createStatement();
+
+            String sql = "UPDATE Ride SET timeGoing = '" + r.getTimeGoing() + "', timeReturn = '" + r.getTimeReturn() + "'" +
+                    ", placeGoing = '" + r.getPlaceGoing() + "', placeReturn = '" + r.getPlaceReturn() + "'" +
+                    ", latGoing = " + r.getLatGoing() +  ", latReturn = " + r.getLatReturn() + ", lngGoing = " + r.getLngGoing() +
+                    ", lngReturn = " + r.getLngReturn() + ", price = " + r.getPrice() + ", passengers = " + r.getPassengers() +
+                    ", avSeats = " + r.getAvSeats() + ", carID = '" + r.getCarID() + "'" +
+                    " WHERE _id = '" + r.getID() + "'";
+            Log.e(TAG, sql);
+            st.executeUpdate(sql);
+
+            st.close();
+            con.close();
+        }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRide(String rideKey){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection(Constants.SQL_TABLE, Constants.SQL_USER, Constants.SQL_PASS);
+            Statement st = con.createStatement();
+
+            String sql = "DELETE FROM Ride WHERE _id = '" + rideKey + "'";
+            st.executeUpdate(sql);
+
+            st.close();
+            con.close();
+        }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAvSeats(int i, String key){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection(Constants.SQL_TABLE, Constants.SQL_USER, Constants.SQL_PASS);
+            Statement st = con.createStatement();
+
+            String sql = "UPDATE Ride SET avSeats = " + i + " WHERE _id = '" + key + "'";
+            st.executeUpdate(sql);
+
+            st.close();
+            con.close();
+        }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, String days, int maxDistance, int maxTime) {
@@ -65,7 +122,7 @@ public class SQLConnect {
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM", "andresfonquernie", "heidelbE18");
+            Connection con = DriverManager.getConnection(Constants.SQL_TABLE, Constants.SQL_USER, Constants.SQL_PASS);
 
             Statement st = con.createStatement();
 
@@ -84,7 +141,6 @@ public class SQLConnect {
                     "AND days = '" + days + "' " +
                     "AND avSeats > 0";
 
-            Log.e(TAG, sql);
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 //Retrieve by column name
@@ -102,102 +158,15 @@ public class SQLConnect {
                 r.setLngReturn(rs.getDouble("lngReturn"));
                 r.setPrice(rs.getInt("price"));
                 r.setPassengers(rs.getInt("passengers"));
+                r.setCarID(rs.getString("carID"));
                 rides.add(r);
             }
             st.close();
             con.close();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | InstantiationException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         return rides;
-    }
-
-    public void updateRide(Ride r){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
-            Statement st = con.createStatement();
-
-            String sql = "UPDATE Ride SET timeGoing = '" + r.getTimeGoing() + "', timeReturn = '" + r.getTimeReturn() + "'" +
-                    ", placeGoing = '" + r.getPlaceGoing() + "', placeReturn = '" + r.getPlaceReturn() + "'" +
-                    ", latGoing = " + r.getLatGoing() +  ", latReturn = " + r.getLatReturn() +
-                    ", lngGoing = " + r.getLngGoing() + ", lngReturn = " + r.getLngReturn() +
-                    ", price = " + r.getPrice() + ", passengers = " + r.getPassengers() + ", avSeats = " + r.getAvSeats() +
-                    " WHERE _id = '" + r.getID() + "'";
-            st.executeUpdate(sql);
-
-            st.close();
-            con.close();
-        }catch (SQLException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (ClassNotFoundException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateAvSeats(int i, String key){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
-            Statement st = con.createStatement();
-
-            String sql = "UPDATE Ride SET avSeats = " + i + " WHERE _id = '" + key + "'";
-            st.executeUpdate(sql);
-
-            st.close();
-            con.close();
-        }catch (SQLException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (ClassNotFoundException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteRide(String rideKey){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://104.199.51.125:3306/calculateKM","andresfonquernie","heidelbE18");
-            Statement st = con.createStatement();
-
-            String sql = "DELETE FROM Ride WHERE _id = '" + rideKey + "'";
-
-            Log.e("SQLConnect", sql);
-            st.executeUpdate(sql);
-
-            st.close();
-            con.close();
-        }catch (SQLException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (ClassNotFoundException e) {
-            Log.e("FATAL ERROR",Log.getStackTraceString(e));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 }

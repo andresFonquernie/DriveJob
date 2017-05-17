@@ -20,23 +20,28 @@ import es.fonkyprojects.drivejob.model.User;
 
 public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapter.UserJoinHolder> {
 
-    List<User> data = new ArrayList<User>();
+    private List<User> data = new ArrayList<User>();
     private final UserJoinViewAdapter.OnItemClickListener listener;
+    private final UserJoinViewAdapter.OnRefuseClickListener listenerRefuse;
 
     public interface OnItemClickListener{
         void onItemClick(User item);
     }
 
-    public UserJoinViewAdapter(List<User> data, UserJoinViewAdapter.OnItemClickListener listener) {
+    public interface OnRefuseClickListener {
+        void onRefuseClick(User item);
+    }
+
+    public UserJoinViewAdapter(List<User> data, UserJoinViewAdapter.OnItemClickListener listener, UserJoinViewAdapter.OnRefuseClickListener listenerRefuse) {
         this.data = data;
         this.listener = listener;
+        this.listenerRefuse = listenerRefuse;
     }
 
     @Override
     public UserJoinViewAdapter.UserJoinHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.userjoin_holder, parent, false);
-        UserJoinViewAdapter.UserJoinHolder rh = new UserJoinViewAdapter.UserJoinHolder(view);
-        return rh;
+        return new UserJoinViewAdapter.UserJoinHolder(view);
     }
 
     @Override
@@ -44,15 +49,9 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
 
         User user = data.get(position);
         holder.txtUsername.setText(user.getUsername() + " " + user.getSurname());
-        holder.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                data.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-
         holder.bind(data.get(position), listener);
+        holder.bindToRefuse(data.get(position), listenerRefuse);
+
     }
 
     @Override
@@ -60,21 +59,30 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         return data.size();
     }
 
-    public static class UserJoinHolder extends RecyclerView.ViewHolder {
+    static class UserJoinHolder extends RecyclerView.ViewHolder {
         ImageView img;
         TextView txtUsername;
-        ImageButton btnCancel;
+        ImageButton btnRefuse;
 
         public UserJoinHolder(View view) {
             super(view);
             txtUsername = (TextView) view.findViewById(R.id.joinUsername);
-            btnCancel = (ImageButton) view.findViewById(R.id.btnRefuse);
+            btnRefuse = (ImageButton) view.findViewById(R.id.btnRefuse);
         }
 
         public void bind(final User user, final UserJoinViewAdapter.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
+                }
+            });
+        }
+
+        public void bindToRefuse(final User user, final UserJoinViewAdapter.OnRefuseClickListener listener) {
+            btnRefuse.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onRefuseClick(user);
                 }
             });
         }

@@ -71,7 +71,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         final ProgressDialog progressDialog = new ProgressDialog(LoginSignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setMessage(getString(R.string.creating_account));
         progressDialog.show();
 
         //Get data
@@ -140,6 +140,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         boolean valid = true;
 
         String name = nameText.getText().toString();
+        String surname = surnameText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
         String reEnterPassword = reEnterPasswordText.getText().toString();
@@ -149,6 +150,13 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
             valid = false;
         } else {
             nameText.setError(null);
+        }
+
+        if (surname.isEmpty() || surname.length() < 3) {
+            surnameText.setError("At least 3 characters");
+            valid = false;
+        } else {
+            surnameText.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -166,7 +174,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            reEnterPasswordText.setError("Password Do not match");
+            reEnterPasswordText.setError("Password do not match");
             valid = false;
         } else {
             reEnterPasswordText.setError(null);

@@ -2,15 +2,18 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/default_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".RideDetailActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
-
+        android:orientation="vertical">
 
         <include
             android:id="@+id/ride_author_layout"
@@ -18,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="8dp"/>
 
         <include
             android:id="@+id/ride_place"
@@ -26,9 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/ride_author_layout"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="15dp"/>
+            android:layout_below="@+id/ride_author_layout" />
 
         <include
             android:id="@+id/ride_time"
@@ -50,19 +52,18 @@
             android:id="@+id/btn_join"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:layout_below="@+id/ride_info"
             android:text="@string/join_ride" />
 
         <TextView
             android:id="@+id/usersRequestText"
-            android:textStyle="bold"
-            android:textSize="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             android:layout_below="@+id/btn_join"
+            android:textSize="@dimen/textNormal"
+            android:textStyle="bold"
             android:text="@string/usersrequest" />
 
         <android.support.v7.widget.RecyclerView
@@ -77,13 +78,12 @@
 
         <TextView
             android:id="@+id/usersJoinText"
-            android:textStyle="bold"
-            android:textSize="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginTop="@dimen/default_margin"
             android:layout_below="@+id/userrequest_list"
+            android:textSize="@dimen/textNormal"
+            android:textStyle="bold"
             android:text="@string/usersjoin" />
 
         <android.support.v7.widget.RecyclerView

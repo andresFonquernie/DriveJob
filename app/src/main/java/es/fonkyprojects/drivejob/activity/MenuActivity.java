@@ -7,13 +7,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.model.Car;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.utils.Constants;
+import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
-public class MenuActivity extends AppCompatActivity implements View.OnClickListener{
+public class MenuActivity extends AppCompatActivity{
 
     @Bind(R.id.btn_create) Button btnCreate;
     @Bind(R.id.btn_search) Button btnSearch;
@@ -25,14 +37,12 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
 
-        btnCreate.setOnClickListener(this);
-        btnSearch.setOnClickListener(this);
-        btnMyRides.setOnClickListener(this);
+        suscribeTopic();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mnu_activity, menu);
+        getMenuInflater().inflate(R.menu.mnu_menu_activity, menu);
         return true;
     }
 
@@ -48,6 +58,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(itemSettings);
                 break;
             case R.id.mnu_logout:
+                unsuscribeTopic();
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
@@ -57,29 +68,42 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void create(){
-        startActivity(new Intent(MenuActivity.this, RideCreateActivity.class));
+    public void createRideMenu(View view){
+        try {
+            String userId = FirebaseUser.getUid();
+            String result = new GetTask(this).execute(Constants.BASE_URL + "car/?authorID=" + userId).get();Type type = new TypeToken<List<Car>>() {}.getType();
+            List<Car> listCars = new Gson().fromJson(result, type);
+            if(listCars.size()>0){
+                startActivity(new Intent(MenuActivity.this, RideCreateActivity.class));
+            } else {
+                Toast.makeText(this, R.string.noCarsWarning , Toast.LENGTH_LONG).show();
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void search(){
+    public void searchRideMenu(View view){
         startActivity(new Intent(MenuActivity.this, SearchRideActivity.class));
     }
 
-    private void myRides(){
+    public void myRidesMenu(View view){
         startActivity(new Intent(MenuActivity.this, MyRidesActivity.class));
     }
 
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_create) {
-            create();
-        } else if (i == R.id.btn_search) {
-            search();
-        }
-        else if (i == R.id.btn_myrides){
-            myRides();
-        }
-
+    public void myCarMenu(View view){
+        startActivity(new Intent(MenuActivity.this, MyCarActivity.class));
     }
+
+    //subscribe topics
+    public void suscribeTopic(){
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+    }
+
+    //unsubscribe topics
+    public void unsuscribeTopic(){
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("news");
+    }
+
 }

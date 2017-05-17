@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="40dp"
-    android:layout_marginRight="20dp"
-    android:layout_marginLeft="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".RideDetailActivity">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
-        android:background="@color/white"
-        />
+        android:background="@color/white" />
 
     <ImageView
         android:id="@+id/authorImage"
-        android:layout_width="25dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_account_circle_white_24dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:contentDescription="@string/profile" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/profile"
+        android:src="@drawable/ic_account_circle_white_24dp" />
 
     <TextView
         android:id="@+id/requestUsername"
-        android:layout_width="250dp"
-        android:layout_height="30dp"
-        android:textSize="15sp"
-        android:text="@string/name"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/authorImage" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_alignTop="@id/authorImage"
+        android:layout_toEndOf="@+id/authorImage"
+        android:textSize="@dimen/list_textSize"
+        android:text="@string/name"/>
 
     <ImageButton
         android:id="@+id/btnRefuse"
-        android:layout_width="25dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_cancel_white_24dp"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:contentDescription="@string/refuse" />
+        android:contentDescription="@string/delete_car"
+        android:src="@drawable/ic_cancel_white_24dp"/>
 
     <ImageButton
         android:id="@+id/btnAccept"
-        android:layout_width="25dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_check_circle_white_24dp"
-        android:layout_alignTop="@+id/requestUsername"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:layout_centerInParent="true"
         android:layout_toStartOf="@+id/btnRefuse"
-        android:contentDescription="@string/accept" />
+        android:contentDescription="@string/edit"
+        android:src="@drawable/ic_check_circle_white_24dp" />
 
 </RelativeLayout>

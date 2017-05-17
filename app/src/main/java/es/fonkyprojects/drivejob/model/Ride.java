@@ -4,10 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
-/**
- * Created by andre on 07/12/2016.
- */
-// [START trip_class]
+// [START ride_class]
 @IgnoreExtraProperties
 public class Ride implements Serializable {
 
@@ -26,14 +23,14 @@ public class Ride implements Serializable {
     private int price;
     private int passengers;
     private int avSeats;
-
+    private String carID;
 
     public Ride() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats) {
+    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn, double latGoing,
+                double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats, String carID) {
         this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
@@ -48,10 +45,12 @@ public class Ride implements Serializable {
         this.price = price;
         this.passengers = passengers;
         this.avSeats = avSeats;
+        this.carID = carID;
     }
 
     public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats ) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats,
+                String carID) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -67,6 +66,7 @@ public class Ride implements Serializable {
         this.price = price;
         this.passengers = passengers;
         this.avSeats = avSeats;
+        this.carID = carID;
     }
 
     public String toString(){
@@ -129,6 +129,8 @@ public class Ride implements Serializable {
         return avSeats;
     }
 
+    public String getCarID() { return carID; }
+
     public void setID(String id){
         this._id = id;
     }
@@ -184,5 +186,7 @@ public class Ride implements Serializable {
     public void setAvSeats(int avSeats) {
         this.avSeats = avSeats;
     }
+
+    public void setCarID(String carID) { this.carID = carID; }
 }
 // [END ride_class]

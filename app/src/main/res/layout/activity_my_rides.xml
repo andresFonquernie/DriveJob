@@ -3,18 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
     tools:context=".MyRidesActivity">
 
     <TextView
         android:id="@+id/myrides"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:textSize="30sp"
+        android:textSize="@dimen/textTitle"
         android:textStyle="bold"
-        android:text="@string/myrides"
-        />
+        android:text="@string/myrides" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/myrides_list"

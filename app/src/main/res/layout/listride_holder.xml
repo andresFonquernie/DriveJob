@@ -1,81 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="95dp"
-    android:layout_marginRight="20dp"
-    android:layout_marginLeft="20dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".SearchResultActivity">
 
 
     <ImageView
         android:id="@+id/authorImage"
-        android:layout_width="25dp"
-        android:layout_height="30dp"
-        android:layout_marginRight="8dp"
-        android:layout_above="@+id/placeFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
+        android:contentDescription="@string/pictureUsername"
         android:src="@drawable/ic_account_circle_white_24dp" />
 
     <TextView
         android:id="@+id/username"
-        android:layout_width="250dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_alignTop="@id/authorImage"
         android:layout_toEndOf="@+id/authorImage"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:textSize="20dp"
+        android:textSize="@dimen/list_bigTextSize"
         android:textStyle="bold"
-        android:text="Username" />
+        android:text="@string/name"/>
 
     <TextView
         android:id="@+id/placeFrom"
-        android:layout_width="400dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/username"
-        android:layout_alignStart="@+id/authorImage"
-        android:textSize="16dp"
-        android:textStyle="normal"
-        android:text="@string/from" />
+        android:layout_marginTop="5dp"
+        android:text="@string/fromDetail"
+        android:textSize="@dimen/list_textSize" />
 
     <TextView
         android:id="@+id/placeTo"
-        android:layout_width="400dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/placeFrom"
-        android:layout_alignStart="@+id/placeFrom"
-        android:textSize="16dp"
-        android:textStyle="normal"
-        android:text="@string/to" />
+        android:text="@string/toDetail"
+        android:textSize="@dimen/list_textSize" />
 
     <TextView
         android:id="@+id/timeFrom"
-        android:layout_width="80dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/placeFrom"
-        android:layout_alignBottom="@+id/placeFrom"
-        android:layout_alignEnd="@+id/username"
-        android:gravity="right"
-        android:textSize="16dp"
-        android:textStyle="normal"
-        android:text="00:00" />
+        android:layout_alignParentEnd="true"
+        android:gravity="end"
+        android:text="@string/timeHour"
+        android:textSize="@dimen/list_textSize" />
 
     <TextView
         android:id="@+id/timeTo"
-        android:layout_width="80dp"
-        android:layout_height="24dp"
-        android:textSize="16dp"
-        android:gravity="right"
-        android:textStyle="normal"
-        android:text="24:00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/timeFrom"
-        android:layout_alignStart="@+id/timeFrom" />
+        android:gravity="end"
+        android:text="@string/timeHour"
+        android:textSize="@dimen/list_textSize" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_below="@id/placeTo"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        />
+        android:background="@color/white" />
 
 </RelativeLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MyCarActivity">
+
+    <TextView
+        android:id="@+id/carDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
+        android:textSize="@dimen/list_textSize"
+        android:text="@string/car" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_below="@id/carDetail"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:id="@+id/view" />
+
+    <ImageButton
+        android:id="@+id/btnDeleteCar"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:layout_alignTop="@id/carDetail"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/pictureRefuse"
+        android:src="@drawable/ic_cancel_white_24dp" />
+
+    <ImageButton
+        android:id="@+id/btnEditCar"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:layout_alignTop="@id/carDetail"
+        android:layout_toStartOf="@id/btnDeleteCar"
+        android:contentDescription="@string/edit"
+        android:src="@drawable/ic_mode_edit_white_24dp" />
+</RelativeLayout>

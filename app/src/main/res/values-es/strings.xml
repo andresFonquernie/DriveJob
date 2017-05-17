@@ -6,6 +6,7 @@
     <string name="password">Contraseña</string>
     <string name="login">Login</string>
     <string name="not_account">¿No tienes cuenta? Create una</string>
+    <string name="phone">Teléfono</string>
 
     <!-- SignUp Activity -->
     <string name="name">Nombre</string>
@@ -15,47 +16,56 @@
     <string name="already_member">¿Ya eres miembro? Inicia sesión</string>
 
     <!-- Menu Activity -->
-    <string name="search_ride">Buscar</string>
-    <string name="join_ride">Unirse</string>
     <string name="create_ride">Crear Ruta</string>
-    <string name="edit_ride">Editar</string>
+    <string name="search">Buscar</string>
+    <string name="myCar">Mis coches</string>
 
     <!-- CreateRide Activity -->
     <string name="from">Desde</string>
     <string name="to">Hacia</string>
     <string name="going">Ida</string>
     <string name="returning">Vuelta</string>
+    <string name="selectTime">Establecer hora</string>
+    <string name="days">Días</string>
     <string name="price">Precio</string>
     <string name="passengers">Pasajeros</string>
+    <string name="avSeats">Asientos disponibles</string>
 
-    <!-- Menu -->
-    <string name="profile">Perfil</string>
-    <string name="settings">Ajustes</string>
-    <string name="logout">Desconectar</string>
-    <string name="edit">Editar</string>
-
-    <!-- Settings -->
-    <string name="preferences">Preferencias</string>
-    <string name="distance">Distancia máxima</string>
-    <string name="privacy">Privacidad</string>
-    <string name="yes">Si</string>
-    <string name="no">No</string>
-
-    <!-- Maps -->
-   <string name="title_activity_maps">Maps</string>
-    <string name="time">Tiempo máximo</string>
-    <string name="title_activity_settings">Preferencias</string>
-    <string name="avseats">Asientos disponibles</string>
+    <!-- RideDetail Activity -->
+    <string name="edit">Editar</string> <!-- Menu -->
     <string name="delete">Eliminar</string>
-    <string name="metres">Metros</string>
-    <string name="minutes">Minutos</string>
+    <string name="fromDetail">Desde: %s</string> <!-- Form -->
+    <string name="toDetail">Hacia: %s</string>
+    <string name="goingDetail">Ida: %s</string>
+    <string name="returningDetail">Vuelta: %s</string>
+    <string name="daysDetail">Días: %s</string>
+    <string name="priceDetail">Precio: %d</string>
+    <string name="avseatsDetail">Asientos disponibles: %d</string>
+    <string name="join_ride">Unirse</string> <!-- List -->
+    <string name="usersjoin">Unidos</string>
+    <string name="usersrequest">Solicitudes</string>
+    <string name="accept">Aceptar</string>
+    <string name="refuse">Rechazar</string>
+
+    <!-- SearchRide Activity -->
     <string name="searchresults">Resultados</string>
-    <string name="users">Usuarios</string>
-    <string name="phone">Teléfono</string>
-    <string name="myrides">Mis rutas</string>
+
+    <!-- Car -->
+    <string name="car">Coche</string>
+    <string name="carBrand">Marca</string>
+    <string name="carModel">Modelo</string>
+    <string name="engine">Motor</string>
+
+    <string-array name="engineType">
+        <item>Gasolina</item>
+        <item>Diesel</item>
+        <item>Híbrido</item>
+        <item>Eléctrico</item>
+    </string-array>
+
+    <!-- Days -->
     <string name="ok_label">Ok</string>
     <string name="dismiss_label">Descartar</string>
-    <string name="days">Dias</string>
     <string name="clear_all_label">Limpiar</string>
 
     <string-array name="daysofweek">
@@ -77,5 +87,30 @@
         <item>S</item>
         <item>D</item>
     </string-array>
-    <string name="selectTime">Establecer hora</string>
+
+    <!-- Menu -->
+    <string name="profile">Perfil</string>
+    <string name="myrides">Mis rutas</string>
+    <string name="settings">Ajustes</string>
+    <string name="logout">Desconectar</string>
+
+    <!-- Settings -->
+    <string name="preferences">Preferencias</string>
+    <string name="distance">Distancia máxima</string>
+    <string name="time">Tiempo máximo</string>
+    <string name="metres">Metros</string>
+    <string name="minutes">Minutos</string>
+    <string name="privacy">Privacidad</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <!-- Maps -->
+   <string name="title_activity_maps">Maps</string>
+
+    <!-- Notifications -->
+    <string name="notUserRequestTitle">Solicitud</string>
+    <string name="notUserRequestText">El usuario %s ha solicitado unirse a tu ruta</string>
+
+
+    <string name="users">Usuarios</string>
 </resources>

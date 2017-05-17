@@ -2,10 +2,28 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_top_margin">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="icon_top_margin">24dp</dimen>
     <dimen name="icon_bottom_margin">24dp</dimen>
     <dimen name="title_bottom_margin">16dp</dimen>
     <dimen name="field_width_standard">160dp</dimen>
+
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="menu_margin">12dp</dimen>
+    <dimen name="list_margin">20dp</dimen>
+    <dimen name="min_margin">2dp</dimen>
+
+    <dimen name="list_textSize">16sp</dimen>
+    <dimen name="list_bigTextSize">20sp</dimen>
+    <dimen name="textTitle">30sp</dimen>
+    <dimen name="textNormal">16sp</dimen>
+
+    <dimen name="listCar_Height">25dp</dimen>
+    <dimen name="listRide_Height">85dp</dimen>
+    <dimen name="listUser_Height">40dp</dimen>
+
+    <dimen name="icon_width">25dp</dimen>
+    <dimen name="icon_height">20dp</dimen>
 </resources>

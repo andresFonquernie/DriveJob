@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
+import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.User;
@@ -37,9 +40,9 @@ import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
-public class RideCreateActivity extends Activity{
+public class RideCreateActivity extends Activity implements AdapterView.OnItemSelectedListener{
 
-    private static final String TAG = "NewRideActivity";
+    private static final String TAG = "CreateRideActivity";
 
     @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
     @Bind(R.id.input_placeReturn) EditText etPlaceTo;
@@ -48,29 +51,33 @@ public class RideCreateActivity extends Activity{
     @Bind(R.id.input_days) EditText etDays;
     @Bind(R.id.input_price) EditText etPrice;
     @Bind(R.id.input_passengers) EditText etPassengers;
+    Spinner spinCar;
     @Bind(R.id.btn_create) Button btnCreate;
 
     public static final int MAP_ACTIVITY = 0;
     public static final String MAPLOC = "MAPLOC";
 
     //Form
-    public String userID;
-    public String username;
-    public String timeG;
-    public String timeR;
-    public double latGoing;
-    public double latReturning;
-    public double lngGoing;
-    public double lngReturning;
+    private String userID;
+    private String timeG;
+    private String timeR;
+    private double latGoing;
+    private double latReturning;
+    private double lngGoing;
+    private double lngReturning;
+    private String carID;
 
     //Google Maps
-    int mapsGR;
+    private int mapsGR;
 
     //Days of week
-    String[] listDays;
-    String[] shortListDays;
-    boolean[] checkedDays;
-    ArrayList<Integer> mUserDays = new ArrayList<>();
+    private String[] listDays;
+    private String[] shortListDays;
+    private boolean[] checkedDays;
+    private ArrayList<Integer> mUserDays = new ArrayList<>();
+
+    private List<Car> inpList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +89,37 @@ public class RideCreateActivity extends Activity{
         shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
         checkedDays = new boolean[listDays.length];
 
-        btnCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createRide(view);
+        userID = FirebaseUser.getUid();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+       List<CharSequence> listCar = new ArrayList<>();
+        try {
+            GetTask ugt = new GetTask(this);
+            String result = ugt.execute(Constants.BASE_URL + "car/?authorID=" + userID).get();
+            Type type = new TypeToken<List<Car>>(){}.getType();
+            inpList = new Gson().fromJson(result, type);
+            for(int i=0; i<inpList.size(); i++){
+                Car c = inpList.get(i);
+                listCar.add(c.toString());
             }
-        });
+
+            spinCar = (Spinner) findViewById(R.id.spinner_car);
+            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listCar);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinCar.setAdapter(adapter);
+            spinCar.setSelection(0);
+            spinCar.setOnItemSelectedListener(this);
+
+            carID = inpList.get(0).getId();
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void createRide(View view){
@@ -118,11 +150,12 @@ public class RideCreateActivity extends Activity{
             btnCreate.setEnabled(false);
             Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
 
-            String postKey = writeNewRide(placeG, placeR, days, price, passengers);
-            Ride r = new Ride(postKey,userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, passengers);
-            String s = (new SQLConnect()).insertRide(r);
-            Log.e(TAG, s);
-            Log.e(TAG, "POSTKEY: " + postKey);
+            String username = getUsername(userID);
+            Ride ride = new Ride(userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days,
+                    price, passengers, passengers, carID);
+            String postKey = writeNewRide(ride);
+            ride.setID(postKey);
+            String s = (new SQLConnect()).insertRide(ride);
 
             if (!postKey.equals("Error")) {
                 Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
@@ -136,21 +169,14 @@ public class RideCreateActivity extends Activity{
         }
     }
 
-     private String writeNewRide(String placeG, String placeR, String days, int price,int passengers) {
+    private String writeNewRide(Ride ride) {
         String result = "";
         try {
-            userID = FirebaseUser.getUid();
-            username = getUsername(userID);
-
-            Ride ride = new Ride(userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days, price, passengers, passengers);
             RidePostTask rpt = new RidePostTask(this);
             rpt.setRidePost(ride);
             result = rpt.execute(Constants.BASE_URL + "ride").get();
-
-            Log.e(TAG, "RESULT WRITE RIDE: " + result);
             Ride r = new Gson().fromJson(result, Ride.class);
             result = r.getID();
-
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -179,22 +205,25 @@ public class RideCreateActivity extends Activity{
         }
     }
 
-    private String getUsername(String userId) throws ExecutionException, InterruptedException {
+    private String getUsername(String userId) {
         String result;
-        GetTask ugt = new GetTask(this);
-        result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
-        Log.e(TAG, "RESULT GET USER: " + result);
-        Type type = new TypeToken<List<User>>(){}.getType();
-        List<User> inpList = new Gson().fromJson(result, type);
-        User u = inpList.get(0);
-        Log.i(TAG, u.getUsername());
+        try {
+            GetTask ugt = new GetTask(this);
+            result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
 
-        return u.getUsername() + " " + u.getSurname();
+            Type type = new TypeToken<List<User>>(){}.getType();
+            List<User> inpList = new Gson().fromJson(result, type);
+            User u = inpList.get(0);
+            return u.getUsername() + " " + u.getSurname();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public void startMaps(View v){
         mapsGR = v.getId();
-        Intent intent = new Intent(RideCreateActivity.this, MapsActivity.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
@@ -240,7 +269,6 @@ public class RideCreateActivity extends Activity{
                 }
             }
         });
-
         mBuilder.setCancelable(false);
         mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
             @Override
@@ -256,14 +284,12 @@ public class RideCreateActivity extends Activity{
                 etDays.setText(item);
             }
         });
-
         mBuilder.setNegativeButton(R.string.dismiss_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
-
         mBuilder.setNeutralButton(R.string.clear_all_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
@@ -282,54 +308,46 @@ public class RideCreateActivity extends Activity{
     private boolean validate(String placeG, String placeR, String checkDays, String price, String passengers) {
         boolean valid = true;
 
-        if (placeG == null || placeG.isEmpty()) {
-            etPlaceFrom.setError("Not null");
+        if (placeG.isEmpty()) {
+            etPlaceFrom.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etPlaceFrom.setError(null);
-        }
+        } else {  etPlaceFrom.setError(null); }
+        if (placeR.isEmpty()) {
+            etPlaceTo.setError(getText(R.string.notNull));
+            valid = false;
+        } else { etPlaceTo.setError(null);  }
+        if (timeG.isEmpty()) {
+            etTimeGoing.setError(getText(R.string.notNull));
+            valid = false;
+        } else { etTimeGoing.setError(null); }
 
-        if (placeR == null || placeR.isEmpty()) {
-            etPlaceTo.setError("Not null");
+        if (timeR.isEmpty()) {
+            etTimeReturn.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etPlaceTo.setError(null);
-        }
+        } else { etTimeReturn.setError(null); }
 
-        if (timeG == null || timeG.isEmpty()) {
-            etTimeGoing.setError("Not null");
+        if (checkDays.isEmpty()) {
+            etDays.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etTimeGoing.setError(null);
-        }
+        } else { etDays.setError(null); }
 
-        if (timeR == null || timeR.isEmpty()) {
-            etTimeReturn.setError("Not null");
+        if (price.isEmpty()) {
+            etPrice.setError(getText(R.string.notZero));
             valid = false;
-        } else {
-            etTimeReturn.setError(null);
-        }
+        } else { etPrice.setError(null); }
 
-        if (checkDays == null || checkDays.isEmpty()) {
-            etDays.setError("Not null");
+        if (passengers.isEmpty()) {
+            etPassengers.setError(getText(R.string.notZero));
             valid = false;
-        } else {
-            etDays.setError(null);
-        }
-
-        if (price == null || price.isEmpty()) {
-            etPrice.setError("Not 0");
-            valid = false;
-        } else {
-            etPrice.setError(null);
-        }
-
-        if (passengers == null || passengers.isEmpty()) {
-            etPassengers.setError("Not 0");
-            valid = false;
-        } else {
-            etPassengers.setError(null);
-        }
+        } else { etPassengers.setError(null); }
         return valid;
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        carID = inpList.get(position).getId();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 }

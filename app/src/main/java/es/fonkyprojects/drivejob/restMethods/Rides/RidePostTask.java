@@ -29,10 +29,10 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
     private ProgressDialog progressDialog;
     private Context context;
     private String result;
+    private Ride ride;
 
     private static final String TAG = "RidePostTask";
 
-    private Ride ride;
 
     public RidePostTask(Context c) {
         this.context = c;
@@ -98,6 +98,7 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
         dataToSend.put("avSeats", ride.getAvSeats());
+        dataToSend.put("carID", ride.getCarID());
 
         try {
             //Initialize and config request, the connect to server

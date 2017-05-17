@@ -47,21 +47,21 @@ public class MyRidesActivity extends AppCompatActivity {
 
             //MyRides
             String userId = FirebaseUser.getUid();
+            Log.e(TAG, userId);
             String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
-            Log.e(TAG, result);
             Type type = new TypeToken<List<Ride>>(){}.getType();
             List<Ride> listRides = new Gson().fromJson(result, type);
 
             //RidesJoin
-            result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/userride/?userId=" + userId).get();
+            result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?userId=" + userId).get();
             type = new TypeToken<List<RideUser>>(){}.getType();
             List<RideUser> inpList = new Gson().fromJson(result, type);
             if(inpList.size()>0) {
                 RideUser rideUser = inpList.get(0);
                 String[] ridesJoin = rideUser.getRideId().split(",");
-                for (int i = 0; i < ridesJoin.length; i++) {
-                    if(!ridesJoin[i].equals("")) {
-                        Ride r = getRide(ridesJoin[i]);
+                for (String aRidesJoin : ridesJoin) {
+                    if (!aRidesJoin.equals("")) {
+                        Ride r = getRide(aRidesJoin);
                         listRides.add(r);
                     }
                 }
@@ -74,7 +74,6 @@ public class MyRidesActivity extends AppCompatActivity {
                     Intent intent = new Intent(MyRidesActivity.this, RideDetailActivity.class);
                     intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
                     startActivity(intent);
-                    finish();
                 }
             });
             layoutManager = new LinearLayoutManager(this);

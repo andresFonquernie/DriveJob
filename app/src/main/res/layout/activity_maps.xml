@@ -7,32 +7,35 @@
     android:orientation="vertical"
     tools:context="es.fonkyprojects.drivejob.utils.MapsActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp">
 
         <EditText
-            android:layout_width="183dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
             android:id="@+id/TFaddress"
-            android:inputType="none"/>
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:labelFor="@id/TFaddress"
+            android:maxLines="1" />
+
         <Button
+            android:id="@+id/Bsearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search"
-            android:id="@+id/Bsearch"
-            android:layout_gravity="right"
+            android:layout_alignBaseline="@id/TFaddress"
+            android:layout_toEndOf="@id/TFaddress"
+            android:text="@string/search"
             android:onClick="onSearch" />
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         class="com.google.android.gms.maps.SupportMapFragment"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -40,9 +43,9 @@
             android:id="@+id/finishAc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
+            android:layout_gravity="end|bottom"
             android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/ic_check_circle_white_24dp" />
     </fragment>
 </LinearLayout>

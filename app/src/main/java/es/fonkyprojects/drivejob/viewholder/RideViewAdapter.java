@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -12,14 +11,11 @@ import java.util.List;
 
 import es.fonkyprojects.drivejob.activity.R;
 import es.fonkyprojects.drivejob.model.Ride;
-
-/**
- * Created by andre on 11/12/2016.
- */
+import es.fonkyprojects.drivejob.utils.MyApp;
 
 public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHolder> {
 
-    List<Ride> data = new ArrayList<Ride>();
+    private List<Ride> data = new ArrayList<>();
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener{
@@ -34,8 +30,7 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
     @Override
     public RideHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listride_holder, parent, false);
-        RideHolder rh = new RideHolder(view);
-        return rh;
+        return new RideHolder(view);
     }
 
     @Override
@@ -43,8 +38,8 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
 
         Ride ride = data.get(position);
         holder.txtUsername.setText(ride.getAuthor());
-        holder.txtPlaceGoing.setText(holder.txtPlaceGoing.getText() + " " + ride.getPlaceGoing());
-        holder.txtPlaceReturn.setText(holder.txtPlaceReturn.getText() + " " + ride.getPlaceReturn());
+        holder.txtPlaceGoing.setText(MyApp.getAppContext().getResources().getString(R.string.fromDetail, ride.getPlaceGoing()));
+        holder.txtPlaceReturn.setText(MyApp.getAppContext().getResources().getString(R.string.toDetail, ride.getPlaceReturn()));
         String[] timeGoingSplit = ride.getTimeGoing().split(":");
         holder. txtTimeGoing.setText(timeGoingSplit[0] + ":" + timeGoingSplit[1]);
         String[] timeReturnSplit = ride.getTimeReturn().split(":");
@@ -59,15 +54,15 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
         return data.size();
     }
 
-    public static class RideHolder extends RecyclerView.ViewHolder {
-        ImageView img;
+    static class RideHolder extends RecyclerView.ViewHolder {
+        //ImageView img;
         TextView txtUsername;
         TextView txtPlaceGoing;
         TextView txtPlaceReturn;
         TextView txtTimeGoing;
         TextView txtTimeReturn;
 
-        public RideHolder(View view) {
+        RideHolder(View view) {
             super(view);
             txtUsername = (TextView) view.findViewById(R.id.username);
             txtPlaceGoing = (TextView) view.findViewById(R.id.placeFrom);

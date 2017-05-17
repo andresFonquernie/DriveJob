@@ -20,7 +20,7 @@ import es.fonkyprojects.drivejob.model.User;
 
 public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestViewAdapter.UserRequestHolder> {
 
-    List<User> data = new ArrayList<User>();
+    private List<User> data = new ArrayList<>();
     private final UserRequestViewAdapter.OnItemClickListener listener;
     private final UserRequestViewAdapter.OnAcceptClickListener listenerAccept;
     private final UserRequestViewAdapter.OnRefuseClickListener listenerRefuse;
@@ -49,8 +49,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     @Override
     public UserRequestViewAdapter.UserRequestHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.userrequest_holder, parent, false);
-        UserRequestViewAdapter.UserRequestHolder rh = new UserRequestViewAdapter.UserRequestHolder(view);
-        return rh;
+        return new UserRequestViewAdapter.UserRequestHolder(view);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
 
         User user = data.get(position);
         holder.txtUsername.setText(user.getUsername() + " " + user.getSurname());
-
         holder.bind(data.get(position), listener);
         holder.bindToAccept(data.get(position), listenerAccept);
         holder.bindToRefuse(data.get(position), listenerRefuse);
@@ -69,13 +67,13 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         return data.size();
     }
 
-    public static class UserRequestHolder extends RecyclerView.ViewHolder {
+    static class UserRequestHolder extends RecyclerView.ViewHolder {
         ImageView img;
         TextView txtUsername;
         ImageButton btnAccept;
         ImageButton btnRefuse;
 
-        public UserRequestHolder(View view) {
+        UserRequestHolder(View view) {
             super(view);
             txtUsername = (TextView) view.findViewById(R.id.requestUsername);
             btnAccept = (ImageButton) view.findViewById(R.id.btnAccept);
@@ -90,7 +88,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        public void bindToAccept(final User user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
+        void bindToAccept(final User user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -99,7 +97,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        public void bindToRefuse(final User user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
+        void bindToRefuse(final User user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
             btnRefuse.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,17 +18,19 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
+import es.fonkyprojects.drivejob.model.Car;
+import es.fonkyprojects.drivejob.model.Messaging;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.model.RideUserRequest;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.DeleteTask;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.restMethods.Messaging.MessagingPostTask;
 import es.fonkyprojects.drivejob.restMethods.RideUser.RideUserPostTask;
 import es.fonkyprojects.drivejob.restMethods.RideUserRequest.RideUserRequestPostTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
@@ -68,6 +69,7 @@ public class RideDetailActivity extends AppCompatActivity {
     private TextView daysView;
     private TextView priceView;
     private TextView avSeats;
+    private TextView tCar;
     private Button joinButton;
 
 
@@ -92,6 +94,7 @@ public class RideDetailActivity extends AppCompatActivity {
         placeReturnView = (TextView) findViewById(R.id.ride_placeReturn);
         priceView = (TextView) findViewById(R.id.ride_prize);
         avSeats = (TextView) findViewById(R.id.ride_passengers);
+        tCar = (TextView) findViewById(R.id.ride_car);
 
         requestRecyclerView = (RecyclerView) findViewById(R.id.userrequest_list);
         joinRecyclerView = (RecyclerView) findViewById(R.id.userjoin_list);
@@ -101,12 +104,6 @@ public class RideDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 requestJoin();
-            }
-        });
-        authorView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goProfile(view);
             }
         });
     }
@@ -126,14 +123,17 @@ public class RideDetailActivity extends AppCompatActivity {
 
             if (result != null && !result.equals("Error")) {
                 ride = new Gson().fromJson(result, Ride.class);
-                timeGoingView.setText(getString(R.string.going) + ": " + ride.getTimeGoing());
-                timeReturnView.setText(getString(R.string.returning) + ": " + ride.getTimeReturn());
-                placeGoingView.setText(getString(R.string.from) + ": " + ride.getPlaceGoing());
-                placeReturnView.setText(getString(R.string.to) + ": " + ride.getPlaceReturn());
-                priceView.setText(getString(R.string.price) + ": " + String.valueOf(ride.getPrice()));
-                avSeats.setText(getString(R.string.avseats) + ": " + String.valueOf(ride.getAvSeats()));
                 authorID = ride.getAuthorID();
                 authorView.setText(ride.getAuthor());
+                timeGoingView.setText(getString(R.string.goingDetail, ride.getTimeGoing()));
+                timeReturnView.setText(getString(R.string.returningDetail,  ride.getTimeReturn()));
+                placeGoingView.setText(getString(R.string.fromDetail, ride.getPlaceGoing()));
+                placeReturnView.setText(getString(R.string.toDetail, ride.getPlaceReturn()));
+                priceView.setText(getString(R.string.priceDetail, ride.getPrice()));
+                avSeats.setText(getString(R.string.avseatsDetail, ride.getAvSeats()));
+
+                Car c = getCar(ride.getCarID());
+                tCar.setText(getString(R.string.carDetail, c.toString()));
 
                 String[] items = ride.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
                 String[] shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
@@ -152,8 +152,7 @@ public class RideDetailActivity extends AppCompatActivity {
             //Get UserRequest
             try {
                 result = new GetTask(this).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
-                Type type = new TypeToken<List<RideUserRequest>>() {
-                }.getType();
+                Type type = new TypeToken<List<RideUserRequest>>() {}.getType();
                 List<RideUserRequest> listRideUserRequests = new Gson().fromJson(result, type);
                 for (int i = 0; i < listRideUserRequests.size(); i++) { //Get Users
                     User u = getUser(listRideUserRequests.get(i).getUserId());
@@ -195,7 +194,7 @@ public class RideDetailActivity extends AppCompatActivity {
                 requestRecyclerView.setAdapter(requestAdapter);
 
             } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG + " Req", Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
             }
 
             //Get Users join
@@ -207,7 +206,7 @@ public class RideDetailActivity extends AppCompatActivity {
                 for (int i = 0; i < listRideUser.size(); i++) { //Get Users
                     User u = getUser(listRideUser.get(i).getUserId());
                     if (listRideUser.get(i).getUserId().equals(FirebaseUser.getUid())) {
-                        request = true;
+                        join = true;
                     }
                     listUsersJoin.add(u);
                 }
@@ -221,12 +220,19 @@ public class RideDetailActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
+                }, new UserJoinViewAdapter.OnRefuseClickListener() {
+                    @Override
+                    public void onRefuseClick(User item) {
+                        kickJoin(item);
+                        listUsersJoin.remove(item);
+                        joinAdapter.notifyDataSetChanged();
+                    }
                 });
                 joinLayoutManager = new LinearLayoutManager(this);
                 joinRecyclerView.setLayoutManager(joinLayoutManager);
                 joinRecyclerView.setAdapter(joinAdapter);
             } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG + " Join", Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
             }
 
             if (request || join || ride.getAvSeats() == 0 || FirebaseUser.getUid().equals(authorID))
@@ -234,13 +240,12 @@ public class RideDetailActivity extends AppCompatActivity {
         }
     }
 
-    public User getUser(String userId) {
+    private User getUser(String userId) {
         User user = new User();
         try {
             GetTask gt = new GetTask(this);
             String result = gt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
-            Type type = new TypeToken<List<User>>() {
-            }.getType();
+            Type type = new TypeToken<List<User>>() {}.getType();
             List<User> inpList = new Gson().fromJson(result, type);
             user = inpList.get(0);
         } catch (InterruptedException | ExecutionException e) {
@@ -249,36 +254,58 @@ public class RideDetailActivity extends AppCompatActivity {
         return user;
     }
 
-    public void requestJoin() {
+    private Car getCar(String carId) {
+        Car car = new Car();
+        try {
+            GetTask gt = new GetTask(this);
+            String result = gt.execute(Constants.BASE_URL + "car/" + carId).get();
+            car = new Gson().fromJson(result, Car.class);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return car;
+    }
+
+
+    private void requestJoin() {
         String uid = FirebaseUser.getUid();
-        String result = "";
+        //Create user request
         RideUserRequest ruq = new RideUserRequest(mRideKey, uid);
         try {
             RideUserRequestPostTask rupt = new RideUserRequestPostTask(getApplicationContext());
             rupt.setRideUserRequestPost(ruq);
-            result = rupt.execute(Constants.BASE_URL + "rideuserrequest").get();
-
-            RidePutTask rpt = new RidePutTask(getApplicationContext());
-            ride.setAvSeats(ride.getAvSeats() - 1);
-            rpt.setRidePut(ride);
-            result = rpt.execute(Constants.BASE_URL + "ride/" + ride.getID()).get();
+            String result = rupt.execute(Constants.BASE_URL + "rideuserrequest").get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
+
+        //Update seats -1
+        ride.setAvSeats(ride.getAvSeats() - 1);
+        updateSeats();
+
         User u = getUser(uid);
+
+        MessagingPostTask mpt = new MessagingPostTask(this);
+        Messaging m = new Messaging(u.getUsername(), ride.getAuthorID(), mRideKey, 0);
+        mpt.setMessaging(m);
+
+        try {
+            String result = mpt.execute("https://fcm.googleapis.com/fcm/send").get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
         listUsersRequest.add(u);
         requestAdapter.notifyDataSetChanged();
     }
 
-    public void acceptJoin(User u) {
+    private void acceptJoin(User u) {
         String uid = u.getUserId();
-        String result = "";
         RideUser ru = new RideUser(mRideKey, uid);
         try {
             RideUserPostTask rupt = new RideUserPostTask(getApplicationContext());
             rupt.setRideUserPost(ru);
-            result = rupt.execute(Constants.BASE_URL + "rideuser").get();
+            String result = rupt.execute(Constants.BASE_URL + "rideuser").get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -286,11 +313,27 @@ public class RideDetailActivity extends AppCompatActivity {
     }
 
     private void refuseJoin(User u) {
-        Log.e(TAG, "ENTRAMOS EN REFUSE");
-
-        String result = "";
         deleteRequest(u.getUserId());
+        ride.setAvSeats(ride.getAvSeats()+1);
+        updateSeats();
+        (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
+    }
+
+    private void deleteRequest(String uid) {
         try {
+            DeleteTask dt = new DeleteTask(getApplicationContext());
+            String result = dt.execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey + "&userId=" + uid).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void kickJoin(User user) {
+        String uid = user.getUserId();
+        try {
+            DeleteTask dt = new DeleteTask(getApplicationContext());
+            String result = dt.execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey + "&userId=" + uid).get();
+
             RidePutTask rpt = new RidePutTask(getApplicationContext());
             ride.setAvSeats(ride.getAvSeats() + 1);
             rpt.setRidePut(ride);
@@ -299,28 +342,6 @@ public class RideDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
-    }
-
-    private void deleteRequest(String uid) {
-        String result = "";
-        try {
-            DeleteTask dt = new DeleteTask(getApplicationContext());
-            Log.e(TAG, Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey + "&userId=" + uid);
-            result = dt.execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey + "&userId=" + uid).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void kickJoin() {
-        String uid = FirebaseUser.getUid();
-        String result = "";
-        try {
-            DeleteTask dt = new DeleteTask(getApplicationContext());
-            result = dt.execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey + "&userId=" + uid).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     private String deleteRide() {
@@ -340,7 +361,22 @@ public class RideDetailActivity extends AppCompatActivity {
         return result;
     }
 
-    private void goProfile(View view) {
+    private String updateSeats() {
+        String result = "";
+        try {
+            RidePutTask rpt = new RidePutTask(getApplicationContext());
+            rpt.setRidePut(ride);
+            result = rpt.execute(Constants.BASE_URL + "ride/" + ride.getID()).get();
+            if (result.equals("Update"))
+                (new SQLConnect()).updateAvSeats(ride.getAvSeats(), mRideKey);
+            avSeats.setText(getString(R.string.avseatsDetail, ride.getAvSeats()));
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public void goProfile(View view) {
         Intent intent = new Intent(RideDetailActivity.this, MyProfileActivity.class);
         intent.putExtra(MyProfileActivity.EXTRA_USER_ID, authorID);
         startActivity(intent);
@@ -349,7 +385,7 @@ public class RideDetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (FirebaseUser.getUid().equals(authorID)) {
-            getMenuInflater().inflate(R.menu.mnu_myride, menu);
+            getMenuInflater().inflate(R.menu.mnu_ride_detail, menu);
             return true;
         }
         return false;

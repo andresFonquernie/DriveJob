@@ -16,7 +16,7 @@ import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.Users.UserPutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 
-public class ProfileEditActivity extends AppCompatActivity {
+public class MyProfileEditActivity extends AppCompatActivity {
 
     private static final String TAG = "MyProfileActivity";
     public static final String EXTRA_USER = "user";

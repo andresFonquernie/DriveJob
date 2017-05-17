@@ -103,8 +103,8 @@ public class MyProfileActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mnu_edit:
-                Intent intent = new Intent(MyProfileActivity.this, ProfileEditActivity.class);
-                intent.putExtra(ProfileEditActivity.EXTRA_USER, user);
+                Intent intent = new Intent(MyProfileActivity.this, MyProfileEditActivity.class);
+                intent.putExtra(MyProfileEditActivity.EXTRA_USER, user);
                 startActivity(intent);
                 break;
             case R.id.mnu_settings:
