@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +26,7 @@ import es.fonkyprojects.drivejob.utils.MapsActivity;
 
 public class SearchRideActivity extends Activity {
 
-    private static final String TAG = "NewRideActivity";
+    private static final String TAG = "SearchRideActivity";
 
     @Bind(R.id.input_timeGoing)  EditText etTimeGoing;
     @Bind(R.id.input_timeReturn) EditText etTimeReturn;
@@ -79,7 +78,6 @@ public class SearchRideActivity extends Activity {
         days = Arrays.toString(checkedDays);
 
         if(validate()) {
-            Log.e(TAG, timeG + " " + timeR + " " + latGoing + " " + latReturning + " " + lngGoing + " " + lngReturning + " " + days);
             RideSearch rs = new RideSearch(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning, days);
             Intent intent = new Intent(this, SearchResultActivity.class);
             intent.putExtra(SearchResultActivity.EXTRA_RIDE_SEARCH, rs);

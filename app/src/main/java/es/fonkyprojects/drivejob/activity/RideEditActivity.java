@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +36,6 @@ import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
-import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
 public class RideEditActivity extends Activity implements AdapterView.OnItemSelectedListener {
@@ -52,7 +50,7 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
     @Bind(R.id.input_days) EditText etDays;
     @Bind(R.id.edit_price) EditText etPrice;
     @Bind(R.id.edit_passengers) EditText etPassengers;
-    @Bind(R.id.edit_avseats) EditText etAvSeats;
+    @Bind(R.id.edit_avSeatsDay) EditText etAvSeatsDay;
     Spinner spinCar;
     @Bind(R.id.btn_edit) Button btnEdit;
 
@@ -63,14 +61,15 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
 
     //Form
     private double latGoing;
-    private double latReturning;
+    private double latReturn;
     private double lngGoing;
-    private double lngReturning;
+    private double lngReturn;
     private String timeG;
     private String timeR;
-    private int oldPassengers;
-    private String days;
+    private int price;
+    private int passengers;
     private String carID;
+    private int engineId;
 
     //Google Maps
     private int mapsGR;
@@ -82,6 +81,12 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
     ArrayList<Integer> mUserDays = new ArrayList<>();
 
     private List<Car> inpList;
+
+    //Compare old vs new
+    private int oldPassengers;
+    private int[] oldAvSeatsDay;
+    private String[] oldDays = new String[7];
+    private int[] avSeatsDay = new int[7];
 
 
     @Override
@@ -116,16 +121,31 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             etPrice.setText(String.valueOf(mRide.getPrice()));
             oldPassengers = mRide.getPassengers();
             etPassengers.setText(String.valueOf(mRide.getPassengers()));
-            etAvSeats.setText(String.valueOf(mRide.getAvSeats()));
 
-            timeG = mRide.getTimeGoing();
-            timeR = mRide.getTimeReturn();
-            latGoing = mRide.getLatGoing();
-            latReturning = mRide.getLatReturn();
-            lngGoing = mRide.getLngGoing();
-            lngReturning = mRide.getLngReturn();
+            //Convert from array boolean to string of days
+            String[] items = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            oldDays = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            String day = "";
+            for (int i = 0; i < items.length; i++) {
+                if (items[i].equals("true")) {
+                    checkedDays[i] = true;
+                    mUserDays.add(i);
+                    day = day + shortListDays[i] + ",";
+                }
+            }
+            day = day.substring(0, day.length() - 1);
+            etDays.setText(day);
 
-            String userId = FirebaseUser.getUid();
+            //Get avSeatsDay
+            String[] stringAvSeatsDay = mRide.getAvSeatsDay().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            oldAvSeatsDay = new int[stringAvSeatsDay.length];
+            for (int i = 0; i<stringAvSeatsDay.length; i++) {
+                oldAvSeatsDay[i] = Integer.parseInt(stringAvSeatsDay[i]);
+            }
+            etAvSeatsDay.setText(mRide.getAvSeatsDay().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", ""));
+
+            //Get allCars
+            String userId = mRide.getAuthorID();
             int pos = 0;
             try {
                 GetTask ugt = new GetTask(this);
@@ -149,56 +169,34 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
                 e.printStackTrace();
             }
 
-            //Convert from array boolean to string of days
-            String[] items = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-            String day = "";
-            for (int i = 0; i < items.length; i++) {
-                if (items[i].equals("true")) {
-                    checkedDays[i] = true;
-                    mUserDays.add(i);
-                    day = day + shortListDays[i] + ",";
-                }
-            }
-            day = day.substring(0, day.length() - 1);
-            etDays.setText(day);
+            //Initializr variables, if no changes
+            latGoing = mRide.getLatGoing();
+            latReturn = mRide.getLatReturn();
+            lngGoing = mRide.getLngGoing();
+            lngReturn = mRide.getLngReturn();
+            timeG = mRide.getTimeGoing();
+            timeR = mRide.getTimeReturn();
         }
     }
 
     public void editRide(View view) {
-        Log.e(TAG, "GOING " + lngGoing + " " + latGoing);
-        final String placeG = etEditPlaceFrom.getText().toString();
-        final String placeR = etEditPlaceTo.getText().toString();
-        final int avSeats = Integer.parseInt(etAvSeats.getText().toString());
-        String days = Arrays.toString(checkedDays);
-        String checkDays = etDays.getText().toString();
-
-        //Check if price
+        String placeFrom = etEditPlaceFrom.getText().toString();
+        String placeTo = etEditPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
-        final int price;
-        if (sPrice.length() > 0)
-            price = Integer.parseInt(sPrice);
-        else
-            price = 0;
-
-        //Check if passengers
         String sPassengers = etPassengers.getText().toString();
-        final int passengers;
-        if (sPassengers.length() > 0)
-            passengers = Integer.parseInt(sPassengers);
-        else
-            passengers = 0;
+        String days = Arrays.toString(checkedDays);
+        String validateDays = etDays.getText().toString();
 
-        if (validate(placeG, placeR, checkDays, sPrice, sPassengers, avSeats)) {
+        if (validate(placeFrom, placeTo, validateDays, sPrice, sPassengers)) {
 
             btnEdit.setEnabled(false);
             Toast.makeText(this, "Put", Toast.LENGTH_LONG).show();
 
-            int newAvSeats = avSeats - (oldPassengers - passengers);
-            Ride r = new Ride(mRide.getID(), mRide.getAuthorID(), mRide.getAuthor(), timeG, timeR, placeG, placeR, latGoing, latReturning,
-                    lngGoing, lngReturning, days, price, passengers, newAvSeats, carID);
-            Log.e(TAG, "GOING " + lngGoing + " " + latGoing);
+            Ride r = new Ride(timeG, timeR, placeFrom, placeTo, latGoing, latReturn, lngGoing, lngReturn, days, price, passengers,
+                    Arrays.toString(avSeatsDay), carID);
             String putKey = writeEditRide(r);
-            (new SQLConnect()).updateRide(r);
+            r.setID(mRide.getID());
+            (new SQLConnect()).updateRide(r, engineId);
 
             if (putKey.equals("Update")) {
                 Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
@@ -245,8 +243,8 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
                     }
                     if(mapsGR == R.id.edit_placeReturn) {
                         etEditPlaceTo.setText(ml.getAddress());
-                        lngReturning = ml.getLongitude();
-                        latReturning = ml.getLatitude();
+                        lngReturn = ml.getLongitude();
+                        latReturn = ml.getLatitude();
                     }
                 }
             }
@@ -333,57 +331,62 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
         mDialog.show();
     }
 
-    private boolean validate(String placeG, String placeR, String checkDays, String price, String passengers, int avSeats) {
+    private boolean validate(String sPlaceFrom, String sPlaceTo, String sCheckDays, String sPrice, String sPassengers) {
         boolean valid = true;
-
-        if (placeG.isEmpty()) {
-            etEditPlaceFrom.setError("Not null");
+        if (sPlaceFrom.isEmpty()) {
+            etEditPlaceFrom.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etEditPlaceFrom.setError(null);
-        }
-
-        if (placeR.isEmpty()) {
-            etEditPlaceTo.setError("Not null");
+        } else {  etEditPlaceFrom.setError(null); }
+        if (sPlaceTo.isEmpty()) {
+            etEditPlaceTo.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etEditPlaceTo.setError(null);
-        }
-
-        if (timeG != null && timeG.isEmpty()) {
-            etTimeGoing.setError("Not null");
+        } else { etEditPlaceTo.setError(null);  }
+        if (timeG == null || timeG.isEmpty()) {
+            etTimeGoing.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etTimeGoing.setError(null);
-        }
-
-        if (timeR != null && timeR.isEmpty()) {
-            etTimeReturn.setError("Not null");
+        } else { etTimeGoing.setError(null); }
+        if (timeG == null || timeR.isEmpty()) {
+            etTimeReturn.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etTimeReturn.setError(null);
-        }
-
-        if (checkDays.isEmpty()) {
-            etDays.setError("Not null");
+        } else { etTimeReturn.setError(null); }
+        if (sCheckDays.isEmpty()) {
+            etDays.setError(getText(R.string.notNull));
             valid = false;
-        } else {
-            etDays.setError(null);
-        }
-        if (price.isEmpty()) {
-            etPrice.setError("Not 0");
+        } else { etDays.setError(null); }
+        if (sPrice.isEmpty() || Integer.parseInt(sPrice)==0) {
+            etPrice.setError(getText(R.string.notZero));
             valid = false;
         } else {
             etPrice.setError(null);
+            price = Integer.parseInt(sPrice);
         }
-        if (passengers.isEmpty()) {
-            etPassengers.setError("Not 0");
+        if (sPassengers.isEmpty() || Integer.parseInt(sPassengers)==0) {
+            etPassengers.setError(getText(R.string.notZero));
             valid = false;
         } else {
             etPassengers.setError(null);
-            int checkPass = avSeats + Integer.parseInt(passengers);
-            if (checkPass < oldPassengers) {
-                Toast.makeText(this, "Minimun passengers: " + (oldPassengers - avSeats), Toast.LENGTH_LONG).show();
+            passengers = Integer.parseInt(sPassengers);
+        }
+        //Check if avSeatsDay > 0 for selectDays
+        for(int i = 0; i<avSeatsDay.length; i++){
+            if(oldDays[i].equals("true")){
+                int intNewAvSeatsDay = oldAvSeatsDay[i] + passengers - oldPassengers;
+                if(intNewAvSeatsDay<0){
+                    valid=false;
+                    etPassengers.setError(getText(R.string.notAvSeatsSpace));
+                } else if(!checkedDays[i]){
+                    if (intNewAvSeatsDay<passengers) {
+                        valid = false;
+                        etPassengers.setError(getText(R.string.notAvSeatsSpace));
+                    } else {
+                        avSeatsDay[i] = 0;
+                    }
+                }
+                else {
+                    avSeatsDay[i] = intNewAvSeatsDay;
+                }
+            } else if(checkedDays[i]){
+                avSeatsDay[i] = passengers;
             }
         }
         return valid;
@@ -392,6 +395,7 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         carID = inpList.get(position).getId();
+        engineId = inpList.get(position).getEngineID();
     }
 
     @Override

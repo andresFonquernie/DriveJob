@@ -22,15 +22,17 @@ public class Ride implements Serializable {
     private String days;
     private int price;
     private int passengers;
-    private int avSeats;
+    private String avSeatsDay;
     private String carID;
+    private int engineId;
 
     public Ride() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn, double latGoing,
-                double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats, String carID) {
+    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
+                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers,
+                String avSeatsDay, String carID) {
         this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
@@ -44,13 +46,13 @@ public class Ride implements Serializable {
         this.days = days;
         this.price = price;
         this.passengers = passengers;
-        this.avSeats = avSeats;
+        this.avSeatsDay = avSeatsDay;
         this.carID = carID;
     }
 
     public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers, int avSeats,
-                String carID) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers,
+                String avSeatsDay, String carID) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -65,7 +67,24 @@ public class Ride implements Serializable {
         this.days = days;
         this.price = price;
         this.passengers = passengers;
-        this.avSeats = avSeats;
+        this.avSeatsDay = avSeatsDay;
+        this.carID = carID;
+    }
+
+    public Ride(String timeGoing, String timeReturn, String placeGoing, String placeReturn, double latGoing, double latReturn,
+                double lngGoing, double lngReturn, String days, int price, int passengers, String avSeatsDay, String carID){
+        this.timeGoing = timeGoing;
+        this.timeReturn = timeReturn;
+        this.placeGoing = placeGoing;
+        this.placeReturn = placeReturn;
+        this.latGoing = latGoing;
+        this.latReturn = latReturn;
+        this.lngGoing = lngGoing;
+        this.lngReturn = lngReturn;
+        this.days = days;
+        this.price = price;
+        this.passengers = passengers;
+        this.avSeatsDay = avSeatsDay;
         this.carID = carID;
     }
 
@@ -113,9 +132,13 @@ public class Ride implements Serializable {
         return lngGoing;
     }
 
-    public double getLngReturn() { return lngReturn; }
+    public double getLngReturn() {
+        return lngReturn;
+    }
 
-    public String getDays() { return days; }
+    public String getDays() {
+        return days;
+    }
 
     public int getPrice() {
         return price;
@@ -125,11 +148,17 @@ public class Ride implements Serializable {
         return passengers;
     }
 
-    public int getAvSeats() {
-        return avSeats;
+    public String getAvSeatsDay() {
+        return avSeatsDay;
     }
 
-    public String getCarID() { return carID; }
+    public String getCarID() {
+        return carID;
+    }
+
+    public int getEngineId() {
+        return engineId;
+    }
 
     public void setID(String id){
         this._id = id;
@@ -175,18 +204,26 @@ public class Ride implements Serializable {
         this.lngReturn = lngReturn;
     }
 
-    public void  setDays(String days) { this.days = days; }
+    public void  setDays(String days) {
+        this.days = days;
+    }
 
-    public void setPrice(int price) { this.price = price; }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     public void setPassengers(int passengers) {
         this.passengers = passengers;
     }
 
-    public void setAvSeats(int avSeats) {
-        this.avSeats = avSeats;
+    public void setAvSeatsDay(String avSeatsDay) {
+        this.avSeatsDay = avSeatsDay;
     }
 
     public void setCarID(String carID) { this.carID = carID; }
+
+    public void setEngineId(int engineId) {
+        this.engineId = engineId;
+    }
 }
 // [END ride_class]

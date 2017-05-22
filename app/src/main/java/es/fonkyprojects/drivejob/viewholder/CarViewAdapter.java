@@ -16,7 +16,6 @@ import es.fonkyprojects.drivejob.model.Car;
 public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolder> {
 
     private List<Car> data = new ArrayList<>();
-    private final CarViewAdapter.OnEditClickListener listenerEdit;
     private final CarViewAdapter.OnDeleteClickListener listenerDelete;
 
     public interface OnEditClickListener {
@@ -27,10 +26,8 @@ public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolde
         void OnDeleteClick(Car item);
     }
 
-    public CarViewAdapter(List<Car> data, CarViewAdapter.OnEditClickListener listenerEdit,
-                          CarViewAdapter.OnDeleteClickListener listenerDelete) {
+    public CarViewAdapter(List<Car> data, CarViewAdapter.OnDeleteClickListener listenerDelete) {
         this.data = data;
-        this.listenerEdit = listenerEdit;
         this.listenerDelete = listenerDelete;
     }
 
@@ -45,7 +42,6 @@ public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolde
 
         Car car = data.get(position);
         holder.txtCarDetail.setText(car.toString());
-        holder.bindToEdit(data.get(position), listenerEdit);
         holder.bindToDelete(data.get(position), listenerDelete);
     }
 
@@ -57,23 +53,12 @@ public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolde
 
     static class CarHolder extends RecyclerView.ViewHolder {
         TextView txtCarDetail;
-        ImageButton btnEdit;
         ImageButton btnDelete;
 
         CarHolder(View view) {
             super(view);
             txtCarDetail = (TextView) view.findViewById(R.id.carDetail);
-            btnEdit = (ImageButton) view.findViewById(R.id.btnEditCar);
             btnDelete = (ImageButton) view.findViewById(R.id.btnDeleteCar);
-        }
-
-        void bindToEdit(final Car car, final CarViewAdapter.OnEditClickListener listener) {
-            btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.OnEditClick(car);
-                }
-            });
         }
 
         void bindToDelete(final Car car, final CarViewAdapter.OnDeleteClickListener listener) {

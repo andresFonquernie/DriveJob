@@ -12,30 +12,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fonkyprojects.drivejob.activity.R;
-import es.fonkyprojects.drivejob.model.User;
-
-/**
- * Created by andre on 03/02/2017.
- */
+import es.fonkyprojects.drivejob.model.UserDays;
+import es.fonkyprojects.drivejob.utils.MyApp;
 
 public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapter.UserJoinHolder> {
 
-    private List<User> data = new ArrayList<User>();
+    private List<UserDays> data = new ArrayList<>();
     private final UserJoinViewAdapter.OnItemClickListener listener;
     private final UserJoinViewAdapter.OnRefuseClickListener listenerRefuse;
+    private String[] daysOfWeek;
 
     public interface OnItemClickListener{
-        void onItemClick(User item);
+        void onItemClick(UserDays item);
     }
 
     public interface OnRefuseClickListener {
-        void onRefuseClick(User item);
+        void onRefuseClick(UserDays item);
     }
 
-    public UserJoinViewAdapter(List<User> data, UserJoinViewAdapter.OnItemClickListener listener, UserJoinViewAdapter.OnRefuseClickListener listenerRefuse) {
+    public UserJoinViewAdapter(List<UserDays> data, UserJoinViewAdapter.OnItemClickListener listener, UserJoinViewAdapter.OnRefuseClickListener listenerRefuse) {
         this.data = data;
         this.listener = listener;
         this.listenerRefuse = listenerRefuse;
+        daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
     }
 
     @Override
@@ -46,12 +45,17 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
 
     @Override
     public void onBindViewHolder(UserJoinViewAdapter.UserJoinHolder holder, final int position) {
+        UserDays user = data.get(position);
+        String[] userDays = user.getDays().split(",");
+        String shortDays = "(";
+        for(int i = 0; i<userDays.length; i++){
+            shortDays = shortDays + daysOfWeek[Integer.parseInt(userDays[i])] + ", ";
+        }
+        shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
 
-        User user = data.get(position);
-        holder.txtUsername.setText(user.getUsername() + " " + user.getSurname());
+        holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToRefuse(data.get(position), listenerRefuse);
-
     }
 
     @Override
@@ -64,13 +68,13 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         TextView txtUsername;
         ImageButton btnRefuse;
 
-        public UserJoinHolder(View view) {
+        UserJoinHolder(View view) {
             super(view);
             txtUsername = (TextView) view.findViewById(R.id.joinUsername);
             btnRefuse = (ImageButton) view.findViewById(R.id.btnRefuse);
         }
 
-        public void bind(final User user, final UserJoinViewAdapter.OnItemClickListener listener) {
+        public void bind(final UserDays user, final UserJoinViewAdapter.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
@@ -78,7 +82,7 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
             });
         }
 
-        public void bindToRefuse(final User user, final UserJoinViewAdapter.OnRefuseClickListener listener) {
+        void bindToRefuse(final UserDays user, final UserJoinViewAdapter.OnRefuseClickListener listener) {
             btnRefuse.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

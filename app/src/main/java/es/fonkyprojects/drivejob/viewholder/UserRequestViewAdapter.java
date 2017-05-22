@@ -12,38 +12,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fonkyprojects.drivejob.activity.R;
-import es.fonkyprojects.drivejob.model.User;
-
-/**
- * Created by andre on 03/04/2017.
- */
+import es.fonkyprojects.drivejob.model.UserDays;
+import es.fonkyprojects.drivejob.utils.MyApp;
 
 public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestViewAdapter.UserRequestHolder> {
 
-    private List<User> data = new ArrayList<>();
+    private List<UserDays> data = new ArrayList<>();
     private final UserRequestViewAdapter.OnItemClickListener listener;
     private final UserRequestViewAdapter.OnAcceptClickListener listenerAccept;
     private final UserRequestViewAdapter.OnRefuseClickListener listenerRefuse;
+    private String[] daysOfWeek;
 
     public interface OnItemClickListener{
-        void onItemClick(User item);
+        void onItemClick(UserDays item);
     }
 
     public interface OnAcceptClickListener {
-        void onAcceptClick(User item);
+        void onAcceptClick(UserDays item);
     }
 
     public interface OnRefuseClickListener {
-        void onRefuseClick(User item);
+        void onRefuseClick(UserDays item);
     }
 
-    public UserRequestViewAdapter(List<User> data, UserRequestViewAdapter.OnItemClickListener listener,
-                                  UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
+    public UserRequestViewAdapter(List<UserDays> data, UserRequestViewAdapter.OnItemClickListener listener, UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
                                   UserRequestViewAdapter.OnRefuseClickListener listenerRefuse) {
         this.data = data;
         this.listener = listener;
         this.listenerAccept = listenerAccept;
         this.listenerRefuse = listenerRefuse;
+        daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
+
     }
 
     @Override
@@ -55,8 +54,15 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     @Override
     public void onBindViewHolder(UserRequestViewAdapter.UserRequestHolder holder, final int position) {
 
-        User user = data.get(position);
-        holder.txtUsername.setText(user.getUsername() + " " + user.getSurname());
+        UserDays user = data.get(position);
+        String[] userDays = user.getDays().split(",");
+        String shortDays = "(";
+        for(int i = 0; i<userDays.length; i++){
+            shortDays = shortDays + daysOfWeek[Integer.parseInt(userDays[i])] + ", ";
+        }
+        shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
+
+        holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToAccept(data.get(position), listenerAccept);
         holder.bindToRefuse(data.get(position), listenerRefuse);
@@ -80,7 +86,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             btnRefuse = (ImageButton) view.findViewById(R.id.btnRefuse);
         }
 
-        public void bind(final User user, final UserRequestViewAdapter.OnItemClickListener listener) {
+        public void bind(final UserDays user, final UserRequestViewAdapter.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
@@ -88,7 +94,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        void bindToAccept(final User user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
+        void bindToAccept(final UserDays user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,7 +103,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        void bindToRefuse(final User user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
+        void bindToRefuse(final UserDays user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
             btnRefuse.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

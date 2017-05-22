@@ -2,7 +2,6 @@ package es.fonkyprojects.drivejob.restMethods.RideUserRequest;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,24 +18,20 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.RideUserRequest;
 
-/**
- * Created by andre on 03/02/2017.
- */
-
 public class RideUserRequestPostTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "RideUserRequestPostTask";
 
     private Context context;
     private String result;
-    private RideUserRequest rideUser;
+    private RideUserRequest rideUserRequest;
 
     public RideUserRequestPostTask(Context c) {
         this.context = c;
     }
 
     public void setRideUserRequestPost(RideUserRequest ru){
-        this.rideUser = ru;
+        this.rideUserRequest = ru;
     }
 
 
@@ -68,12 +63,11 @@ public class RideUserRequestPostTask extends AsyncTask<String, Void, String> {
         BufferedWriter bufferedWriter = null;
         BufferedReader bufferedReader = null;
 
-        Log.e(TAG, rideUser.getUserId());
-
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
-        dataToSend.put("rideId", rideUser.getRideId());
-        dataToSend.put("userId", rideUser.getUserId());
+        dataToSend.put("rideId", rideUserRequest.getRideId());
+        dataToSend.put("userId", rideUserRequest.getUserId());
+        dataToSend.put("days", rideUserRequest.getDays());
 
         try {
             //Initialize and config request, the connect to server

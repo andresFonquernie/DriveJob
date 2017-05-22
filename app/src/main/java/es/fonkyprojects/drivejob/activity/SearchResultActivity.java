@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import java.util.List;
 
@@ -56,9 +55,6 @@ public class SearchResultActivity extends Activity {
 
         int maxDistance = sharedPref.getInt("DISTANCE",0);
         int maxTime = sharedPref.getInt("TIME",0);
-
-        Log.e(TAG, maxDistance + " " + maxTime);
-
 
         List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn, days, maxDistance, maxTime);
         adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {

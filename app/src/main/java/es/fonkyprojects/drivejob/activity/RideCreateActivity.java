@@ -42,7 +42,7 @@ import es.fonkyprojects.drivejob.utils.MapsActivity;
 
 public class RideCreateActivity extends Activity implements AdapterView.OnItemSelectedListener{
 
-    private static final String TAG = "CreateRideActivity";
+    //private static final String TAG = "CreateRideActivity";
 
     @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
     @Bind(R.id.input_placeReturn) EditText etPlaceTo;
@@ -59,13 +59,18 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
 
     //Form
     private String userID;
+    private String placeFrom;
+    private String placeTo;
     private String timeG;
     private String timeR;
     private double latGoing;
     private double latReturning;
     private double lngGoing;
     private double lngReturning;
+    private int price;
+    private int passengers;
     private String carID;
+    private int engineId;
 
     //Google Maps
     private int mapsGR;
@@ -77,7 +82,6 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
     private ArrayList<Integer> mUserDays = new ArrayList<>();
 
     private List<Car> inpList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,38 +128,26 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
 
     public void createRide(View view){
 
-        final String placeG = etPlaceFrom.getText().toString();
-        final String placeR = etPlaceTo.getText().toString();
-        String days = Arrays.toString(checkedDays);
-        String checkDays = etDays.getText().toString();
-
-        //Check if price
+        placeFrom = etPlaceFrom.getText().toString();
+        placeTo = etPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
-        final int price;
-        if(sPrice.length()>0)
-            price = Integer.parseInt(sPrice);
-        else
-            price = 0;
-
-        //Check if passengers
         String sPassengers = etPassengers.getText().toString();
-                final int passengers;
-        if(sPassengers.length()>0)
-            passengers = Integer.parseInt(sPassengers);
-        else
-            passengers = 0;
+        String days = Arrays.toString(checkedDays);
+        String validateDays = etDays.getText().toString();
 
-        if (validate(placeG, placeR, checkDays, sPrice, sPassengers)) {
+        if (validate(placeFrom, placeTo, validateDays, sPrice, sPassengers)) {
 
             btnCreate.setEnabled(false);
             Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+            String avSeatsDay = Arrays.toString(days.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").
+                    replace("true", String.valueOf(passengers)).replace("false", String.valueOf(0)).split(","));
 
             String username = getUsername(userID);
-            Ride ride = new Ride(userID, username, timeG, timeR, placeG, placeR, latGoing, latReturning, lngGoing, lngReturning, days,
-                    price, passengers, passengers, carID);
+            Ride ride = new Ride(userID, username, timeG, timeR, placeFrom, placeTo, latGoing, latReturning, lngGoing, lngReturning, days,
+                    price, passengers, avSeatsDay, carID);
             String postKey = writeNewRide(ride);
             ride.setID(postKey);
-            String s = (new SQLConnect()).insertRide(ride);
+            (new SQLConnect()).insertRide(ride, engineId);
 
             if (!postKey.equals("Error")) {
                 Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
@@ -187,16 +179,18 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
             if(resultCode == Activity.RESULT_OK){
-                Bundle MBuddle = data.getExtras();
-                MapLocation ml = (MapLocation) MBuddle.getSerializable(MAPLOC);
+                Bundle mBundle = data.getExtras();
+                MapLocation ml = (MapLocation) mBundle.getSerializable(MAPLOC);
                 if (ml != null) {
                     if(mapsGR == R.id.input_placeGoing) {
                         etPlaceFrom.setText(ml.getAddress());
+                        placeFrom = ml.getAddress();
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
                     if(mapsGR == R.id.input_placeReturn) {
                         etPlaceTo.setText(ml.getAddress());
+                        placeTo = ml.getAddress();
                         lngReturning = ml.getLongitude();
                         latReturning = ml.getLatitude();
                     }
@@ -277,7 +271,7 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
                 Collections.sort(mUserDays);
                 for (int i = 0; i < mUserDays.size(); i++) {
                     item = item + shortListDays[mUserDays.get(i)];
-                    if (i != mUserDays.size() - 1) {
+                    if (i!= mUserDays.size()-1) {
                         item = item + ", ";
                     }
                 }
@@ -305,47 +299,50 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
         mDialog.show();
     }
 
-    private boolean validate(String placeG, String placeR, String checkDays, String price, String passengers) {
+    private boolean validate(String sPlaceFrom, String sPlaceTo, String sCheckDays, String sPrice, String sPassengers) {
         boolean valid = true;
 
-        if (placeG.isEmpty()) {
+        if (sPlaceFrom.isEmpty()) {
             etPlaceFrom.setError(getText(R.string.notNull));
             valid = false;
         } else {  etPlaceFrom.setError(null); }
-        if (placeR.isEmpty()) {
+        if (sPlaceTo.isEmpty()) {
             etPlaceTo.setError(getText(R.string.notNull));
             valid = false;
         } else { etPlaceTo.setError(null);  }
-        if (timeG.isEmpty()) {
+        if (timeG == null || timeG.isEmpty()) {
             etTimeGoing.setError(getText(R.string.notNull));
             valid = false;
         } else { etTimeGoing.setError(null); }
-
-        if (timeR.isEmpty()) {
+        if (timeG == null || timeR.isEmpty()) {
             etTimeReturn.setError(getText(R.string.notNull));
             valid = false;
         } else { etTimeReturn.setError(null); }
-
-        if (checkDays.isEmpty()) {
+        if (sCheckDays.isEmpty()) {
             etDays.setError(getText(R.string.notNull));
             valid = false;
         } else { etDays.setError(null); }
-
-        if (price.isEmpty()) {
+        if (sPrice.isEmpty() || Integer.parseInt(sPrice)==0) {
             etPrice.setError(getText(R.string.notZero));
             valid = false;
-        } else { etPrice.setError(null); }
-
-        if (passengers.isEmpty()) {
+        } else {
+            etPrice.setError(null);
+            price = Integer.parseInt(sPrice);
+        }
+        if (sPassengers.isEmpty() || Integer.parseInt(sPassengers)==0) {
             etPassengers.setError(getText(R.string.notZero));
             valid = false;
-        } else { etPassengers.setError(null); }
+        } else {
+            etPassengers.setError(null);
+            passengers = Integer.parseInt(sPassengers);
+        }
         return valid;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         carID = inpList.get(position).getId();
+        engineId = inpList.get(position).getEngineID();
     }
 
     @Override

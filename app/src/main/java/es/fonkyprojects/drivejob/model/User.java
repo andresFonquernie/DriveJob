@@ -38,6 +38,7 @@ public class User implements Serializable {
     }
 
     public String get_id() { return _id; }
+
     public String getUserId() {
         return userId;
     }
@@ -71,8 +72,6 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 }
 // [END user_class]
 

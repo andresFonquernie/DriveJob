@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,19 +55,11 @@ public class MyCarActivity extends AppCompatActivity {
         try {
             String userId = FirebaseUser.getUid();
             String result = new GetTask(this).execute(Constants.BASE_URL + "car/?authorID=" + userId).get();
-            Log.e(TAG, result);
             Type type = new TypeToken<List<Car>>() {}.getType();
             final List<Car> listCars = new Gson().fromJson(result, type);
 
             //Add to ListView
-            adapter = new CarViewAdapter(listCars, new CarViewAdapter.OnEditClickListener() {
-                @Override
-                public void OnEditClick(Car item) {
-                    Intent intent = new Intent(MyCarActivity.this, CarFormActivity.class);
-                    intent.putExtra(CarFormActivity.EXTRA_CAR, item.getId());
-                    startActivity(intent);
-                }
-            }, new CarViewAdapter.OnDeleteClickListener() {
+            adapter = new CarViewAdapter(listCars, new CarViewAdapter.OnDeleteClickListener() {
                 @Override
                 public void OnDeleteClick(Car item) {
                     deleteCar(item);
@@ -89,7 +80,6 @@ public class MyCarActivity extends AppCompatActivity {
         String result = "";
         try {
             DeleteTask dt = new DeleteTask(getApplicationContext());
-            Log.e(TAG, Constants.BASE_URL + "car/?_id=" + car.getId());
             result = dt.execute(Constants.BASE_URL + "car/?_id=" + car.getId()).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

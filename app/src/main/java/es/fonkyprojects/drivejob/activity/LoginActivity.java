@@ -107,7 +107,6 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     //Login Success
     private void onLoginSuccess(FirebaseUser user) {
         // Go to MainActivity
-        Log.e(TAG, "LOGIN");
         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
         finish();
     }

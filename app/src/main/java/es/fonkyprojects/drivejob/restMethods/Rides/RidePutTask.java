@@ -74,7 +74,7 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
         dataToSend.put("days", ride.getDays());
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
-        dataToSend.put("avSeats", ride.getAvSeats());
+        dataToSend.put("avSeatsDay", ride.getAvSeatsDay());
         dataToSend.put("carID", ride.getCarID());
 
         try {

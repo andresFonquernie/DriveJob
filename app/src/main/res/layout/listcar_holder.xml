@@ -30,13 +30,4 @@
         android:layout_alignParentEnd="true"
         android:contentDescription="@string/pictureRefuse"
         android:src="@drawable/ic_cancel_white_24dp" />
-
-    <ImageButton
-        android:id="@+id/btnEditCar"
-        android:layout_width="@dimen/icon_width"
-        android:layout_height="@dimen/icon_height"
-        android:layout_alignTop="@id/carDetail"
-        android:layout_toStartOf="@id/btnDeleteCar"
-        android:contentDescription="@string/edit"
-        android:src="@drawable/ic_mode_edit_white_24dp" />
 </RelativeLayout>

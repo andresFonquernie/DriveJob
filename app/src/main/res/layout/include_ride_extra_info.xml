@@ -16,7 +16,7 @@
         tools:text="@string/days" />
 
     <TextView
-        android:id="@+id/ride_prize"
+        android:id="@+id/ride_price"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         tools:text="@string/price" />
 
     <TextView
-        android:id="@+id/ride_passengers"
+        android:id="@+id/ride_avSeatsDay"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

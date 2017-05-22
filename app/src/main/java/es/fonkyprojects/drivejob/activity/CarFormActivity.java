@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,26 +20,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.restMethods.Car.CarPostTask;
-import es.fonkyprojects.drivejob.restMethods.Car.CarPutTask;
-import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
 public class CarFormActivity extends Activity implements AdapterView.OnItemSelectedListener{
 
     private static final String TAG = "FormCarActivity";
-    public static final String EXTRA_CAR = "car";
 
-    private boolean create = true;
     private int engineId = 0;
 
     @Bind(R.id.input_brand) EditText etBrand;
     @Bind(R.id.input_model) EditText etModel;
     Spinner etEngine;
     @Bind(R.id.btn_addCar) Button btnCar;
-
-    //Form
-    private String mCar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,31 +46,6 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         etEngine.setAdapter(listEngine);
         etEngine.setSelection(engineId);
         etEngine.setOnItemSelectedListener(this);
-
-        mCar = getIntent().getStringExtra(EXTRA_CAR);
-        if (mCar != null) {
-            create = false;
-            btnCar.setText(getString(R.string.edit_car));
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //Check if Ride exists
-        if (mCar != null) {
-            try {
-                String result = new GetTask(this).execute(Constants.BASE_URL + "car/" + mCar).get();
-                Car car = new Gson().fromJson(result, Car.class);
-                etBrand.setText(car.getBrand());
-                etModel.setText(car.getModel());
-                etEngine.setSelection(car.getEngineID());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     public void getData(View view){
@@ -98,13 +65,9 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         progressDialog.setMessage("Creating car...");
         progressDialog.show();
 
-        String result;
-        if(create)
-            result = writeNewCar(brand, model);
-        else
-            result = editCar(brand, model);
+        String result = writeNewCar(brand, model);
 
-        if(result.equals("Update") || !result.equals("Error")){
+        if(!result.equals("Error")){
             progressDialog.dismiss();
             btnCar.setEnabled(true);
             Intent intent = new Intent(getApplicationContext(),MyCarActivity.class);
@@ -126,22 +89,7 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
             cpt.setCarPost(new Car(FirebaseUser.getUid(), brand, model, engineId));
             result = cpt.execute(Constants.BASE_URL + "car").get();
             Car c = new Gson().fromJson(result, Car.class);
-            Log.e(TAG, "RESULT: " + result);
-            Log.e(TAG, c.toString());
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    private String editCar(String brand, String model){
-        String result = "";
-        try {
-            CarPutTask cpt = new CarPutTask(this);
-            cpt.setCarPut(new Car(FirebaseUser.getUid(), brand, model, engineId));
-            result = cpt.execute(Constants.BASE_URL + "car/" + mCar).get();
-            Log.e(TAG, "RESULT PUT CAR: " + result);
-        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return result;

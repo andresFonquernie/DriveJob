@@ -3,7 +3,6 @@ package es.fonkyprojects.drivejob.restMethods.Rides;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,8 +79,6 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         BufferedWriter bufferedWriter = null;
         BufferedReader bufferedReader = null;
 
-        Log.e(TAG, ride.getAuthor());
-
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
         dataToSend.put("authorID", ride.getAuthorID());
@@ -97,7 +94,7 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         dataToSend.put("days", ride.getDays());
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
-        dataToSend.put("avSeats", ride.getAvSeats());
+        dataToSend.put("avSeatsDay", ride.getAvSeatsDay());
         dataToSend.put("carID", ride.getCarID());
 
         try {

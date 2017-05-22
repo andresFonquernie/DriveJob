@@ -37,7 +37,7 @@
     <string name="days">Days</string>
     <string name="price">Price</string>
     <string name="passengers">Passengers</string>
-    <string name="avSeats">Seats left</string>
+    <string name="avSeatsDay">Seats left per day</string>
 
     <!-- RideDetail Activity -->
     <string name="edit">Edit</string> <!-- Menu -->
@@ -48,16 +48,13 @@
     <string name="returningDetail">Returning: %s</string>
     <string name="daysDetail">Days: %s</string>
     <string name="priceDetail">Price: %d</string>
-    <string name="avseatsDetail">Seats left: %d</string>
+    <string name="avSeatsDayDetail">Avalaible Seats left per day: %s</string>
     <string name="carDetail">Car: %s</string>
     <string name="join_ride">Join</string> <!-- List -->
     <string name="usersjoin">Joined</string>
     <string name="usersrequest">Requests</string>
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
-    <string name="pictureUsername" translatable="false">Username picture</string> <!-- Pictures -->
-    <string name="pictureAccept" translatable="false">Accept picture</string>
-    <string name="pictureRefuse" translatable="false">Refuse picture</string>
 
     <!-- SearchRide Activity -->
     <string name="searchresults">Search results</string>
@@ -132,7 +129,13 @@
     <!-- Errors in forms -->
     <string name="notNull">Not null</string>
     <string name="notZero">Not 0</string>
+    <string name="notAvSeatsSpace">There are without seats</string>
 
+    <!-- Pictures -->
+    <string name="pictureUsername" translatable="false">Username picture</string>
+    <string name="pictureAccept" translatable="false">Accept picture</string>
+    <string name="pictureRefuse" translatable="false">Refuse picture</string>
+    <string name="pictureElectric" translatable="false">Electric picture</string>
 
     <string name="users">Users</string>
 

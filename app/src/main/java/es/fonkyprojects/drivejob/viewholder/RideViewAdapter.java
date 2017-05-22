@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,7 +45,9 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
         holder. txtTimeGoing.setText(timeGoingSplit[0] + ":" + timeGoingSplit[1]);
         String[] timeReturnSplit = ride.getTimeReturn().split(":");
         holder.txtTimeReturn.setText(timeReturnSplit[0] + ":" + timeReturnSplit[1]);
-
+        if(ride.getEngineId() == 3){
+            holder.electric.setVisibility(View.VISIBLE);
+        }
         holder.bind(data.get(position), listener);
     }
 
@@ -56,6 +59,7 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
 
     static class RideHolder extends RecyclerView.ViewHolder {
         //ImageView img;
+        ImageView electric;
         TextView txtUsername;
         TextView txtPlaceGoing;
         TextView txtPlaceReturn;
@@ -64,6 +68,7 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
 
         RideHolder(View view) {
             super(view);
+            electric = (ImageView) view.findViewById(R.id.electricIcon);
             txtUsername = (TextView) view.findViewById(R.id.username);
             txtPlaceGoing = (TextView) view.findViewById(R.id.placeFrom);
             txtPlaceReturn = (TextView) view.findViewById(R.id.placeTo);

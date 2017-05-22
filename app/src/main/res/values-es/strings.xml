@@ -29,7 +29,6 @@
     <string name="days">Días</string>
     <string name="price">Precio</string>
     <string name="passengers">Pasajeros</string>
-    <string name="avSeats">Asientos disponibles</string>
 
     <!-- RideDetail Activity -->
     <string name="edit">Editar</string> <!-- Menu -->
@@ -40,7 +39,7 @@
     <string name="returningDetail">Vuelta: %s</string>
     <string name="daysDetail">Días: %s</string>
     <string name="priceDetail">Precio: %d</string>
-    <string name="avseatsDetail">Asientos disponibles: %d</string>
+    <string name="avSeatsDayDetail">Asientos disponibles: %s</string>
     <string name="join_ride">Unirse</string> <!-- List -->
     <string name="usersjoin">Unidos</string>
     <string name="usersrequest">Solicitudes</string>

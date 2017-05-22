@@ -12,14 +12,16 @@ public class RideUserRequest {
     private String _id;
     private String rideId;
     private String userId;
+    private String days;
 
     public RideUserRequest() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public RideUserRequest(String rideId, String userId) {
+    public RideUserRequest(String rideId, String userId, String days) {
         this.rideId = rideId;
         this.userId = userId;
+        this.days = days;
     }
 
     public String toString(){
@@ -36,12 +38,20 @@ public class RideUserRequest {
         return userId;
     }
 
+    public String getDays() {
+        return days;
+    }
+
     public void setRideId(String rideId) {
         this.rideId = rideId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setDays(String days) {
+        this.days = days;
     }
 }
 // [END user_class]

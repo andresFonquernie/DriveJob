@@ -71,6 +71,7 @@ public class RideUserPostTask extends AsyncTask<String, Void, String> {
         JSONObject dataToSend = new JSONObject();
         dataToSend.put("rideId", rideUser.getRideId());
         dataToSend.put("userId", rideUser.getUserId());
+        dataToSend.put("days", rideUser.getDays());
 
         try {
             //Initialize and config request, the connect to server
