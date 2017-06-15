@@ -13,26 +13,21 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
-import es.fonkyprojects.drivejob.model.Ride;
-
-/**
- * Created by andre on 29/01/2017.
- */
-
-public class RidePutTask extends AsyncTask<String, Void, String> {
+import es.fonkyprojects.drivejob.model.UserDays;
+public class RideRequestPutTask extends AsyncTask<String, Void, String> {
 
     Context context;
     String result;
+    private List<UserDays> ud;
 
-    private Ride ride;
-
-    public RidePutTask(Context c) {
+    public RideRequestPutTask(Context c) {
         this.context = c;
     }
 
-    public void setRidePut(Ride r){
-        this.ride = r;
+    public void setRideRequestPutTask(List<UserDays> ud){
+        this.ud = ud;
     }
 
     @Override
@@ -64,22 +59,15 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
 
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
-        dataToSend.put("timeGoing", ride.getTimeGoing());
-        dataToSend.put("timeReturn", ride.getTimeReturn());
-        dataToSend.put("placeGoing", ride.getPlaceGoing());
-        dataToSend.put("placeReturn", ride.getPlaceReturn());
-        dataToSend.put("latGoing", ride.getLatGoing());
-        dataToSend.put("latReturn", ride.getLatReturn());
-        dataToSend.put("lngGoing", ride.getLngGoing());
-        dataToSend.put("lngReturn", ride.getLngReturn());
-        dataToSend.put("price", ride.getPrice());
-        dataToSend.put("passengers", ride.getPassengers());
-        dataToSend.put("carID", ride.getCarID());
-
-        JSONArray jsDays = new JSONArray(ride.getDays());
-        dataToSend.put("days", jsDays);
-        JSONArray jsSeats = new JSONArray(ride.getAvSeats());
-        dataToSend.put("avSeats", jsSeats);
+        JSONArray jsRequest = new JSONArray();
+        for (int i=0; i<ud.size(); i++){
+            JSONObject jso = new JSONObject();
+            jso.put("userId", ud.get(i).getUserId());
+            JSONArray days = new JSONArray(ud.get(i).getDays());
+            jso.put("days",  days);
+            jsRequest.put(jso);
+        }
+        dataToSend.put("request", jsRequest);
 
         try {
             //Initialize and config request, the connect to server
@@ -112,4 +100,3 @@ public class RidePutTask extends AsyncTask<String, Void, String> {
         }
     }
 }
-

@@ -7,7 +7,7 @@
     android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/activity_top_margin"
-    tools:context=".MyCarActivity">
+    tools:context=".CarListActivity">
 
     <TextView
         android:id="@+id/mycar"

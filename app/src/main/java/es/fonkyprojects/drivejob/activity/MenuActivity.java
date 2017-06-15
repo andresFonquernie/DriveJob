@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
@@ -27,9 +27,9 @@ import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
 public class MenuActivity extends AppCompatActivity{
 
-    @Bind(R.id.btn_create) Button btnCreate;
-    @Bind(R.id.btn_search) Button btnSearch;
-    @Bind(R.id.btn_myrides) Button btnMyRides;
+    @BindView(R.id.btn_create) Button btnCreate;
+    @BindView(R.id.btn_search) Button btnSearch;
+    @BindView(R.id.btn_myrides) Button btnMyRides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,7 @@ public class MenuActivity extends AppCompatActivity{
     }
 
     public void myCarMenu(View view){
-        startActivity(new Intent(MenuActivity.this, MyCarActivity.class));
+        startActivity(new Intent(MenuActivity.this, CarListActivity.class));
     }
 
     //subscribe topics

@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.Users.UserPutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
@@ -21,13 +22,12 @@ public class MyProfileEditActivity extends AppCompatActivity {
     private static final String TAG = "MyProfileActivity";
     public static final String EXTRA_USER = "user";
 
-    private ImageView userImage;
-    private TextView userName;
-    private TextView userSurname;
-    private TextView userEmail;
-    private TextView userPhone;
-
-    private Button btnEditUser;
+    @BindView(R.id.edit_userImage) ImageView userImage;
+    @BindView(R.id.edit_userName) TextView userName;
+    @BindView(R.id.edit_userSurname) TextView userSurname;
+    @BindView(R.id.edit_userEmail) TextView userEmail;
+    @BindView(R.id.edit_userPhone) TextView userPhone;
+    @BindView(R.id.btn_editUser) TextView btnEditUser;
 
     private User user;
     private String userId;
@@ -37,25 +37,13 @@ public class MyProfileEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
+        ButterKnife.bind(this);
 
         // Get user from intent
         user = (User) getIntent().getSerializableExtra(EXTRA_USER);
         if (user == null) {
             throw new IllegalArgumentException("Must pass EXTRA_USER");
         }
-
-        // Initialize Views
-        userName = (TextView) findViewById(R.id.edit_userName);
-        userSurname = (TextView) findViewById(R.id.edit_userSurname);
-        userEmail = (TextView) findViewById(R.id.edit_userEmail);
-
-        btnEditUser = (Button) findViewById(R.id.btn_editUser);
-        btnEditUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editUser(view);
-            }
-        });
     }
 
 

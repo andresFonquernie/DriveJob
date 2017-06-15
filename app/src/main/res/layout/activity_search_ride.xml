@@ -82,7 +82,8 @@
             android:id="@+id/btn_search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/search"/>
+            android:text="@string/search"
+            android:onClick="searchRide"/>
 
     </LinearLayout>
 </ScrollView>

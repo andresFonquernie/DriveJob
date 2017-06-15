@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.restMethods.Car.CarPostTask;
@@ -29,10 +29,10 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
 
     private int engineId = 0;
 
-    @Bind(R.id.input_brand) EditText etBrand;
-    @Bind(R.id.input_model) EditText etModel;
-    Spinner etEngine;
-    @Bind(R.id.btn_addCar) Button btnCar;
+    @BindView(R.id.input_brand) EditText etBrand;
+    @BindView(R.id.input_model) EditText etModel;
+    @BindView(R.id.btn_addCar) Button btnCar;
+    @BindView(R.id.input_engine) Spinner etEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         setContentView(R.layout.activity_car_form);
         ButterKnife.bind(this);
 
-        etEngine = (Spinner) findViewById(R.id.input_engine);
+        //Spinner
         ArrayAdapter<CharSequence> listEngine = ArrayAdapter.createFromResource(this, R.array.engineType, android.R.layout.simple_spinner_item);
         listEngine.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         etEngine.setAdapter(listEngine);
@@ -48,7 +48,7 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         etEngine.setOnItemSelectedListener(this);
     }
 
-    public void getData(View view){
+    public void writeCar(View view){
         String brand = etBrand.getText().toString();
         String model = etModel.getText().toString();
         if(!validate(brand, model)){
@@ -65,15 +65,15 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         progressDialog.setMessage("Creating car...");
         progressDialog.show();
 
-        String result = writeNewCar(brand, model);
+        String result = postCar(brand, model);
 
         if(!result.equals("Error")){
             progressDialog.dismiss();
             btnCar.setEnabled(true);
-            Intent intent = new Intent(getApplicationContext(),MyCarActivity.class);
+            Intent intent = new Intent(getApplicationContext(),CarListActivity.class);
             startActivity(intent);
-            finish();
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            finish();
         }
     }
 
@@ -82,7 +82,7 @@ public class CarFormActivity extends Activity implements AdapterView.OnItemSelec
         btnCar.setEnabled(true);
     }
 
-    private String writeNewCar(String brand, String model){
+    private String postCar(String brand, String model){
         String result = "";
         try {
             CarPostTask cpt = new CarPostTask(this);

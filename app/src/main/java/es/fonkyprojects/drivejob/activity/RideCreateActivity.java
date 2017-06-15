@@ -21,19 +21,19 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindArray;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Car;
-import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.User;
+import es.fonkyprojects.drivejob.model.UserDays;
+import es.fonkyprojects.drivejob.model.local.MapLocation;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePostTask;
 import es.fonkyprojects.drivejob.utils.Constants;
@@ -44,25 +44,23 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
 
     //private static final String TAG = "CreateRideActivity";
 
-    @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
-    @Bind(R.id.input_placeReturn) EditText etPlaceTo;
-    @Bind(R.id.input_timeGoing)  EditText etTimeGoing;
-    @Bind(R.id.input_timeReturn) EditText etTimeReturn;
-    @Bind(R.id.input_days) EditText etDays;
-    @Bind(R.id.input_price) EditText etPrice;
-    @Bind(R.id.input_passengers) EditText etPassengers;
-    Spinner spinCar;
-    @Bind(R.id.btn_create) Button btnCreate;
+    @BindView(R.id.input_placeGoing) EditText etPlaceFrom;
+    @BindView(R.id.input_placeReturn) EditText etPlaceTo;
+    @BindView(R.id.input_timeGoing)  EditText etTimeGoing;
+    @BindView(R.id.input_timeReturn) EditText etTimeReturn;
+    @BindView(R.id.input_days) EditText etDays;
+    @BindView(R.id.input_price) EditText etPrice;
+    @BindView(R.id.input_passengers) EditText etPassengers;
+    @BindView(R.id.spinner_car) Spinner spinCar;
+    @BindView(R.id.btn_create) Button btnCreate;
 
-    public static final int MAP_ACTIVITY = 0;
-    public static final String MAPLOC = "MAPLOC";
 
     //Form
     private String userID;
     private String placeFrom;
     private String placeTo;
-    private String timeG;
-    private String timeR;
+    private String timeGoing;
+    private String timeReturn;
     private double latGoing;
     private double latReturning;
     private double lngGoing;
@@ -74,13 +72,17 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
 
     //Google Maps
     private int mapsGR;
+    public static final int MAP_ACTIVITY = 0;
+    public static final String MAPLOC = "MAPLOC";
+
 
     //Days of week
-    private String[] listDays;
-    private String[] shortListDays;
+    @BindArray(R.array.daysofweek) String[] listDays;
+    @BindArray(R.array.shortdaysofweek) String[] shortListDays;
     private boolean[] checkedDays;
-    private ArrayList<Integer> mUserDays = new ArrayList<>();
+    private ArrayList<Integer> mUserDays;
 
+    //Cars
     private List<Car> inpList;
 
     @Override
@@ -89,9 +91,8 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
         setContentView(R.layout.activity_ride_create);
         ButterKnife.bind(this);
 
-        listDays = getResources().getStringArray(R.array.daysofweek);
-        shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
         checkedDays = new boolean[listDays.length];
+        mUserDays = new ArrayList<>();
 
         userID = FirebaseUser.getUid();
     }
@@ -111,7 +112,6 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
                 listCar.add(c.toString());
             }
 
-            spinCar = (Spinner) findViewById(R.id.spinner_car);
             ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listCar);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinCar.setAdapter(adapter);
@@ -132,22 +132,35 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
         placeTo = etPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
         String sPassengers = etPassengers.getText().toString();
-        String days = Arrays.toString(checkedDays);
         String validateDays = etDays.getText().toString();
 
         if (validate(placeFrom, placeTo, validateDays, sPrice, sPassengers)) {
 
             btnCreate.setEnabled(false);
             Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
-            String avSeatsDay = Arrays.toString(days.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").
-                    replace("true", String.valueOf(passengers)).replace("false", String.valueOf(0)).split(","));
+
+            List<Boolean> days = new ArrayList<>();
+            List<Integer> avSeatsDay = new ArrayList<>();
+            for (boolean checkedDay : checkedDays) {
+                if (checkedDay) {
+                    days.add(true);
+                    avSeatsDay.add(passengers);
+                } else {
+                    days.add(false);
+                    avSeatsDay.add(0);
+                }
+            }
+
+            List<UserDays> request = new ArrayList<>();
+            List<UserDays> join = new ArrayList<>();
 
             String username = getUsername(userID);
-            Ride ride = new Ride(userID, username, timeG, timeR, placeFrom, placeTo, latGoing, latReturning, lngGoing, lngReturning, days,
-                    price, passengers, avSeatsDay, carID);
+            Ride ride = new Ride(userID, username, timeGoing, timeReturn, placeFrom, placeTo, latGoing, latReturning, lngGoing,
+                    lngReturning, days, avSeatsDay, price, passengers, carID, request, join);
             String postKey = writeNewRide(ride);
             ride.setID(postKey);
-            (new SQLConnect()).insertRide(ride, engineId);
+            //TODO
+            //(new SQLConnect()).insertRide(ride, engineId);
 
             if (!postKey.equals("Error")) {
                 Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
@@ -236,12 +249,12 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
                 c.set(Calendar.MINUTE, selectedMinute);
                 SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
                 if(result == R.id.input_timeGoing){
-                    timeG = formatTime.format(c.getTime());
-                    etTimeGoing.setText(timeG);
+                    timeGoing = formatTime.format(c.getTime());
+                    etTimeGoing.setText(timeGoing);
                 }
                 else if(result == R.id.input_timeReturn){
-                    timeR = formatTime.format(c.getTime());
-                    etTimeReturn.setText(timeR);
+                    timeReturn = formatTime.format(c.getTime());
+                    etTimeReturn.setText(timeReturn);
                 }
             }
 
@@ -310,11 +323,11 @@ public class RideCreateActivity extends Activity implements AdapterView.OnItemSe
             etPlaceTo.setError(getText(R.string.notNull));
             valid = false;
         } else { etPlaceTo.setError(null);  }
-        if (timeG == null || timeG.isEmpty()) {
+        if (timeGoing == null || timeGoing.isEmpty()) {
             etTimeGoing.setError(getText(R.string.notNull));
             valid = false;
         } else { etTimeGoing.setError(null); }
-        if (timeG == null || timeR.isEmpty()) {
+        if (timeGoing == null || timeReturn.isEmpty()) {
             etTimeReturn.setError(getText(R.string.notNull));
             valid = false;
         } else { etTimeReturn.setError(null); }

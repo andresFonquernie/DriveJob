@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,11 +92,35 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         dataToSend.put("latReturn", ride.getLatReturn());
         dataToSend.put("lngGoing", ride.getLngGoing());
         dataToSend.put("lngReturn", ride.getLngReturn());
-        dataToSend.put("days", ride.getDays());
         dataToSend.put("price", ride.getPrice());
         dataToSend.put("passengers", ride.getPassengers());
-        dataToSend.put("avSeatsDay", ride.getAvSeatsDay());
         dataToSend.put("carID", ride.getCarID());
+
+        JSONArray jsDays = new JSONArray(ride.getDays());
+        dataToSend.put("days", jsDays);
+        JSONArray jsSeats = new JSONArray(ride.getAvSeats());
+        dataToSend.put("avSeats", jsSeats);
+
+        JSONArray jsRequest = new JSONArray();
+        for (int i=0; i<ride.getRequest().size(); i++){
+            JSONObject jso = new JSONObject();
+            jso.put("userId", ride.getRequest().get(i).getUserId());
+            JSONArray days = new JSONArray(ride.getRequest().get(i).getDays());
+            jso.put("days",  days);
+            jsRequest.put(jso);
+        }
+        dataToSend.put("request", jsRequest);
+
+        JSONArray jsJoin = new JSONArray();
+        for (int i=0; i<ride.getJoin().size(); i++){
+            JSONObject jso = new JSONObject();
+            jso.put("userId", ride.getJoin().get(i).getUserId());
+            JSONArray days = new JSONArray(ride.getJoin().get(i).getDays());
+            jso.put("days",  days);
+            jsRequest.put(jso);
+        }
+        dataToSend.put("join", jsJoin);
+
 
         try {
             //Initialize and config request, the connect to server
@@ -124,12 +149,8 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
 
             return result.toString();
         } finally {
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
-            }
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
+            if (bufferedWriter != null) { bufferedWriter.close(); }
+            if (bufferedReader != null) { bufferedReader.close(); }
         }
     }
 }

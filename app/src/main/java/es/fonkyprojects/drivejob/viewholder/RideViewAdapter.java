@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.activity.R;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.utils.MyApp;
@@ -58,22 +60,16 @@ public class RideViewAdapter extends RecyclerView.Adapter<RideViewAdapter.RideHo
     }
 
     static class RideHolder extends RecyclerView.ViewHolder {
-        //ImageView img;
-        ImageView electric;
-        TextView txtUsername;
-        TextView txtPlaceGoing;
-        TextView txtPlaceReturn;
-        TextView txtTimeGoing;
-        TextView txtTimeReturn;
+        @BindView(R.id.electricIcon) ImageView electric;
+        @BindView(R.id.username) TextView txtUsername;
+        @BindView(R.id.placeFrom) TextView txtPlaceGoing;
+        @BindView(R.id.placeTo) TextView txtPlaceReturn;
+        @BindView(R.id.timeFrom) TextView txtTimeGoing;
+        @BindView(R.id.timeTo) TextView txtTimeReturn;
 
         RideHolder(View view) {
             super(view);
-            electric = (ImageView) view.findViewById(R.id.electricIcon);
-            txtUsername = (TextView) view.findViewById(R.id.username);
-            txtPlaceGoing = (TextView) view.findViewById(R.id.placeFrom);
-            txtPlaceReturn = (TextView) view.findViewById(R.id.placeTo);
-            txtTimeGoing = (TextView) view.findViewById(R.id.timeFrom);
-            txtTimeReturn = (TextView) view.findViewById(R.id.timeTo);
+            ButterKnife.bind(this, view);
         }
 
         public void bind(final Ride ride, final OnItemClickListener listener) {

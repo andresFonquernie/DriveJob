@@ -11,31 +11,33 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.activity.R;
-import es.fonkyprojects.drivejob.model.UserDays;
+import es.fonkyprojects.drivejob.model.local.UsernameDays;
 import es.fonkyprojects.drivejob.utils.MyApp;
 
 public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestViewAdapter.UserRequestHolder> {
 
-    private List<UserDays> data = new ArrayList<>();
+    private List<UsernameDays> data = new ArrayList<>();
     private final UserRequestViewAdapter.OnItemClickListener listener;
     private final UserRequestViewAdapter.OnAcceptClickListener listenerAccept;
     private final UserRequestViewAdapter.OnRefuseClickListener listenerRefuse;
     private String[] daysOfWeek;
 
     public interface OnItemClickListener{
-        void onItemClick(UserDays item);
+        void onItemClick(UsernameDays item);
     }
 
     public interface OnAcceptClickListener {
-        void onAcceptClick(UserDays item);
+        void onAcceptClick(UsernameDays item);
     }
 
     public interface OnRefuseClickListener {
-        void onRefuseClick(UserDays item);
+        void onRefuseClick(UsernameDays item);
     }
 
-    public UserRequestViewAdapter(List<UserDays> data, UserRequestViewAdapter.OnItemClickListener listener, UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
+    public UserRequestViewAdapter(List<UsernameDays> data, UserRequestViewAdapter.OnItemClickListener listener, UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
                                   UserRequestViewAdapter.OnRefuseClickListener listenerRefuse) {
         this.data = data;
         this.listener = listener;
@@ -54,11 +56,11 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     @Override
     public void onBindViewHolder(UserRequestViewAdapter.UserRequestHolder holder, final int position) {
 
-        UserDays user = data.get(position);
-        String[] userDays = user.getDays().split(",");
+        UsernameDays user = data.get(position);
+        List<Integer> listUserDays = user.getDays();
         String shortDays = "(";
-        for(int i = 0; i<userDays.length; i++){
-            shortDays = shortDays + daysOfWeek[Integer.parseInt(userDays[i])] + ", ";
+        for(int i = 0; i<listUserDays.size(); i++){
+            shortDays = shortDays + daysOfWeek[listUserDays.get(i)] + ", ";
         }
         shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
 
@@ -74,19 +76,17 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     }
 
     static class UserRequestHolder extends RecyclerView.ViewHolder {
-        ImageView img;
-        TextView txtUsername;
-        ImageButton btnAccept;
-        ImageButton btnRefuse;
+        @BindView(R.id.authorImage) ImageView img;
+        @BindView (R.id.requestUsername) TextView txtUsername;
+        @BindView(R.id.btnAccept) ImageButton btnAccept;
+        @BindView(R.id.btnRefuse) ImageButton btnRefuse;
 
         UserRequestHolder(View view) {
             super(view);
-            txtUsername = (TextView) view.findViewById(R.id.requestUsername);
-            btnAccept = (ImageButton) view.findViewById(R.id.btnAccept);
-            btnRefuse = (ImageButton) view.findViewById(R.id.btnRefuse);
+            ButterKnife.bind(this, view);
         }
 
-        public void bind(final UserDays user, final UserRequestViewAdapter.OnItemClickListener listener) {
+        public void bind(final UsernameDays user, final UserRequestViewAdapter.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
@@ -94,7 +94,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        void bindToAccept(final UserDays user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
+        void bindToAccept(final UsernameDays user, final UserRequestViewAdapter.OnAcceptClickListener listener) {
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,7 +103,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
             });
         }
 
-        void bindToRefuse(final UserDays user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
+        void bindToRefuse(final UsernameDays user, final UserRequestViewAdapter.OnRefuseClickListener listener) {
             btnRefuse.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

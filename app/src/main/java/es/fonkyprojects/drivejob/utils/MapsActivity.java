@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.List;
 
 import es.fonkyprojects.drivejob.activity.R;
-import es.fonkyprojects.drivejob.model.MapLocation;
+import es.fonkyprojects.drivejob.model.local.MapLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -102,17 +102,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onSearch(View view) {
         String location = edt.getText().toString();
         List<Address> addressList = null;
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            addressList = geocoder.getFromLocationName(location, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        Address address = addressList.get(0);
+        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
     @Override
@@ -148,13 +146,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<Address> addressList = null;
         try {
             addressList = geocoder.getFromLocation(point.latitude, point.longitude, 1);
+            Address address = addressList.get(0);
+            edt.setText(address.getAddressLine(0));
+            ml = new MapLocation(address.getAddressLine(0), address.getLongitude(),address.getLatitude());
+            mCurrLocationMarker.setTitle(address.getLocality());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Address address = addressList.get(0);
-        edt.setText(address.getAddressLine(0));
-        ml = new MapLocation(address.getAddressLine(0), address.getLongitude(),address.getLatitude());
-        mCurrLocationMarker.setTitle(address.getLocality());
     }
 
     protected synchronized void buildGoogleApiClient() {

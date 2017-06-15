@@ -1,9 +1,5 @@
 package es.fonkyprojects.drivejob.model;
 
-/**
- * Created by andre on 08/05/2017.
- */
-
 public class Messaging {
 
     private String username;
@@ -13,7 +9,6 @@ public class Messaging {
 
 
     public Messaging() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
     public Messaging(String username, String userId, String key, int value) {

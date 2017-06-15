@@ -3,6 +3,7 @@ package es.fonkyprojects.drivejob.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.List;
 
 // [START ride_class]
 @IgnoreExtraProperties
@@ -19,40 +20,23 @@ public class Ride implements Serializable {
     private double latReturn;
     private double lngGoing;
     private double lngReturn;
-    private String days;
+    private List<Boolean> days;
+    private List<Integer> avSeats;
     private int price;
     private int passengers;
-    private String avSeatsDay;
     private String carID;
     private int engineId;
+    private List<UserDays> request;
+    private List<UserDays> join;
 
     public Ride() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers,
-                String avSeatsDay, String carID) {
-        this.authorID = authorID;
-        this.author = author;
-        this.timeGoing = timeGoing;
-        this.timeReturn = timeReturn;
-        this.placeGoing = placeGoing;
-        this.placeReturn = placeReturn;
-        this.latGoing = latGoing;
-        this.latReturn = latReturn;
-        this.lngGoing = lngGoing;
-        this.lngReturn = lngReturn;
-        this.days = days;
-        this.price = price;
-        this.passengers = passengers;
-        this.avSeatsDay = avSeatsDay;
-        this.carID = carID;
-    }
-
+    //Complete constructor
     public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
-                double latGoing, double latReturn, double lngGoing, double lngReturn, String days, int price, int passengers,
-                String avSeatsDay, String carID) {
+                double latGoing, double latReturn, double lngGoing, double lngReturn, List<Boolean> days, List<Integer> avSeats,
+                int price, int passengers, String carID, int engineId, List<UserDays> request, List<UserDays> join) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -67,12 +51,19 @@ public class Ride implements Serializable {
         this.days = days;
         this.price = price;
         this.passengers = passengers;
-        this.avSeatsDay = avSeatsDay;
+        this.avSeats = avSeats;
         this.carID = carID;
+        this.engineId = engineId;
+        this.request = request;
+        this.join = join;
     }
 
-    public Ride(String timeGoing, String timeReturn, String placeGoing, String placeReturn, double latGoing, double latReturn,
-                double lngGoing, double lngReturn, String days, int price, int passengers, String avSeatsDay, String carID){
+    //Create ride constructor
+    public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
+                double latGoing, double latReturn, double lngGoing, double lngReturn, List<Boolean> days, List<Integer> avSeats,
+                int price, int passengers, String carID, List<UserDays> request, List<UserDays> join) {
+        this.authorID = authorID;
+        this.author = author;
         this.timeGoing = timeGoing;
         this.timeReturn = timeReturn;
         this.placeGoing = placeGoing;
@@ -84,12 +75,67 @@ public class Ride implements Serializable {
         this.days = days;
         this.price = price;
         this.passengers = passengers;
-        this.avSeatsDay = avSeatsDay;
+        this.avSeats = avSeats;
+        this.carID = carID;
+        this.request = request;
+        this.join = join;
+    }
+
+    //Edit ride constructor
+    public Ride(String timeGoing, String timeReturn, String placeGoing, String placeReturn, double latGoing, double latReturn,
+                double lngGoing, double lngReturn, List<Boolean> days, List<Integer> avSeats, int price, int passengers,
+                String carID){
+        this.timeGoing = timeGoing;
+        this.timeReturn = timeReturn;
+        this.placeGoing = placeGoing;
+        this.placeReturn = placeReturn;
+        this.latGoing = latGoing;
+        this.latReturn = latReturn;
+        this.lngGoing = lngGoing;
+        this.lngReturn = lngReturn;
+        this.days = days;
+        this.price = price;
+        this.passengers = passengers;
+        this.avSeats = avSeats;
         this.carID = carID;
     }
 
+    //Search ride constructor
+    public Ride(String authorID, String timeGoing, String timeReturn, double latGoing, double latReturn,
+                      double lngGoing, double lngReturn, List<Boolean> days) {
+        this.authorID = authorID;
+        this.timeGoing = timeGoing;
+        this.timeReturn = timeReturn;
+        this.latGoing = latGoing;
+        this.latReturn = latReturn;
+        this.lngGoing = lngGoing;
+        this.lngReturn = lngReturn;
+        this.days = days;
+    }
+
+    @Override
     public String toString(){
-        return placeGoing + " " + placeReturn + " " + author;
+        String s;
+        s = "_id: " + _id + "\n";
+        s = s + "authorID: " + authorID + "\n";
+        s = s + "author: " + author + "\n";
+        s = s + "timeGoing: " + timeGoing + "\n";
+        s = s + "timeReturn: " + timeReturn + "\n";
+        s = s + "placeGoing: " + placeGoing + "\n";
+        s = s + "placeReturn: " + placeReturn + "\n";
+        s = s + "latGoing: " + latGoing + "\n";
+        s = s + "latReturn: " + latReturn + "\n";
+        s = s + "lngGoing: " + lngGoing + "\n";
+        s = s + "lngReturn: " + lngReturn + "\n";
+        s = s + "days: " +  days + "\n";
+        s = s + "avSeats: " + avSeats + "\n";
+        s = s + "price: " + price + "\n";
+        s = s + "passengers: " + passengers + "\n";
+        s = s + "carID: " + carID + "\n";
+        s = s + "engineId: " + engineId + "\n";
+        s = s + "request: " + request + "\n";
+        s = s + "join: " + join + "\n";
+        return s;
     }
 
     public String getID(){
@@ -136,7 +182,7 @@ public class Ride implements Serializable {
         return lngReturn;
     }
 
-    public String getDays() {
+    public List<Boolean> getDays() {
         return days;
     }
 
@@ -148,8 +194,8 @@ public class Ride implements Serializable {
         return passengers;
     }
 
-    public String getAvSeatsDay() {
-        return avSeatsDay;
+    public List<Integer> getAvSeats() {
+        return avSeats;
     }
 
     public String getCarID() {
@@ -160,8 +206,16 @@ public class Ride implements Serializable {
         return engineId;
     }
 
-    public void setID(String id){
-        this._id = id;
+    public List<UserDays> getRequest() {
+        return request;
+    }
+
+    public List<UserDays> getJoin() {
+        return join;
+    }
+
+    public void setID (String _id){
+        this._id = _id;
     }
 
     public void setAuthorID(String authorID) {
@@ -204,7 +258,7 @@ public class Ride implements Serializable {
         this.lngReturn = lngReturn;
     }
 
-    public void  setDays(String days) {
+    public void setDays(List<Boolean> days) {
         this.days = days;
     }
 
@@ -216,14 +270,22 @@ public class Ride implements Serializable {
         this.passengers = passengers;
     }
 
-    public void setAvSeatsDay(String avSeatsDay) {
-        this.avSeatsDay = avSeatsDay;
+    public void setAvSeats(List<Integer> avSeats) {
+        this.avSeats = avSeats;
     }
 
     public void setCarID(String carID) { this.carID = carID; }
 
     public void setEngineId(int engineId) {
         this.engineId = engineId;
+    }
+
+    public void setJoin(List<UserDays> join) {
+        this.join = join;
+    }
+
+    public void setRequest(List<UserDays> request) {
+        this.request = request;
     }
 }
 // [END ride_class]

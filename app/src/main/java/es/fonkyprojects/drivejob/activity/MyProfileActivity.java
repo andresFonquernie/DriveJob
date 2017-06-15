@@ -19,6 +19,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
@@ -29,14 +31,13 @@ public class MyProfileActivity extends Activity {
     private static final String TAG = "MyProfileActivity";
     public static final String EXTRA_USER_ID = "userId";
 
-    private CollapsingToolbarLayout userToolbar;
-    private Toolbar toolbar;
-
     private String userId;
-    private ImageView userImage;
-    private TextView userName;
-    private TextView userEmail;
-    private TextView userPhone;
+    @BindView(R.id.userImage) ImageView userImage;
+    @BindView(R.id.nameText) TextView userName;
+    @BindView(R.id.emailText) TextView userEmail;
+    @BindView(R.id.phoneText) TextView userPhone;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar_layout) CollapsingToolbarLayout userToolbar;
 
     private User user;
 
@@ -44,7 +45,8 @@ public class MyProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setActionBar(toolbar);
 
         // Get post key from intent
@@ -52,13 +54,6 @@ public class MyProfileActivity extends Activity {
         if (userId == null) {
             userId = FirebaseUser.getUid();
         }
-
-        // Initialize Views
-        userImage = (ImageView) findViewById(R.id.userImage);
-        userName = (TextView) findViewById(R.id.nameText);
-        userEmail = (TextView) findViewById(R.id.emailText);
-        userPhone = (TextView) findViewById(R.id.phoneText);
-        userToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
     }
 
     @Override

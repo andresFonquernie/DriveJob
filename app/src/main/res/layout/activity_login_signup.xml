@@ -86,14 +86,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="@string/create_account"/>
+            android:text="@string/create_account"
+            android:onClick="signup"/>
 
         <TextView android:id="@+id/link_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/already_member"
             android:gravity="center"
-            android:textSize="16sp"/>
-
+            android:textSize="16sp"
+            android:onClick="login"/>
     </LinearLayout>
 </ScrollView>

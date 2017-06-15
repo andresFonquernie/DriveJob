@@ -44,7 +44,7 @@
         <activity
             android:name=".MenuActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".MyCarActivity"
+        <activity android:name=".CarListActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".MyProfileActivity"

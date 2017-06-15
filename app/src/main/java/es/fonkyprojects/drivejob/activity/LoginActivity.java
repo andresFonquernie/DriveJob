@@ -18,20 +18,20 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends Activity implements View.OnClickListener{
+public class LoginActivity extends Activity{
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
     private FirebaseAuth mAuth;
 
     //Views
-    @Bind(R.id.input_email) EditText emailText;
-    @Bind(R.id.input_password) EditText passwordText;
-    @Bind(R.id.btn_login) Button btnLogin;
-    @Bind(R.id.link_signup) TextView btnSignUp;
+    @BindView(R.id.input_email) EditText emailText;
+    @BindView(R.id.input_password) EditText passwordText;
+    @BindView(R.id.btn_login) Button btnLogin;
+    @BindView(R.id.link_signup) TextView btnSignUp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,10 +41,6 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
         //Firebase
         mAuth = FirebaseAuth.getInstance();
-
-        // Click listeners
-        btnLogin.setOnClickListener(this);
-        btnSignUp.setOnClickListener(this);
     }
 
 
@@ -58,7 +54,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void login() {
+    public void login(View view) {
         Log.d(TAG, "Login");
 
         //Check form
@@ -99,7 +95,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     }
 
     //Go to SignUp Activity
-    private void signUp() {
+    public void signUp(View view) {
         startActivity(new Intent(LoginActivity.this, LoginSignupActivity.class));
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
@@ -136,16 +132,5 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
         //Return boolean
         return valid;
-    }
-
-    //OnClick
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_login) {
-            login();
-        } else if (i == R.id.link_signup) {
-            signUp();
-        }
     }
 }

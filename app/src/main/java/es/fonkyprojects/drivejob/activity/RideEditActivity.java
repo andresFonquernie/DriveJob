@@ -21,18 +21,17 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindArray;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Car;
-import es.fonkyprojects.drivejob.model.MapLocation;
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.model.local.MapLocation;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
@@ -42,22 +41,19 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
 
     private static final String TAG = "RideEditActivity";
     public static final String EXTRA_RIDE = "ride";
-
-    @Bind(R.id.edit_placeGoing)  EditText etEditPlaceFrom;
-    @Bind(R.id.edit_placeReturn) EditText etEditPlaceTo;
-    @Bind(R.id.edit_timeGoing) EditText etTimeGoing;
-    @Bind(R.id.edit_timeReturn) EditText etTimeReturn;
-    @Bind(R.id.input_days) EditText etDays;
-    @Bind(R.id.edit_price) EditText etPrice;
-    @Bind(R.id.edit_passengers) EditText etPassengers;
-    @Bind(R.id.edit_avSeatsDay) EditText etAvSeatsDay;
-    Spinner spinCar;
-    @Bind(R.id.btn_edit) Button btnEdit;
-
-    public static final int MAP_ACTIVITY = 0;
-    public static final String MAPLOC = "MAPLOC";
-
     private Ride mRide;
+
+    //Initialize Views
+    @BindView(R.id.edit_placeGoing)  EditText etEditPlaceFrom;
+    @BindView(R.id.edit_placeReturn) EditText etEditPlaceTo;
+    @BindView(R.id.edit_timeGoing) EditText etTimeGoing;
+    @BindView(R.id.edit_timeReturn) EditText etTimeReturn;
+    @BindView(R.id.input_days) EditText etDays;
+    @BindView(R.id.edit_price) EditText etPrice;
+    @BindView(R.id.edit_passengers) EditText etPassengers;
+    @BindView(R.id.edit_avSeatsDay) EditText etAvSeatsDay;
+    @BindView(R.id.spinner_car) Spinner spinCar;
+    @BindView(R.id.btn_edit) Button btnEdit;
 
     //Form
     private double latGoing;
@@ -73,20 +69,23 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
 
     //Google Maps
     private int mapsGR;
+    public static final int MAP_ACTIVITY = 0;
+    public static final String MAPLOC = "MAPLOC";
 
     //Days of week
-    String[] listDays;
-    String[] shortListDays;
+    @BindArray(R.array.daysofweek) String[] listDays;
+    @BindArray(R.array.shortdaysofweek)String[] shortListDays;
     boolean[] checkedDays;
     ArrayList<Integer> mUserDays = new ArrayList<>();
 
+    //Cars
     private List<Car> inpList;
 
     //Compare old vs new
     private int oldPassengers;
-    private int[] oldAvSeatsDay;
-    private String[] oldDays = new String[7];
-    private int[] avSeatsDay = new int[7];
+    private List<Integer> oldAvSeatsDay;
+    private List<Boolean> oldDays;
+    private List<Integer> avSeatsDay;
 
 
     @Override
@@ -101,10 +100,13 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             throw new IllegalArgumentException("Must pass EXTRA_RIDE");
         }
 
-        //Days
-        listDays = getResources().getStringArray(R.array.daysofweek);
-        shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
+        //Initialize Days
         checkedDays = new boolean[listDays.length];
+        mUserDays = new ArrayList<>();
+
+        oldDays = new ArrayList<>();
+        oldAvSeatsDay = new ArrayList<>();
+        avSeatsDay = new ArrayList<>(listDays.length);
     }
 
     @Override
@@ -123,11 +125,10 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             etPassengers.setText(String.valueOf(mRide.getPassengers()));
 
             //Convert from array boolean to string of days
-            String[] items = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-            oldDays = mRide.getDays().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            oldDays = mRide.getDays();
             String day = "";
-            for (int i = 0; i < items.length; i++) {
-                if (items[i].equals("true")) {
+            for (int i = 0; i < oldDays.size(); i++) {
+                if (oldDays.get(i)) {
                     checkedDays[i] = true;
                     mUserDays.add(i);
                     day = day + shortListDays[i] + ",";
@@ -136,15 +137,11 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             day = day.substring(0, day.length() - 1);
             etDays.setText(day);
 
-            //Get avSeatsDay
-            String[] stringAvSeatsDay = mRide.getAvSeatsDay().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-            oldAvSeatsDay = new int[stringAvSeatsDay.length];
-            for (int i = 0; i<stringAvSeatsDay.length; i++) {
-                oldAvSeatsDay[i] = Integer.parseInt(stringAvSeatsDay[i]);
-            }
-            etAvSeatsDay.setText(mRide.getAvSeatsDay().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", ""));
+            //Get avSeats
+            oldAvSeatsDay = mRide.getAvSeats();
+            etAvSeatsDay.setText(oldAvSeatsDay.toString());
 
-            //Get allCars
+            //Get allCars from User
             String userId = mRide.getAuthorID();
             int pos = 0;
             try {
@@ -159,7 +156,6 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
                         pos=i;
                 }
 
-                spinCar = (Spinner) findViewById(R.id.spinner_car);
                 ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listCar);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinCar.setAdapter(adapter);
@@ -169,7 +165,7 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
                 e.printStackTrace();
             }
 
-            //Initializr variables, if no changes
+            //Initialize variables, if no changes
             latGoing = mRide.getLatGoing();
             latReturn = mRide.getLatReturn();
             lngGoing = mRide.getLngGoing();
@@ -184,19 +180,27 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
         String placeTo = etEditPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
         String sPassengers = etPassengers.getText().toString();
-        String days = Arrays.toString(checkedDays);
         String validateDays = etDays.getText().toString();
 
         if (validate(placeFrom, placeTo, validateDays, sPrice, sPassengers)) {
 
             btnEdit.setEnabled(false);
             Toast.makeText(this, "Put", Toast.LENGTH_LONG).show();
+            List<Boolean> days = new ArrayList<>();
+            for (boolean checkedDay : checkedDays) {
+                if (checkedDay) {
+                    days.add(true);
+                } else {
+                    days.add(false);
+                }
 
-            Ride r = new Ride(timeG, timeR, placeFrom, placeTo, latGoing, latReturn, lngGoing, lngReturn, days, price, passengers,
-                    Arrays.toString(avSeatsDay), carID);
+            }
+
+            Ride r = new Ride(timeG, timeR, placeFrom, placeTo, latGoing, latReturn, lngGoing, lngReturn, days, avSeatsDay,
+                    price, passengers, carID);
             String putKey = writeEditRide(r);
             r.setID(mRide.getID());
-            (new SQLConnect()).updateRide(r, engineId);
+            //(new SQLConnect()).updateRide(r, engineId);
 
             if (putKey.equals("Update")) {
                 Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
@@ -367,26 +371,30 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             etPassengers.setError(null);
             passengers = Integer.parseInt(sPassengers);
         }
+
         //Check if avSeatsDay > 0 for selectDays
-        for(int i = 0; i<avSeatsDay.length; i++){
-            if(oldDays[i].equals("true")){
-                int intNewAvSeatsDay = oldAvSeatsDay[i] + passengers - oldPassengers;
-                if(intNewAvSeatsDay<0){
+        for(int i = 0; i<checkedDays.length; i++){
+            if(oldDays.get(i)){ //TRUE, antes teníamos el día seleccionado
+                int intNewAvSeatsDay = oldAvSeatsDay.get(i) + passengers - oldPassengers;
+                if(intNewAvSeatsDay<0){ //TRUE, hay un pasajero sin asiento
                     valid=false;
                     etPassengers.setError(getText(R.string.notAvSeatsSpace));
-                } else if(!checkedDays[i]){
-                    if (intNewAvSeatsDay<passengers) {
-                        valid = false;
-                        etPassengers.setError(getText(R.string.notAvSeatsSpace));
-                    } else {
-                        avSeatsDay[i] = 0;
+                } else //Todos los pasajeros tienen asiento
+                    if(!checkedDays[i]){ //TRUE, hemos eliminado el día
+                        if (intNewAvSeatsDay<passengers) { //TRUE, había pasajeros en el  día que hemos eliminado
+                                    valid = false;
+                            etPassengers.setError(getText(R.string.notAvSeatsSpace));
+                        } else { // No había pasajeros en el  día que hemos eliminado
+                            avSeatsDay.add(0);
+                        }
+                    } else { //El día está seleccionado y añadimos los pasajeros resultantes
+                        avSeatsDay.add(intNewAvSeatsDay);
                     }
-                }
-                else {
-                    avSeatsDay[i] = intNewAvSeatsDay;
-                }
-            } else if(checkedDays[i]){
-                avSeatsDay[i] = passengers;
+            } else if(checkedDays[i]){ //El día es nuevo
+                avSeatsDay.add(passengers);
+            }
+            else { //Ni estaba antes ni lo hemos añadido
+                avSeatsDay.add(0);
             }
         }
         return valid;

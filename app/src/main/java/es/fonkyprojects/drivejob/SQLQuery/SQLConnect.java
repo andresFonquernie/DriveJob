@@ -1,18 +1,8 @@
 package es.fonkyprojects.drivejob.SQLQuery;
 
-import android.os.StrictMode;
-import android.util.Log;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.utils.Constants;
 
 /**
  * Created by andre on 29/01/2017.
@@ -25,7 +15,7 @@ public class SQLConnect {
 
     public void insertRide(Ride r, int engineId){
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         try {
@@ -44,7 +34,7 @@ public class SQLConnect {
                     "('" + r.getID() + "', '" + r.getAuthorID() + "', '" + r.getAuthor() + "', '" + r.getTimeGoing() + "'" +
                     ", '" + r.getTimeReturn() + "', '" + r.getPlaceGoing() + "', '" + r.getPlaceReturn() + "', " + r.getLatGoing() +
                     ", " + r.getLatReturn() + ", " + r.getLngGoing() + ", " + r.getLngReturn() + ", " + r.getPrice() +
-                    ", " + r.getPassengers() + ", '" + r.getDays() + "', '" + r.getCarID() + "', '" + r.getAvSeatsDay() + "'" +
+                    ", " + r.getPassengers() + ", '" + r.getDays() + "', '" + r.getCarID() + "', '" + r.getAvSeats() + "'" +
                     ", '" + days + "', " + engineId + ")";
 
             Log.e(TAG, sql);
@@ -58,11 +48,11 @@ public class SQLConnect {
             con.close();
         }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void updateRide(Ride r, int engineId){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         try {
@@ -84,11 +74,11 @@ public class SQLConnect {
             con.close();
         }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void deleteRide(String rideKey){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         try {
@@ -103,11 +93,11 @@ public class SQLConnect {
             con.close();
         }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void updateAvSeatsDay(String avSeatsDay, String key){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         //Search specific days
@@ -134,12 +124,13 @@ public class SQLConnect {
             con.close();
         }catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
-    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn, String myTimeGo, String myTimeReturn, String days, int maxDistance, int maxTime) {
+    public List<Ride> searchRide(String authorId, double myLatGo, double myLatReturn, double myLngGo, double myLngReturn,
+                                 String myTimeGo, String myTimeReturn, List<Boolean> days, int maxDistance, int maxTime) {
 
-        List<Ride> rides = new ArrayList<>();
+        /*List<Ride> rides = new ArrayList<>();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -158,10 +149,10 @@ public class SQLConnect {
             String searchDays = "";
             for (int i = 0; i < items.length; i++) {
                 if (items[i].equals("true")) {
-                    searchDays = searchDays + " AND daysPos LIKE '%" + i + "%'";
+                    searchDays = searchDays + " OR daysPos LIKE '%" + i + "%'";
                 }
             }
-            searchDays = searchDays.substring(5, searchDays.length());
+            searchDays = searchDays.substring(4, searchDays.length());
 
             String sql = "SELECT *, " +
                     "( 3959 * acos( cos( radians(" + myLatGo + ") ) * cos( radians( latGoing ) ) * cos( radians(lngGoing) - " +
@@ -207,6 +198,7 @@ public class SQLConnect {
             e.printStackTrace();
         }
 
-        return rides;
+        return rides;*/
+        return null;
     }
 }

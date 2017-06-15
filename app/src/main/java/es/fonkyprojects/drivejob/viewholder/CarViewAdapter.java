@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.activity.R;
 import es.fonkyprojects.drivejob.model.Car;
 
@@ -17,10 +19,6 @@ public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolde
 
     private List<Car> data = new ArrayList<>();
     private final CarViewAdapter.OnDeleteClickListener listenerDelete;
-
-    public interface OnEditClickListener {
-        void OnEditClick(Car item);
-    }
 
     public interface OnDeleteClickListener {
         void OnDeleteClick(Car item);
@@ -52,13 +50,12 @@ public class CarViewAdapter extends RecyclerView.Adapter<CarViewAdapter.CarHolde
     }
 
     static class CarHolder extends RecyclerView.ViewHolder {
-        TextView txtCarDetail;
-        ImageButton btnDelete;
+        @BindView(R.id.carDetail) TextView txtCarDetail;
+        @BindView(R.id.btnDeleteCar) ImageButton btnDelete;
 
         CarHolder(View view) {
             super(view);
-            txtCarDetail = (TextView) view.findViewById(R.id.carDetail);
-            btnDelete = (ImageButton) view.findViewById(R.id.btnDeleteCar);
+            ButterKnife.bind(this, view);
         }
 
         void bindToDelete(final Car car, final CarViewAdapter.OnDeleteClickListener listener) {

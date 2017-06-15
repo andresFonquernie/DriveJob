@@ -47,6 +47,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_margin"
         android:text="@string/add_car"
-        android:onClick="getData"/>
+        android:onClick="writeCar"/>
 
 </LinearLayout>

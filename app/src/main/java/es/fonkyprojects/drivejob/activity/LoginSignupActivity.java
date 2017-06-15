@@ -18,31 +18,28 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.Users.UserPostTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 
-public class LoginSignupActivity extends Activity implements View.OnClickListener {
+public class LoginSignupActivity extends Activity {
     private static final String TAG = "LoginSignupActivity";
 
-    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    @Bind(R.id.input_name) EditText nameText;
-    @Bind(R.id.input_surname) EditText surnameText;
-    @Bind(R.id.input_email) EditText emailText;
-    @Bind(R.id.input_password) EditText passwordText;
-    @Bind(R.id.input_reEnterPassword) EditText reEnterPasswordText;
-    @Bind(R.id.btn_signup) Button signupButton;
-    @Bind(R.id.link_login) TextView loginLink;
+    @BindView(R.id.input_name) EditText nameText;
+    @BindView(R.id.input_surname) EditText surnameText;
+    @BindView(R.id.input_email) EditText emailText;
+    @BindView(R.id.input_password) EditText passwordText;
+    @BindView(R.id.input_reEnterPassword) EditText reEnterPasswordText;
+    @BindView(R.id.btn_signup) Button signupButton;
+    @BindView(R.id.link_login) TextView loginLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,14 +48,10 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         ButterKnife.bind(this);
 
         //Firebase
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-        signupButton.setOnClickListener(this);
-        loginLink.setOnClickListener(this);
     }
 
-    public void signup() {
+    public void signup(View view) {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
@@ -96,7 +89,7 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
                 });
     }
 
-    private void login() {
+    public void login(View view) {
         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
         startActivity(intent);
         finish();
@@ -181,15 +174,5 @@ public class LoginSignupActivity extends Activity implements View.OnClickListene
         }
 
         return valid;
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_signup) {
-            signup();
-        } else if (i == R.id.link_login) {
-            login();
-        }
     }
 }

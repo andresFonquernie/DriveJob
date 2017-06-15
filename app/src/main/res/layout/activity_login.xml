@@ -57,7 +57,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="@string/login" />
+            android:text="@string/login"
+            android:onClick="login"/>
 
         <TextView
             android:id="@+id/link_signup"
@@ -65,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/not_account"
-            android:textSize="@dimen/textNormal" />
+            android:textSize="@dimen/textNormal"
+            android:onClick="signUp"/>
     </LinearLayout>
 </RelativeLayout>

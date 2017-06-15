@@ -10,17 +10,17 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.model.RideSearch;
 import es.fonkyprojects.drivejob.viewholder.RideViewAdapter;
 
 public class SearchResultActivity extends Activity {
 
     private static final String TAG = "SearchResultActivity";
 
-    public RecyclerView recyclerView;
+    @BindView(R.id.ride_list) RecyclerView recyclerView;
     public RecyclerView.Adapter adapter;
     public RecyclerView.LayoutManager layoutManager;
 
@@ -33,7 +33,7 @@ public class SearchResultActivity extends Activity {
     private double latReturning;
     private double lngGoign;
     private double lngReturning;
-    private String days;
+    private List<Boolean> days;
 
     SharedPreferences sharedPref;
 
@@ -45,8 +45,6 @@ public class SearchResultActivity extends Activity {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         getValues();
-
-        recyclerView = (RecyclerView) findViewById(R.id.ride_list);
     }
 
     @Override
@@ -56,7 +54,8 @@ public class SearchResultActivity extends Activity {
         int maxDistance = sharedPref.getInt("DISTANCE",0);
         int maxTime = sharedPref.getInt("TIME",0);
 
-        List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning, timeGoing, timeReturn, days, maxDistance, maxTime);
+        List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning,
+                timeGoing, timeReturn, days, maxDistance, maxTime);
         adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Ride item) {
@@ -72,7 +71,7 @@ public class SearchResultActivity extends Activity {
     }
 
     public void getValues(){
-        RideSearch rs = (RideSearch) getIntent().getSerializableExtra(EXTRA_RIDE_SEARCH);
+        Ride rs = (Ride) getIntent().getSerializableExtra(EXTRA_RIDE_SEARCH);
         authorId = rs.getAuthorID();
         timeGoing = rs.getTimeGoing();
         timeReturn = rs.getTimeReturn();

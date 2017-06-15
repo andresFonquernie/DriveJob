@@ -13,14 +13,15 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindArray;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.fonkyprojects.drivejob.model.MapLocation;
-import es.fonkyprojects.drivejob.model.RideSearch;
+import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.model.local.MapLocation;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
@@ -28,13 +29,15 @@ public class SearchRideActivity extends Activity {
 
     private static final String TAG = "SearchRideActivity";
 
-    @Bind(R.id.input_timeGoing)  EditText etTimeGoing;
-    @Bind(R.id.input_timeReturn) EditText etTimeReturn;
-    @Bind(R.id.input_placeGoing) EditText etPlaceFrom;
-    @Bind(R.id.input_placeReturn) EditText etPlaceTo;
-    @Bind(R.id.input_days) EditText etDays;
-    @Bind(R.id.btn_search) Button btnSearch;
+    @BindView(R.id.input_timeGoing)  EditText etTimeGoing;
+    @BindView(R.id.input_timeReturn) EditText etTimeReturn;
+    @BindView(R.id.input_placeGoing) EditText etPlaceFrom;
+    @BindView(R.id.input_placeReturn) EditText etPlaceTo;
+    @BindView(R.id.input_days) EditText etDays;
+    @BindView(R.id.btn_search) Button btnSearch;
 
+    //Google Maps
+    int mapsGR;
     public static final int MAP_ACTIVITY = 0;
     public static final String MAPLOC = "MAPLOC";
 
@@ -47,12 +50,11 @@ public class SearchRideActivity extends Activity {
     public String timeR;
     public String days;
 
-    //Google Maps
-    int mapsGR;
+
 
     //Days of week
-    String[] listDays;
-    String[] shortListDays;
+    @BindArray(R.array.daysofweek) String[] listDays;
+    @BindArray(R.array.shortdaysofweek)String[] shortListDays;
     boolean[] checkedDays;
     ArrayList<Integer> mUserDays = new ArrayList<>();
 
@@ -62,23 +64,19 @@ public class SearchRideActivity extends Activity {
         setContentView(R.layout.activity_search_ride);
         ButterKnife.bind(this);
 
-        listDays = getResources().getStringArray(R.array.daysofweek);
-        shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
+        mUserDays = new ArrayList<>();
         checkedDays = new boolean[listDays.length];
-
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchRide(view);
-            }
-        });
     }
 
-    public void searchRide(final View view){
-        days = Arrays.toString(checkedDays);
+    public void searchRide(View view){
+        List<Boolean> days = new ArrayList<>();
+        for (boolean checkedDay : checkedDays) {
+            days.add(checkedDay);
+        }
+
 
         if(validate()) {
-            RideSearch rs = new RideSearch(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning, days);
+            Ride rs = new Ride(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning, days);
             Intent intent = new Intent(this, SearchResultActivity.class);
             intent.putExtra(SearchResultActivity.EXTRA_RIDE_SEARCH, rs);
             startActivity(intent);

@@ -14,9 +14,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.Ride;
-import es.fonkyprojects.drivejob.model.RideUser;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
@@ -26,7 +26,7 @@ public class MyRidesActivity extends AppCompatActivity {
 
     private static final String TAG = "MyRidestActivity";
 
-    public RecyclerView recyclerView;
+    @BindView(R.id.myrides_list) RecyclerView recyclerView;
     public RecyclerView.Adapter adapter;
     public RecyclerView.LayoutManager layoutManager;
 
@@ -34,9 +34,7 @@ public class MyRidesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_rides);
-
         ButterKnife.bind(this);
-        recyclerView = (RecyclerView) findViewById(R.id.myrides_list);
     }
 
     @Override
@@ -44,16 +42,17 @@ public class MyRidesActivity extends AppCompatActivity {
         super.onStart();
 
         try {
-
             //MyRides
             String userId = FirebaseUser.getUid();
             Log.e(TAG, userId);
-            String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
+            //String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
+            String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride").get();
             Type type = new TypeToken<List<Ride>>(){}.getType();
             List<Ride> listRides = new Gson().fromJson(result, type);
 
             //RidesJoin
-            result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?userId=" + userId).get();
+            //TODO
+            /*result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?userId=" + userId).get();
             type = new TypeToken<List<RideUser>>(){}.getType();
             List<RideUser> inpList = new Gson().fromJson(result, type);
             if(inpList.size()>0) {
@@ -65,7 +64,7 @@ public class MyRidesActivity extends AppCompatActivity {
                         listRides.add(r);
                     }
                 }
-            }
+            }*/
 
             //Add to ListView
             adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {

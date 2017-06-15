@@ -1,10 +1,6 @@
-package es.fonkyprojects.drivejob.model;
+package es.fonkyprojects.drivejob.model.local;
 
 import java.io.Serializable;
-
-/**
- * Created by andre on 24/01/2017.
- */
 
 public class MapLocation implements Serializable {
     private String address;
