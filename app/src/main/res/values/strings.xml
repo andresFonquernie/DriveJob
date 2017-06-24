@@ -37,6 +37,7 @@
     <string name="days">Days</string>
     <string name="price">Price</string>
     <string name="passengers">Passengers</string>
+    <string name="selectCar">Select car</string>
     <string name="avSeatsDay">Seats left per day</string>
 
     <!-- RideDetail Activity -->

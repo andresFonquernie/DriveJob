@@ -7,7 +7,8 @@
     android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/activity_top_margin"
-    tools:context=".CarListActivity">
+    tools:context=".CarListActivity"
+    tools:menu="mnu_mycar">
 
     <TextView
         android:id="@+id/mycar"
@@ -21,7 +22,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mycar_list"
-        tools:listitem="@layout/listcar_holder"
+        tools:listitem="@layout/holder_listcar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clipToPadding="false"

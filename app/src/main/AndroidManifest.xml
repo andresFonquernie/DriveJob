@@ -5,6 +5,8 @@
     <permission
         android:name="package.name.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -25,54 +27,52 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme.DarkAction">
         <activity
-            android:name=".LoginActivity"
+            android:name="es.fonkyprojects.drivejob.activity.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CarFormActivity"
+            android:name="es.fonkyprojects.drivejob.activity.CarFormActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".LoginSignupActivity"
+            android:name="es.fonkyprojects.drivejob.activity.LoginSignupActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MenuActivity"
+            android:name="es.fonkyprojects.drivejob.activity.MenuActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CarListActivity"
-            android:screenOrientation="portrait"/>
+
+        <activity android:name="es.fonkyprojects.drivejob.activity.CarListActivity"/>
         <activity
-            android:name=".MyProfileActivity"
+            android:name="es.fonkyprojects.drivejob.activity.MyProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name=".MyProfileEditActivity"
+            android:name="es.fonkyprojects.drivejob.activity.MyProfileEditActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyRidesActivity"
+            android:name="es.fonkyprojects.drivejob.activity.MyRidesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RideCreateActivity"
+            android:name="es.fonkyprojects.drivejob.activity.RideCreateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RideDetailActivity"
+            android:name="es.fonkyprojects.drivejob.activity.RideDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RideEditActivity"
+            android:name="es.fonkyprojects.drivejob.activity.RideEditActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".SearchResultActivity"
+            android:name="es.fonkyprojects.drivejob.activity.SearchResultActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SearchRideActivity"
+            android:name="es.fonkyprojects.drivejob.activity.SearchRideActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="es.fonkyprojects.drivejob.activity.SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="es.fonkyprojects.drivejob.utils.MapsActivity"

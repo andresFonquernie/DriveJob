@@ -1,105 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/default_margin"
     android:fitsSystemWindows="true"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RideCreateActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/default_margin">
 
         <!--  PlaceGoing Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_placeGoing"
+
+            <EditText
+                android:id="@+id/input_placeGoing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
                 android:focusable="false"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/from"
-                android:onClick="startMaps"/>
+                android:inputType="textAutoComplete"
+                android:onClick="startMaps" />
         </android.support.design.widget.TextInputLayout>
 
         <!--  PlaceReturn Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_placeReturn"
+
+            <EditText
+                android:id="@+id/input_placeReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
                 android:focusable="false"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/to"
-                android:onClick="startMaps"/>
+                android:inputType="textAutoComplete"
+                android:onClick="startMaps" />
         </android.support.design.widget.TextInputLayout>
 
-        <!--  TimeGoing Picker -->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_timeGoing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="time"
-                android:focusable="false"
-                android:hint="@string/going"
-                android:onClick="showTime" />
-        </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
 
-        <!--  TimeReturn Picker -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_timeReturn"
-                android:layout_width="match_parent"
+            <!--  TimeGoing Picker -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="time"
-                android:focusable="false"
-                android:hint="@string/returning"
-                android:onClick="showTime" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/input_timeGoing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:drawableStart="@drawable/ic_schedule_black_24dp"
+                    android:drawablePadding="@dimen/min_margin"
+                    android:hint="@string/going"
+                    android:inputType="time"
+                    android:onClick="showTime" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--  TimeReturn Picker -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/input_timeReturn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:drawableStart="@drawable/ic_schedule_black_24dp"
+                    android:drawablePadding="@dimen/min_margin"
+                    android:hint="@string/returning"
+                    android:inputType="time"
+                    android:onClick="showTime" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <!--  Days Picker -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_days"
+
+            <EditText
+                android:id="@+id/input_days"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"
                 android:focusable="false"
                 android:hint="@string/days"
+                android:inputType="time"
                 android:onClick="selectDays" />
         </android.support.design.widget.TextInputLayout>
 
-        <!--  Price Label -->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="@string/price"/>
-        </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
 
-        <!--  Passengers Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_passengers"
-                android:layout_width="match_parent"
+            <!--  Price Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="@string/passengers"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/input_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/price"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--  Passengers Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/input_passengers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/passengers"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <Spinner
             android:id="@+id/spinner_car"
@@ -111,8 +150,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/create_ride"
-            android:onClick="createRide"/>
-
+            android:onClick="createRide"
+            android:text="@string/create_ride" />
     </LinearLayout>
 </ScrollView>

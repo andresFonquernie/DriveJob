@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/default_margin"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RideDetailActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,48 +14,118 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/ride_author_layout"
-            layout="@layout/include_ride_author"
+
+        <ImageView
+            android:id="@+id/ride_author_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_account_circle_white_24dp"
+            android:contentDescription="@string/pictureUsername"
+            android:onClick="goProfile"/>
 
-        <include
-            android:id="@+id/ride_place"
-            layout="@layout/include_ride_place"
+        <TextView
+            android:id="@+id/ride_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/ride_author_layout" />
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/textNormal"
+            android:layout_toEndOf="@+id/ride_author_photo"
+            tools:text="someauthor"
+            android:onClick="goProfile" />
 
-        <include
-            android:id="@+id/ride_time"
-            layout="@layout/include_ride_time"
+        <TextView
+            android:id="@+id/ride_placeGoing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ride_place"
-            android:layout_alignStart="@+id/ride_place" />
+            android:layout_below="@id/ride_author_photo"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/from" />
 
-        <include
-            android:id="@+id/ride_info"
-            layout="@layout/include_ride_extra_info"
+        <TextView
+            android:id="@+id/ride_placeReturn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ride_time"
-            android:layout_alignStart="@+id/ride_time" />
+            android:layout_below="@id/ride_placeGoing"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/to" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_timeGoing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_placeReturn"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/going" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_timeReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_timeGoing"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/returning" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_timeReturn"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/days" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_days"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/price" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_avSeatsDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_price"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/passengers" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ride_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ride_avSeatsDay"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/textNormal"
+            tools:text="@string/car" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_join"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ride_info"
+            android:layout_below="@+id/ride_car"
             android:onClick="selectDaysJoin"
-            android:text="@string/join_ride" />
+            android:text="@string/join_ride"
+            android:layout_alignParentStart="true" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/usersRequestText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +138,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/userrequest_list"
-            tools:listitem="@layout/userjoin_holder"
+            tools:listitem="@layout/holder_userjoin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/usersRequestText"
@@ -77,7 +146,7 @@
             android:clipToPadding="false"
             android:scrollbars="vertical"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/usersJoinText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,7 +158,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/userjoin_list"
-            tools:listitem="@layout/userjoin_holder"
+            tools:listitem="@layout/holder_userjoin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/usersJoinText"

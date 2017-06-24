@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -21,6 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/from"
                 android:focusable="false"
                 android:onClick="startMaps"/>
@@ -34,36 +36,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/to"
                 android:focusable="false"
                 android:onClick="startMaps"/>
         </android.support.design.widget.TextInputLayout>
 
-        <!--  TimeGoing Picker -->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_timeGoing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="time"
-                android:hint="@string/going"
-                android:focusable="false"
-                android:onClick="showTime" />
-        </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
 
-        <!--  TimeReturn Picker -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:id="@+id/input_timeReturn"
-                android:layout_width="match_parent"
+            <!--  TimeGoing Picker -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="time"
-                android:hint="@string/returning"
-                android:focusable="false"
-                android:onClick="showTime" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_weight="1">
+                <EditText android:id="@+id/input_timeGoing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:focusable="false"
+                    android:drawableStart="@drawable/ic_schedule_black_24dp"
+                    android:drawablePadding="@dimen/min_margin"
+                    android:hint="@string/going"
+                    android:onClick="showTime" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--  TimeReturn Picker -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <EditText android:id="@+id/input_timeReturn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:focusable="false"
+                    android:drawableStart="@drawable/ic_schedule_black_24dp"
+                    android:drawablePadding="@dimen/min_margin"
+                    android:hint="@string/returning"
+                    android:onClick="showTime" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <!--  Days Picker -->
         <android.support.design.widget.TextInputLayout

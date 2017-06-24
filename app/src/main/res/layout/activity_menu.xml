@@ -10,9 +10,10 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/menu_margin"
         android:layout_marginBottom="@dimen/menu_margin"
+        android:layout_gravity="center_horizontal"
         android:src="@drawable/logoname"
         android:contentDescription="@string/logoname" />
 
@@ -21,34 +22,31 @@
         android:id="@+id/btn_create"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/menu_margin"
-        android:text="@string/create_ride"
-        android:onClick="createRideMenu"/>
+        android:onClick="createRideMenu"
+        android:text="@string/create_ride" />
 
     <!--  Search Button -->
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_search"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/menu_margin"
-        android:text="@string/search"
-        android:onClick="searchRideMenu"/>
+        android:onClick="searchRideMenu"
+        android:text="@string/search" />
 
     <!--  MyRides Button -->
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_myrides"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/menu_margin"
-        android:text="@string/myrides"
-        android:onClick="myRidesMenu"/>
+        android:onClick="myRidesMenu"
+        android:text="@string/myrides" />
 
     <!--  Car Button -->
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_car"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/menu_margin"
         android:text="@string/myCar"
         android:onClick="myCarMenu"/>
+
 </LinearLayout>
