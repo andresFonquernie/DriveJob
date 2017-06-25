@@ -3,14 +3,20 @@ package es.fonkyprojects.drivejob.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.model.User;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.restMethods.Users.UserPutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
@@ -36,10 +43,13 @@ public class MyProfileActivity extends Activity {
     @BindView(R.id.nameText) TextView userName;
     @BindView(R.id.emailText) TextView userEmail;
     @BindView(R.id.phoneText) TextView userPhone;
+    @BindView(R.id.checkImage) ImageView verifyEmail;
+    @BindView(R.id.btnCheck) Button btnCheck;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.toolbar_layout) CollapsingToolbarLayout userToolbar;
 
     private User user;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,7 @@ public class MyProfileActivity extends Activity {
         if (userId == null) {
             userId = FirebaseUser.getUid();
         }
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -66,8 +77,32 @@ public class MyProfileActivity extends Activity {
             userName.setText(user.getUsername() + " " + user.getSurname());
             userEmail.setText(user.getEmail());
             userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
+            if(!user.getEmailVerify()){
+                verifyEmail.setImageResource(R.drawable.ic_cancel_white_24dp);
+                btnCheck.setVisibility(View.VISIBLE);
+            }
+
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void checkEmail(View view) {
+        final com.google.firebase.auth.FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        boolean verified = firebaseUser.isEmailVerified();
+        Log.e(TAG, String.valueOf(verified));
+        if (verified) {
+            try {
+                user.setEmailVerify(true);
+                UserPutTask upt = new UserPutTask(this);
+                upt.setUserPut(user);
+                String result = upt.execute(Constants.BASE_URL + "user/" + user.get_id()).get();
+                btnCheck.setVisibility(View.INVISIBLE);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "Email is not verified", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -97,6 +132,23 @@ public class MyProfileActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.mnu_verify:
+                final com.google.firebase.auth.FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    firebaseUser.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(MyProfileActivity.this,
+                                                "Verification email sent to " + user.getEmail(), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(MyProfileActivity.this,
+                                                "Failed to send verification email.", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                }
+                break;
             case R.id.mnu_edit:
                 Intent intent = new Intent(MyProfileActivity.this, MyProfileEditActivity.class);
                 intent.putExtra(MyProfileEditActivity.EXTRA_USER, user);

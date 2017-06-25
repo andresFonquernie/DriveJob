@@ -108,7 +108,7 @@ public class LoginSignupActivity extends AppCompatActivity {
 
     // [START basic_write]
     private void writeNewUser(String userId, String name, String surname, String email) {
-        User user = new User(userId, name, surname, email);
+        User user = new User(userId, name, surname, email, false);
 
         UserPostTask upt = new UserPostTask(this);
         upt.setUserPost(user);

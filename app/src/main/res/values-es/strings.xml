@@ -112,4 +112,20 @@
 
 
     <string name="users">Usuarios</string>
+    <string name="add_car">Añadir coche</string>
+    <string name="authenticating">Autentificando...</string>
+    <string name="avSeatsDay">Asientos disponibles por días</string>
+    <string name="cancel_label">Cancelar</string>
+    <string name="carDetail">Coche: %s</string>
+    <string name="creating_account">Creando cuenta...</string>
+    <string name="delete_car">Eliminar coche</string>
+    <string name="edit_car">Editar coche</string>
+    <string name="email_sent">Email enviado</string>
+    <string name="enter_email">Introduzca su email</string>
+    <string name="noCarsWarning">Primero, debe añadir un coche</string>
+    <string name="notAvSeatsSpace">No quedan sitios disponibles</string>
+    <string name="notNull">No nulo</string>
+    <string name="notZero">No 0</string>
+    <string name="recover_password">¿Ha olvidado su contraseña?</string>
+    <string name="selectCar">Escoga coche</string>
 </resources>

@@ -1,9 +1,11 @@
 package es.fonkyprojects.drivejob.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -97,6 +99,40 @@ public class LoginActivity extends AppCompatActivity {
     public void signUp(View view) {
         startActivity(new Intent(LoginActivity.this, LoginSignupActivity.class));
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    //Go to SignUp Activity
+    public void recoverPassword(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_reset_password, null);
+        final EditText input = (EditText) findViewById(R.id.rp_InputEmail);
+        builder.setView(mView);
+
+        // Set up the buttons
+        builder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String email = input.getText().toString();
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, R.string.email_sent, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+            }
+        });
+        builder.setNegativeButton(R.string.cancel_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialogAndroid = builder.create();
+        alertDialogAndroid .show();
     }
 
     //Login Success

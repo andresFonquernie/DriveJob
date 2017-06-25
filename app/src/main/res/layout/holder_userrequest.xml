@@ -35,7 +35,8 @@
         android:layout_height="@dimen/icon_height"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:contentDescription="@string/delete_car"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/accept"
         android:src="@drawable/ic_cancel_white_24dp"/>
 
     <ImageButton
@@ -44,7 +45,8 @@
         android:layout_height="@dimen/icon_height"
         android:layout_centerInParent="true"
         android:layout_toStartOf="@+id/btnRefuse"
-        android:contentDescription="@string/edit"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/delete"
         android:src="@drawable/ic_check_circle_white_24dp" />
 
 </RelativeLayout>

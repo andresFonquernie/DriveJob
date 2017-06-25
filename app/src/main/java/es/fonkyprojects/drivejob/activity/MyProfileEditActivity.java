@@ -86,7 +86,7 @@ public class MyProfileEditActivity extends AppCompatActivity {
     private String writeEditUser(String txtName, String txtSurname) {
         String result = "";
         try {
-            User putUser = new User(userId, txtName, txtSurname, "");
+            User putUser = new User(userId, txtName, txtSurname, "", user.getEmailVerify());
             UserPutTask upt = new UserPutTask(this);
             upt.setUserPut(putUser);
             result = upt.execute(Constants.BASE_URL + "user/" + user_id).get();

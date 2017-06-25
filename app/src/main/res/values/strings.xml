@@ -11,6 +11,9 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="not_account">No account yet? Create one</string>
+    <string name="recover_password">Forgot password?</string>
+    <string name="enter_email">Enter your email</string>
+    <string name="email_sent">Email sent</string>
     <string name="authenticating">Authenticating…</string>
     <string name="phone">Phone</string>
 
@@ -20,7 +23,8 @@
     <string name="re_password">Re-enter Password</string>
     <string name="create_account">Create Account</string>
     <string name="already_member">Already a member? Login</string>
-    <string name="creating_account">Creating Account…</string>
+    <string name="email_verify">Verify your email</string>
+    <string name="creating_account">Creating account…</string>
 
     <!-- Menu Activity -->
     <string name="create_ride">Create Ride</string>
@@ -49,7 +53,7 @@
     <string name="returningDetail">Returning: %s</string>
     <string name="daysDetail">Days: %s</string>
     <string name="priceDetail">Price: %d</string>
-    <string name="avSeatsDayDetail">Avalaible Seats left per day: %s</string>
+    <string name="avSeatsDayDetail">Avalaible seats left per day: %s</string>
     <string name="carDetail">Car: %s</string>
     <string name="join_ride">Join</string> <!-- List -->
     <string name="usersjoin">Joined</string>
@@ -77,8 +81,9 @@
         <item>Electric</item>
     </string-array>
 
-    <!-- Days -->
+    <!-- DialogText -->
     <string name="ok_label">Ok</string>
+    <string name="cancel_label">Cancel</string>
     <string name="dismiss_label">Dismiss</string>
     <string name="clear_all_label">Clear all</string>
 
@@ -101,6 +106,9 @@
         <item>Sa</item>
         <item>Su</item>
     </string-array>
+
+    <!-- ProfileActivity-->
+    <string name="checkEmail">Check email</string>
 
     <!-- Menu -->
     <string name="profile">Profile</string>
@@ -130,7 +138,7 @@
     <!-- Errors in forms -->
     <string name="notNull">Not null</string>
     <string name="notZero">Not 0</string>
-    <string name="notAvSeatsSpace">There are without seats</string>
+    <string name="notAvSeatsSpace">There are no seats</string>
 
     <!-- Pictures -->
     <string name="pictureUsername" translatable="false">Username picture</string>

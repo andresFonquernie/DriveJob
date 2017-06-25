@@ -1,72 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerVertical="true"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:layout_marginStart="@dimen/activity_vertical_margin"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="124dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/logoname"
+        android:src="@drawable/logoname" />
+
+
+    <!--  Email Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical">
+        android:layout_marginBottom="12dp">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="124dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/logoname"
-            android:src="@drawable/logoname" />
+        <EditText
+            android:id="@+id/input_email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+    </android.support.design.widget.TextInputLayout>
 
+    <!--  Password Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp">
 
-        <!--  Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/edEmail"
+        <EditText
+            android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/input_email"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress" />
-        </android.support.design.widget.TextInputLayout>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:onClick="login"
+        android:text="@string/login" />
 
-        <!--  Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/edPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+    <TextView
+        android:id="@+id/link_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="signUp"
+        android:text="@string/not_account"
+        android:textSize="@dimen/textNormal" />
 
-            <EditText
-                android:id="@+id/input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/login"
-            android:onClick="login"/>
-
-        <TextView
-            android:id="@+id/link_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/not_account"
-            android:textSize="@dimen/textNormal"
-            android:onClick="signUp"/>
-    </LinearLayout>
-</RelativeLayout>
+    <TextView
+        android:id="@+id/recoverPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="recoverPassword"
+        android:text="@string/recover_password"
+        android:textSize="@dimen/textNormal" />
+</LinearLayout>

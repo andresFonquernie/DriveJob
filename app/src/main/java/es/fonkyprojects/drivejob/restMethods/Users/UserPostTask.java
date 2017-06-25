@@ -88,6 +88,7 @@ public class UserPostTask extends AsyncTask<String, Void, String> {
         dataToSend.put("email", user.getEmail());
         dataToSend.put("username", user.getUsername());
         dataToSend.put("surname", user.getSurname());
+        dataToSend.put("emailVerify", user.getEmailVerify());
 
 
         try {

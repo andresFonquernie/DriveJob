@@ -26,14 +26,14 @@ public class UserPutTask  extends AsyncTask<String, Void, String> {
     Context context;
     String result;
 
-    private User u;
+    private User user;
 
     public UserPutTask(Context c) {
         this.context = c;
     }
 
     public void setUserPut(User user){
-        this.u = user;
+        this.user = user;
     }
 
     @Override
@@ -73,8 +73,9 @@ public class UserPutTask  extends AsyncTask<String, Void, String> {
 
         //Create data to send to server
         JSONObject dataToSend = new JSONObject();
-        dataToSend.put("username", u.getUsername());
-        dataToSend.put("surname", u.getSurname());
+        dataToSend.put("username", user.getUsername());
+        dataToSend.put("surname", user.getSurname());
+        dataToSend.put("emailVerify", user.getEmailVerify());
 
         try {
             //Initialize and config request, the connect to server
