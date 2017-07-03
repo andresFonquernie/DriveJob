@@ -30,12 +30,13 @@
         android:text="@string/name"/>
 
     <ImageButton
-        android:id="@+id/btnRefuse"
+        android:id="@+id/btnKick"
         android:layout_width="25dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:background="@android:color/transparent"
+        android:visibility="invisible"
         android:contentDescription="@string/pictureRefuse"
         android:src="@drawable/ic_cancel_white_24dp"/>
 

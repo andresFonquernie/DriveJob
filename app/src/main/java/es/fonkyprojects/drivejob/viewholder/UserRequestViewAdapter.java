@@ -20,10 +20,12 @@ import es.fonkyprojects.drivejob.utils.MyApp;
 public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestViewAdapter.UserRequestHolder> {
 
     private List<UsernameDays> data = new ArrayList<>();
+    private boolean visible;
     private final UserRequestViewAdapter.OnItemClickListener listener;
     private final UserRequestViewAdapter.OnAcceptClickListener listenerAccept;
     private final UserRequestViewAdapter.OnRefuseClickListener listenerRefuse;
     private String[] daysOfWeek;
+    private UserRequestHolder holder;
 
     public interface OnItemClickListener{
         void onItemClick(UsernameDays item);
@@ -38,12 +40,13 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     }
 
     public UserRequestViewAdapter(List<UsernameDays> data, UserRequestViewAdapter.OnItemClickListener listener, UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
-                                  UserRequestViewAdapter.OnRefuseClickListener listenerRefuse) {
+                                  UserRequestViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible) {
         this.data = data;
         this.listener = listener;
         this.listenerAccept = listenerAccept;
         this.listenerRefuse = listenerRefuse;
         daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
+        this.visible = visible;
 
     }
 
@@ -64,10 +67,15 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         }
         shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
 
+        this.holder = holder;
         holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToAccept(data.get(position), listenerAccept);
         holder.bindToRefuse(data.get(position), listenerRefuse);
+
+        if(visible){
+            holder.setButtonVisibility();
+        }
     }
 
     @Override
@@ -84,6 +92,11 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         UserRequestHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+
+        public void setButtonVisibility(){
+            btnAccept.setVisibility(View.VISIBLE);
+            btnRefuse.setVisibility(View.VISIBLE);
         }
 
         public void bind(final UsernameDays user, final UserRequestViewAdapter.OnItemClickListener listener) {

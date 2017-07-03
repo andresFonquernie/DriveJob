@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.User;
@@ -168,8 +169,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
                     lngReturning, days, avSeatsDay, price, passengers, carID, request, join);
             String postKey = writeNewRide(ride);
             ride.setID(postKey);
-            //TODO
-            //(new SQLConnect()).insertRide(ride, engineId);
+            (new SQLConnect()).insertRide(ride, engineId);
 
             if (!postKey.equals("Error")) {
                 Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);

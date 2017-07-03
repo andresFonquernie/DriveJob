@@ -56,6 +56,7 @@
     <string name="avSeatsDayDetail">Avalaible seats left per day: %s</string>
     <string name="carDetail">Car: %s</string>
     <string name="join_ride">Join</string> <!-- List -->
+    <string name="exit_ride">Exit</string> <!-- List -->
     <string name="usersjoin">Joined</string>
     <string name="usersrequest">Requests</string>
     <string name="accept">Accept</string>

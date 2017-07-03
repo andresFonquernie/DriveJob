@@ -55,8 +55,8 @@ public class RideDetailActivity extends AppCompatActivity {
     private String authorID;
     private Ride ride;
 
-    private List<UsernameDays> listUsersRequest = new ArrayList<>();
-    private List<UsernameDays> listUsersJoin = new ArrayList<>();
+    private List<UsernameDays> listUsersRequest;
+    private List<UsernameDays> listUsersJoin;
     private List<Integer> avSeats;
 
     @BindView(R.id.userrequest_list)
@@ -81,12 +81,16 @@ public class RideDetailActivity extends AppCompatActivity {
     @BindView(R.id.ride_avSeatsDay) TextView avSeatsDayView;
     @BindView(R.id.ride_car) TextView carView;
     @BindView(R.id.btn_join) Button btnJoin;
+    @BindView(R.id.btn_exit) Button btnExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_detail);
         ButterKnife.bind(this);
+
+        listUsersRequest = new ArrayList<>();
+        listUsersJoin = new ArrayList<>();
 
         // Get post key from intent
         mRideKey = getIntent().getStringExtra(EXTRA_RIDE_KEY);
@@ -114,15 +118,6 @@ public class RideDetailActivity extends AppCompatActivity {
                 placeReturnView.setText(getString(R.string.toDetail, ride.getPlaceReturn()));
                 priceView.setText(getString(R.string.priceDetail, ride.getPrice()));
 
-                //AvSeatsDays to String
-                avSeats = ride.getAvSeats();
-                String sAvSeatsDay = ride.getAvSeats().toString();
-                avSeatsDayView.setText(getString(R.string.avSeatsDayDetail, sAvSeatsDay));
-
-                //Get car from CarId
-                Car c = getCar(ride.getCarID());
-                carView.setText(getString(R.string.carDetail, c.toString()));
-
                 //Get days -> Convert from array days to string
                 List<Boolean> listDays = ride.getDays();
                 String[] shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
@@ -135,6 +130,15 @@ public class RideDetailActivity extends AppCompatActivity {
                 sDays = sDays.substring(0, sDays.length() - 1);
                 daysView.setText(getString(R.string.daysDetail, sDays));
 
+                //AvSeatsDays to String
+                avSeats = ride.getAvSeats();
+                String sAvSeatsDay = ride.getAvSeats().toString();
+                avSeatsDayView.setText(getString(R.string.avSeatsDayDetail, sAvSeatsDay));
+
+                //Get car from CarId
+                Car c = getCar(ride.getCarID());
+                carView.setText(getString(R.string.carDetail, c.toString()));
+
                 boolean request = getUserRequest();
                 boolean join = getUserJoin();
 
@@ -145,8 +149,12 @@ public class RideDetailActivity extends AppCompatActivity {
                     if (space > 0)
                         avSeatsFree = true;
                 }
-                if (FirebaseUser.getUid().equals(authorID) || !avSeatsFree || request || join)
+                if (FirebaseUser.getUid().equals(authorID) || !avSeatsFree)
                     btnJoin.setVisibility(View.GONE);
+                if(request || join) {
+                    btnJoin.setVisibility(View.INVISIBLE);
+                    btnExit.setVisibility(View.VISIBLE);
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -156,6 +164,7 @@ public class RideDetailActivity extends AppCompatActivity {
     private boolean getUserRequest() {
         //Get UserRequest
         boolean request = false;
+        listUsersRequest.clear();
         List<UserDays> listRequests = ride.getRequest();
         for (int i = 0; i < listRequests.size(); i++) { //Get Users
             User u = getUser(listRequests.get(i).getUserId());
@@ -177,11 +186,13 @@ public class RideDetailActivity extends AppCompatActivity {
         }, new UserRequestViewAdapter.OnAcceptClickListener() {
             @Override
             public void onAcceptClick(UsernameDays item) {
-                acceptJoin(item);
-                listUsersRequest.remove(item);
-                listUsersJoin.add(item);
-                requestAdapter.notifyDataSetChanged();
-                joinAdapter.notifyDataSetChanged();
+                if (FirebaseUser.getUid().equals(authorID)){
+                    acceptJoin(item);
+                    listUsersRequest.remove(item);
+                    listUsersJoin.add(item);
+                    requestAdapter.notifyDataSetChanged();
+                    joinAdapter.notifyDataSetChanged();
+                }
             }
         }, new UserRequestViewAdapter.OnRefuseClickListener() {
             @Override
@@ -190,7 +201,7 @@ public class RideDetailActivity extends AppCompatActivity {
                 listUsersRequest.remove(item);
                 requestAdapter.notifyDataSetChanged();
             }
-        });
+        }, FirebaseUser.getUid().equals(authorID));
 
         requestLayoutManager = new LinearLayoutManager(this);
         requestRecyclerView.setLayoutManager(requestLayoutManager);
@@ -199,6 +210,7 @@ public class RideDetailActivity extends AppCompatActivity {
     }
 
     private boolean getUserJoin() {
+        listUsersJoin.clear();
         boolean join = false;
         //Get Users join
         List<UserDays> listJoin = ride.getJoin();
@@ -226,7 +238,7 @@ public class RideDetailActivity extends AppCompatActivity {
                 listUsersJoin.remove(item);
                 joinAdapter.notifyDataSetChanged();
             }
-        });
+        }, FirebaseUser.getUid().equals(authorID));
         joinLayoutManager = new LinearLayoutManager(this);
         joinRecyclerView.setLayoutManager(joinLayoutManager);
         joinRecyclerView.setAdapter(joinAdapter);
@@ -325,7 +337,8 @@ public class RideDetailActivity extends AppCompatActivity {
     }
 
     public void request(List<Integer> selectedDays) {
-        btnJoin.setVisibility(View.GONE);
+        btnJoin.setVisibility(View.INVISIBLE);
+        btnExit.setVisibility(View.VISIBLE);
 
         //Create user request
         String uid = FirebaseUser.getUid();
@@ -386,6 +399,33 @@ public class RideDetailActivity extends AppCompatActivity {
         updateAvSeats(und.getDays(), 1);
     }
 
+    public void exitRide(View view){
+        boolean found = false;
+        for(int i = 0; i<listUsersRequest.size(); i++){
+            if(listUsersRequest.get(i).getUserId().equals(FirebaseUser.getUid())){
+                refuseJoin(listUsersRequest.get(i));
+                listUsersRequest.remove(i);
+                requestAdapter.notifyDataSetChanged();
+                found = true;
+            }
+        }
+        if (!found) {
+            for(int i = 0; i<listUsersJoin.size(); i++) {
+                if (listUsersJoin.get(i).getUserId().equals(FirebaseUser.getUid())) {
+                    kickJoin(listUsersJoin.get(i));
+                    listUsersJoin.remove(i);
+                    joinAdapter.notifyDataSetChanged();
+                    found = true;
+                }
+            }
+        }
+
+        if(found){
+            btnExit.setVisibility(View.INVISIBLE);
+            btnJoin.setVisibility(View.VISIBLE);
+        }
+    }
+
     private String updateAvSeats(List<Integer> days, int value) {
         //GET int days
         for (int i = 0; i < days.size(); i++) {
@@ -399,8 +439,8 @@ public class RideDetailActivity extends AppCompatActivity {
             RideAvSeatsPutTask raspt = new RideAvSeatsPutTask(getApplicationContext());
             raspt.setRideAvSeatsPutTask(avSeats);
             result = raspt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
-            if (result.equals("Update"))
-                (new SQLConnect()).updateAvSeatsDay("", mRideKey);
+            //if (result.equals("Update"))
+            (new SQLConnect()).updateAvSeatsDay(avSeats, mRideKey); //TODO
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

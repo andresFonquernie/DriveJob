@@ -20,6 +20,7 @@ import es.fonkyprojects.drivejob.utils.MyApp;
 public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapter.UserJoinHolder> {
 
     private List<UsernameDays> data = new ArrayList<>();
+    private boolean visible;
     private final UserJoinViewAdapter.OnItemClickListener listener;
     private final UserJoinViewAdapter.OnRefuseClickListener listenerRefuse;
     private String[] daysOfWeek;
@@ -32,11 +33,13 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         void onRefuseClick(UsernameDays item);
     }
 
-    public UserJoinViewAdapter(List<UsernameDays> data, UserJoinViewAdapter.OnItemClickListener listener, UserJoinViewAdapter.OnRefuseClickListener listenerRefuse) {
+    public UserJoinViewAdapter(List<UsernameDays> data, UserJoinViewAdapter.OnItemClickListener listener,
+                               UserJoinViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible) {
         this.data = data;
         this.listener = listener;
         this.listenerRefuse = listenerRefuse;
         daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
+        this.visible = visible;
     }
 
     @Override
@@ -58,6 +61,10 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToRefuse(data.get(position), listenerRefuse);
+
+        if(visible){
+            holder.setButtonVisibility();
+        }
     }
 
     @Override
@@ -68,11 +75,15 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
     static class UserJoinHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.authorImage) ImageView img;
         @BindView(R.id.joinUsername) TextView txtUsername;
-        @BindView(R.id.btnRefuse) ImageButton btnRefuse;
+        @BindView(R.id.btnKick) ImageButton btnKick;
 
         UserJoinHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+
+        public void setButtonVisibility(){
+            btnKick.setVisibility(View.VISIBLE);
         }
 
         public void bind(final UsernameDays user, final UserJoinViewAdapter.OnItemClickListener listener) {
@@ -84,7 +95,7 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         }
 
         void bindToRefuse(final UsernameDays user, final UserJoinViewAdapter.OnRefuseClickListener listener) {
-            btnRefuse.setOnClickListener(new View.OnClickListener() {
+            btnKick.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onRefuseClick(user);

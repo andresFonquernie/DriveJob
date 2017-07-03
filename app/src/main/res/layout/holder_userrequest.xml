@@ -36,6 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:background="@android:color/transparent"
+        android:visibility="invisible"
         android:contentDescription="@string/accept"
         android:src="@drawable/ic_cancel_white_24dp"/>
 
@@ -46,6 +47,7 @@
         android:layout_centerInParent="true"
         android:layout_toStartOf="@+id/btnRefuse"
         android:background="@android:color/transparent"
+        android:visibility="invisible"
         android:contentDescription="@string/delete"
         android:src="@drawable/ic_check_circle_white_24dp" />
 

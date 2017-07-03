@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Car;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.model.local.MapLocation;
@@ -201,7 +202,7 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
                     price, passengers, carID);
             String putKey = writeEditRide(r);
             r.setID(mRide.getID());
-            //(new SQLConnect()).updateRide(r, engineId);
+            (new SQLConnect()).updateRide(r, engineId);
 
             if (putKey.equals("Update")) {
                 Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
