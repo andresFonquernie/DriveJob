@@ -357,7 +357,7 @@ public class RideDetailActivity extends AppCompatActivity {
 
         // Send message
         User u = getUser(uid);
-        //sendMessage(u.getUsername(), ride.getAuthorID(), mRideKey, 0);
+        sendMessage(u.getUsername(), ride.getAuthorID(), mRideKey, 0);
 
         //Add to list
         UsernameDays und = new UsernameDays(u.getUserId(), u.getUsername() + " " + u.getSurname(), selectedDays);
@@ -439,8 +439,7 @@ public class RideDetailActivity extends AppCompatActivity {
             RideAvSeatsPutTask raspt = new RideAvSeatsPutTask(getApplicationContext());
             raspt.setRideAvSeatsPutTask(avSeats);
             result = raspt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
-            //if (result.equals("Update"))
-            (new SQLConnect()).updateAvSeatsDay(avSeats, mRideKey); //TODO
+            (new SQLConnect()).updateAvSeatsDay(avSeats, mRideKey);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -472,7 +471,7 @@ public class RideDetailActivity extends AppCompatActivity {
         mpt.setMessaging(m);
 
         try {
-            String result = mpt.execute("https://fcm.googleapis.com/fcm/send").get();
+            String result = mpt.execute(Constants.MESSAGING_URL).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

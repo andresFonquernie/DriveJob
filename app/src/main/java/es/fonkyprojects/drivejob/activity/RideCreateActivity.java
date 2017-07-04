@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,7 +46,7 @@ import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
-public class RideCreateActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class RideCreateActivity extends Fragment implements AdapterView.OnItemSelectedListener{
 
     private static final String TAG = "CreateRideActivity";
 
@@ -90,29 +92,30 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
     int selection = -1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ride_create);
-        ButterKnife.bind(this);
+        View view = inflater.inflate(R.layout.activity_ride_create, container, false);
+        ButterKnife.bind(this, view);
 
         checkedDays = new boolean[listDays.length];
         mUserDays = new ArrayList<>();
-
         userID = FirebaseUser.getUid();
+
+        addOnClick();
 
         if (savedInstanceState != null) {
             spinCar.setSelection(savedInstanceState.getInt("spinCar"));
-            // do this for each of your text views
         }
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
        List<CharSequence> listCar = new ArrayList<>();
         try {
-            GetTask ugt = new GetTask(this);
+            GetTask ugt = new GetTask(getActivity());
             String result = ugt.execute(Constants.BASE_URL + "car/?authorID=" + userID).get();
             Type type = new TypeToken<List<Car>>(){}.getType();
             inpList = new Gson().fromJson(result, type);
@@ -121,7 +124,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
                 listCar.add(c.toString());
             }
 
-            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listCar);
+            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listCar);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinCar.setAdapter(adapter);
             spinCar.setSelection(0);
@@ -135,7 +138,45 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
 
     }
 
-    public void createRide(View view){
+    public void addOnClick(){
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createRide();
+            }
+        });
+        etPlaceFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMaps(v);
+            }
+        });
+        etPlaceTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMaps(v);
+            }
+        });
+        etTimeGoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTime(v);
+            }
+        });
+        etTimeReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTime(v);
+            }
+        });
+        etDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDays(v);
+            }
+        });
+    }
+    public void createRide(){
 
         placeFrom = etPlaceFrom.getText().toString();
         placeTo = etPlaceTo.getText().toString();
@@ -146,7 +187,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
         if (validate(placeFrom, placeTo, validateDays, sPrice, sPassengers)) {
 
             btnCreate.setEnabled(false);
-            Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Posting...", Toast.LENGTH_SHORT).show();
 
             List<Boolean> days = new ArrayList<>();
             List<Integer> avSeatsDay = new ArrayList<>();
@@ -172,12 +213,11 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
             (new SQLConnect()).insertRide(ride, engineId);
 
             if (!postKey.equals("Error")) {
-                Intent intent = new Intent(RideCreateActivity.this, RideDetailActivity.class);
+                Intent intent = new Intent(getActivity(), RideDetailActivity.class);
                 intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, postKey);
                 startActivity(intent);
-                finish();
             } else {
-                Toast.makeText(getBaseContext(), "Error. Try again later", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error. Try again later", Toast.LENGTH_LONG).show();
                 btnCreate.setEnabled(true);
             }
         }
@@ -186,7 +226,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
     private String writeNewRide(Ride ride) {
         String result = "";
         try {
-            RidePostTask rpt = new RidePostTask(this);
+            RidePostTask rpt = new RidePostTask(getActivity());
             rpt.setRidePost(ride);
             result = rpt.execute(Constants.BASE_URL + "ride").get();
             Ride r = new Gson().fromJson(result, Ride.class);
@@ -200,7 +240,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
     private String getUsername(String userId) {
         String result;
         try {
-            GetTask ugt = new GetTask(this);
+            GetTask ugt = new GetTask(getActivity());
             result = ugt.execute(Constants.BASE_URL + "user/?userId=" + userId).get();
 
             Type type = new TypeToken<List<User>>(){}.getType();
@@ -216,12 +256,12 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
     public void startMaps(View v){
         mapsGR = v.getId();
         selection = spinCar.getSelectedItemPosition();
-        Intent intent = new Intent(this, MapsActivity.class);
+        Intent intent = new Intent(getActivity(), MapsActivity.class);
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
             if(resultCode == Activity.RESULT_OK){
@@ -251,7 +291,7 @@ public class RideCreateActivity extends AppCompatActivity implements AdapterView
         final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         final TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(RideCreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 int result = view.getId();

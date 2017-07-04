@@ -29,23 +29,14 @@
         <activity
             android:name="es.fonkyprojects.drivejob.activity.LoginSignupActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="es.fonkyprojects.drivejob.activity.MenuActivity"
+        <activity android:name="es.fonkyprojects.drivejob.activity.MainActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name="es.fonkyprojects.drivejob.activity.CarListActivity"/>
-        <activity
+8        <activity
             android:name="es.fonkyprojects.drivejob.activity.MyProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name="es.fonkyprojects.drivejob.activity.MyProfileEditActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="es.fonkyprojects.drivejob.activity.MyRidesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="es.fonkyprojects.drivejob.activity.RideCreateActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="es.fonkyprojects.drivejob.activity.RideDetailActivity"
@@ -55,9 +46,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="es.fonkyprojects.drivejob.activity.SearchResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="es.fonkyprojects.drivejob.activity.SearchRideActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="es.fonkyprojects.drivejob.activity.SettingsActivity"

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/routes">
+        <item
+            android:id="@+id/create"
+            android:icon="@drawable/ic_create_black_24dp"
+            android:title="@string/create_ride" />
+        <item
+            android:id="@+id/search"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="@string/search" />
+        <item
+            android:id="@+id/my_car"
+            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:title="@string/add_car" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/my">
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="@string/profile"
+            android:checkable="false"/>
+        <item
+            android:id="@+id/my_routes"
+            android:icon="@drawable/ic_directions_black_24dp"
+            android:title="@string/myrides" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings"
+            android:checkable="false"/>
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/log">
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="@string/logout" />
+    </group>
+
+</menu>

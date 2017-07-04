@@ -24,8 +24,7 @@
                 android:drawableStart="@drawable/ic_location_on_black_24dp"
                 android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/from"
-                android:focusable="false"
-                android:onClick="startMaps"/>
+                android:focusable="false"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  PlaceReturn Label -->
@@ -39,8 +38,7 @@
                 android:drawableStart="@drawable/ic_location_on_black_24dp"
                 android:drawablePadding="@dimen/min_margin"
                 android:hint="@string/to"
-                android:focusable="false"
-                android:onClick="startMaps"/>
+                android:focusable="false"/>
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
@@ -60,8 +58,7 @@
                     android:focusable="false"
                     android:drawableStart="@drawable/ic_schedule_black_24dp"
                     android:drawablePadding="@dimen/min_margin"
-                    android:hint="@string/going"
-                    android:onClick="showTime" />
+                    android:hint="@string/going"/>
             </android.support.design.widget.TextInputLayout>
 
             <!--  TimeReturn Picker -->
@@ -76,8 +73,7 @@
                     android:focusable="false"
                     android:drawableStart="@drawable/ic_schedule_black_24dp"
                     android:drawablePadding="@dimen/min_margin"
-                    android:hint="@string/returning"
-                    android:onClick="showTime" />
+                    android:hint="@string/returning"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -90,16 +86,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="time"
                 android:hint="@string/days"
-                android:focusable="false"
-                android:onClick="selectDays" />
+                android:focusable="false" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/search"
-            android:onClick="searchRide"/>
+            android:text="@string/search"/>
 
     </LinearLayout>
 </ScrollView>

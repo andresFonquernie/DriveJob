@@ -62,7 +62,6 @@ public class SearchResultActivity extends Activity {
                 Intent intent = new Intent(SearchResultActivity.this, RideDetailActivity.class);
                 intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
                 startActivity(intent);
-                finish();
             }
         });
         layoutManager = new LinearLayoutManager(this);

@@ -50,6 +50,7 @@ public class MessagingService extends FirebaseMessagingService {
 
      //Create and show a simple notification containing the received FCM message.
     private void notUserRequest(String user, String key) {
+        Log.e(TAG, "Key = " + key);
         Intent intent = new Intent(this, RideDetailActivity.class);
         intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, key);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

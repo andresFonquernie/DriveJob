@@ -27,6 +27,7 @@
     <string name="creating_account">Creating account…</string>
 
     <!-- Menu Activity -->
+    <string name="menu">Menu</string>
     <string name="create_ride">Create Ride</string>
     <string name="search">Search</string>
     <string name="myCar">My cars</string>
@@ -148,5 +149,8 @@
     <string name="pictureElectric" translatable="false">Electric picture</string>
 
     <string name="users">Users</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
 </resources>

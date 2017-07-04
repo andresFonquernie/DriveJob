@@ -3,7 +3,6 @@ package es.fonkyprojects.drivejob.restMethods.Messaging;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.Messaging;
-import es.fonkyprojects.drivejob.utils.Constants;
 
 /**
  * Created by andre on 07/05/2017.
@@ -80,19 +78,12 @@ public class MessagingPostTask extends AsyncTask<String, Void, String> {
         BufferedWriter bufferedWriter = null;
         BufferedReader bufferedReader = null;
 
-        //Create data to send to server
-        JSONObject dataToSend = new JSONObject();
-
         JSONObject data = new JSONObject();
 
         data.put("username", messaging.getUsername());
         data.put("key", messaging.getKey());
         data.put("value", messaging.getValue());
-
-        dataToSend.put("data", data);
-        dataToSend.put("to", "/" + "topics/news");
-        //dataToSend.put("to", "/" + "topics/" + messaging.getUserIdDestination());
-        Log.e(TAG, dataToSend.toString());
+        data.put("topic", "news");
 
         try {
             //Initialize and config request, the connect to server
@@ -103,13 +94,12 @@ public class MessagingPostTask extends AsyncTask<String, Void, String> {
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setRequestProperty("Authorization", Constants.MESSAGING_AUTH);
             urlConnection.connect();
 
             //Write data into server
             OutputStream outputStream = urlConnection.getOutputStream();
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-            bufferedWriter.write(dataToSend.toString());
+            bufferedWriter.write(data.toString());
             bufferedWriter.flush();
 
             //Read data response from server

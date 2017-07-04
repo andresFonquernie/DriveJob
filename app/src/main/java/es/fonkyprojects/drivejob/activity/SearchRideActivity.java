@@ -6,8 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -26,7 +29,7 @@ import es.fonkyprojects.drivejob.model.local.MapLocation;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
-public class SearchRideActivity extends Activity {
+public class SearchRideActivity extends Fragment {
 
     private static final String TAG = "SearchRideActivity";
 
@@ -52,7 +55,6 @@ public class SearchRideActivity extends Activity {
     public String days;
 
 
-
     //Days of week
     @BindArray(R.array.daysofweek) String[] listDays;
     @BindArray(R.array.shortdaysofweek)String[] shortListDays;
@@ -60,16 +62,59 @@ public class SearchRideActivity extends Activity {
     ArrayList<Integer> mUserDays = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_ride);
-        ButterKnife.bind(this);
+        View view = inflater.inflate(R.layout.activity_search_ride, container, false);
+        ButterKnife.bind(this, view);
+
+        addOnclick();
 
         mUserDays = new ArrayList<>();
         checkedDays = new boolean[listDays.length];
+
+        return view;
     }
 
-    public void searchRide(View view){
+    public void addOnclick(){
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchRide();
+            }
+        });
+        etPlaceFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMaps(v);
+            }
+        });
+        etPlaceTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMaps(v);
+            }
+        });
+        etTimeGoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTime(v);
+            }
+        });
+        etTimeReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTime(v);
+            }
+        });
+        etDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDays(v);
+            }
+        });
+    }
+
+    public void searchRide(){
         List<Boolean> days = new ArrayList<>();
         for (boolean checkedDay : checkedDays) {
             days.add(checkedDay);
@@ -78,7 +123,7 @@ public class SearchRideActivity extends Activity {
 
         if(validate()) {
             Ride rs = new Ride(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning, days);
-            Intent intent = new Intent(this, SearchResultActivity.class);
+            Intent intent = new Intent(getActivity(), SearchResultActivity.class);
             intent.putExtra(SearchResultActivity.EXTRA_RIDE_SEARCH, rs);
             startActivity(intent);
         }
@@ -86,11 +131,11 @@ public class SearchRideActivity extends Activity {
 
     public void startMaps(View v){
         mapsGR = v.getId();
-        Intent intent = new Intent(SearchRideActivity.this, MapsActivity.class);
+        Intent intent = new Intent(getActivity(), MapsActivity.class);
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MAP_ACTIVITY){ // If it was an ADD_ITEM, then add the new item and update the list
             if(resultCode == Activity.RESULT_OK){
@@ -119,7 +164,7 @@ public class SearchRideActivity extends Activity {
         final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         final TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(SearchRideActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 int result = view.getId();

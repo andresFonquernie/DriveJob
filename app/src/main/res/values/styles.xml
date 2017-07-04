@@ -3,6 +3,14 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <!-- MyStyle -->
     <style name="AppTheme.DarkAction">
         <item name="colorPrimary">@color/primary_dark</item>
@@ -15,6 +23,9 @@
         <item name="colorButtonNormal">@color/primary_dark</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialogStyle</item>
         <item name="dialogTheme">@style/AppTheme.PreferenceDialogStyle</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">

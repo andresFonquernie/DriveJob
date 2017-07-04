@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
     //Login Success
     private void onLoginSuccess(FirebaseUser user) {
         // Go to MainActivity
-        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 

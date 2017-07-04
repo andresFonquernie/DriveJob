@@ -1,7 +1,6 @@
 package es.fonkyprojects.drivejob.activity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -69,8 +68,6 @@ public class CarFormActivity extends AppCompatActivity implements AdapterView.On
         if(!result.equals("Error")){
             progressDialog.dismiss();
             btnCar.setEnabled(true);
-            Intent intent = new Intent(getApplicationContext(),CarListActivity.class);
-            startActivity(intent);
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             finish();
         }

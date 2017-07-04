@@ -2,12 +2,15 @@ package es.fonkyprojects.drivejob.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -28,7 +31,7 @@ import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.viewholder.CarViewAdapter;
 
-public class CarListActivity extends AppCompatActivity {
+public class CarListActivity extends Fragment {
 
     private static final String TAG = "CarListActivity";
 
@@ -39,24 +42,29 @@ public class CarListActivity extends AppCompatActivity {
     public RecyclerView.LayoutManager layoutManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_car);
-        ButterKnife.bind(this);
-
-        recyclerView = (RecyclerView) findViewById(R.id.mycar_list);
+        View view = inflater.inflate(R.layout.activity_my_car, container, false);
+        ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
+        recyclerView = (RecyclerView) view.findViewById(R.id.mycar_list);
+        btnAddCar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCar();
+            }
+        });
+        return view;
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    public void onStart() {
         super.onStart();
 
         //MyRides
         try {
             String userId = FirebaseUser.getUid();
-            String result = new GetTask(this).execute(Constants.BASE_URL + "car/?authorID=" + userId).get();
+            String result = new GetTask(getActivity()).execute(Constants.BASE_URL + "car/?authorID=" + userId).get();
             Type type = new TypeToken<List<Car>>() {}.getType();
             final List<Car> listCars = new Gson().fromJson(result, type);
 
@@ -70,7 +78,7 @@ public class CarListActivity extends AppCompatActivity {
                 }
             });
 
-            layoutManager = new LinearLayoutManager(this);
+            layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         } catch (InterruptedException | ExecutionException e) {
@@ -80,13 +88,13 @@ public class CarListActivity extends AppCompatActivity {
 
     private void deleteCar(Car car){
         try {
-            String result = new GetTask(this).execute(Constants.BASE_URL + "ride/?carID=" + car.getId()).get();
+            String result = new GetTask(getActivity()).execute(Constants.BASE_URL + "ride/?carID=" + car.getId()).get();
             Type type = new TypeToken<List<Ride>>() {}.getType();
             List<Ride> listCars = new Gson().fromJson(result, type);
             if(listCars.size()>0){
-                Toast.makeText(this, "Can't delete. There are rides using it", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Can't delete. There are rides using it", Toast.LENGTH_LONG).show();
             } else {
-                DeleteTask dt = new DeleteTask(getApplicationContext());
+                DeleteTask dt = new DeleteTask(getActivity());
                 result = dt.execute(Constants.BASE_URL + "car/" + car.getId()).get();
             }
 
@@ -95,21 +103,21 @@ public class CarListActivity extends AppCompatActivity {
         }
     }
 
-    public void addCar(View view) {
-        startActivity(new Intent(this, CarFormActivity.class));
+    public void addCar() {
+        startActivity(new Intent(getActivity(), CarFormActivity.class));
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mnu_mycar, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.mnu_mycar, menu);
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mnu_add_car:
-                Intent carFormInt = new Intent(this, CarFormActivity.class);
+                Intent carFormInt = new Intent(getActivity(), CarFormActivity.class);
                 startActivity(carFormInt);
                 break;
         }

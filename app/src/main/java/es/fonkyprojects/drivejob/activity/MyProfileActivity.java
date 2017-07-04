@@ -154,15 +154,6 @@ public class MyProfileActivity extends Activity {
                 intent.putExtra(MyProfileEditActivity.EXTRA_USER, user);
                 startActivity(intent);
                 break;
-            case R.id.mnu_settings:
-                Intent itemSettings = new Intent(this, SettingsActivity.class);
-                startActivity(itemSettings);
-                break;
-            case R.id.mnu_logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }

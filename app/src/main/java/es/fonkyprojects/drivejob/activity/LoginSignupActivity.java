@@ -102,7 +102,7 @@ public class LoginSignupActivity extends AppCompatActivity {
         writeNewUser(user.getUid(), name, surname, user.getEmail());
 
         // Go to MenuActivity
-        startActivity(new Intent(LoginSignupActivity.this, MenuActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 

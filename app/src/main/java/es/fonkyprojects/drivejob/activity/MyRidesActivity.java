@@ -2,10 +2,13 @@ package es.fonkyprojects.drivejob.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +25,7 @@ import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 import es.fonkyprojects.drivejob.viewholder.RideViewAdapter;
 
-public class MyRidesActivity extends AppCompatActivity {
+public class MyRidesActivity extends Fragment {
 
     private static final String TAG = "MyRidestActivity";
 
@@ -31,14 +34,15 @@ public class MyRidesActivity extends AppCompatActivity {
     public RecyclerView.LayoutManager layoutManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_rides);
-        ButterKnife.bind(this);
+        View view = inflater.inflate(R.layout.activity_my_rides, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         try {
@@ -46,7 +50,7 @@ public class MyRidesActivity extends AppCompatActivity {
             String userId = FirebaseUser.getUid();
             Log.e(TAG, userId);
             //String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
-            String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride").get();
+            String result = new GetTask(getActivity()).execute("https://secret-meadow-74492.herokuapp.com/api/ride").get();
             Type type = new TypeToken<List<Ride>>(){}.getType();
             List<Ride> listRides = new Gson().fromJson(result, type);
 
@@ -70,12 +74,12 @@ public class MyRidesActivity extends AppCompatActivity {
             adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(Ride item) {
-                    Intent intent = new Intent(MyRidesActivity.this, RideDetailActivity.class);
+                    Intent intent = new Intent(getActivity(), RideDetailActivity.class);
                     intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
                     startActivity(intent);
                 }
             });
-            layoutManager = new LinearLayoutManager(this);
+            layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         } catch (InterruptedException | ExecutionException e) {
@@ -86,7 +90,7 @@ public class MyRidesActivity extends AppCompatActivity {
     public Ride getRide(String rideId){
         Ride ride = new Ride();
         try {
-            GetTask rgt = new GetTask(this);
+            GetTask rgt = new GetTask(getActivity());
             String result = rgt.execute(Constants.BASE_URL + "ride/" + rideId).get();
             Type type = new TypeToken<Ride>(){}.getType();
             ride = new Gson().fromJson(result, type);
