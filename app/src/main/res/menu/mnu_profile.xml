@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/mnu_verify" android:title="@string/email_verify" app:showAsAction="ifRoom" android:icon="@drawable/ic_email_white_24dp"/>
-    <item android:id="@+id/mnu_edit" android:title="@string/edit" app:showAsAction="ifRoom" android:icon="@drawable/ic_mode_edit_white_24dp"/>
+    <item android:id="@+id/mnu_verify" android:title="@string/email_verify" app:showAsAction="always" android:icon="@drawable/ic_email_white_24dp"/>
+    <item android:id="@+id/mnu_edit" android:title="@string/edit" app:showAsAction="always" android:icon="@drawable/ic_mode_edit_white_24dp"/>
 </menu>

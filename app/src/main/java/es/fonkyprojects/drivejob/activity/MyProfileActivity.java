@@ -1,10 +1,9 @@
 package es.fonkyprojects.drivejob.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +33,7 @@ import es.fonkyprojects.drivejob.restMethods.Users.UserPutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
-public class MyProfileActivity extends Activity {
+public class MyProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "MyProfileActivity";
     public static final String EXTRA_USER_ID = "userId";
@@ -46,7 +46,7 @@ public class MyProfileActivity extends Activity {
     @BindView(R.id.checkImage) ImageView verifyEmail;
     @BindView(R.id.btnCheck) Button btnCheck;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.toolbar_layout) CollapsingToolbarLayout userToolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
 
     private User user;
     private FirebaseAuth mAuth;
@@ -56,8 +56,7 @@ public class MyProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         // Get post key from intent
         userId = (String) getIntent().getSerializableExtra(EXTRA_USER_ID);
@@ -76,7 +75,9 @@ public class MyProfileActivity extends Activity {
             toolbar.setTitle(user.getUsername() + " " + user.getSurname());
             userName.setText(user.getUsername() + " " + user.getSurname());
             userEmail.setText(user.getEmail());
-            userToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
+            collapsingToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
+            userImage.setImageResource(R.drawable.ln_logo);
+
             if(!user.getEmailVerify()){
                 verifyEmail.setImageResource(R.drawable.ic_cancel_white_24dp);
                 btnCheck.setVisibility(View.VISIBLE);

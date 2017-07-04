@@ -103,9 +103,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //Go to SignUp Activity
     public void recoverPassword(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_reset_password, null);
-        final EditText input = (EditText) findViewById(R.id.rp_InputEmail);
+        final EditText input = (EditText) mView.findViewById(R.id.rp_InputEmail);
         builder.setView(mView);
 
         // Set up the buttons

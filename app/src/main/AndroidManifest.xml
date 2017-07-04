@@ -33,8 +33,7 @@
             android:screenOrientation="portrait" />
 8        <activity
             android:name="es.fonkyprojects.drivejob.activity.MyProfileActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="es.fonkyprojects.drivejob.activity.MyProfileEditActivity"
             android:screenOrientation="portrait" />

@@ -23,9 +23,12 @@
         <item name="colorButtonNormal">@color/primary_dark</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialogStyle</item>
         <item name="dialogTheme">@style/AppTheme.PreferenceDialogStyle</item>
-
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.DarkAction.CollapseTitle">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
