@@ -1,5 +1,6 @@
 package es.fonkyprojects.drivejob.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,12 +84,16 @@ public class RideDetailActivity extends AppCompatActivity {
     @BindView(R.id.ride_car) TextView carView;
     @BindView(R.id.btn_join) Button btnJoin;
     @BindView(R.id.btn_exit) Button btnExit;
+    @BindView(R.id.detailToolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_detail);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         listUsersRequest = new ArrayList<>();
         listUsersJoin = new ArrayList<>();
@@ -377,11 +383,13 @@ public class RideDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         deleteRequest(und);
+        sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 10);
     }
 
     private void refuseJoin(UsernameDays und) {
         deleteRequest(und);
         updateAvSeats(und.getDays(), 1);
+        sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 20);
     }
 
     private void kickJoin(UsernameDays und) {
@@ -397,12 +405,15 @@ public class RideDetailActivity extends AppCompatActivity {
         }
         //Update seats +1
         updateAvSeats(und.getDays(), 1);
+        sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 30);
     }
 
     public void exitRide(View view){
         boolean found = false;
+        UsernameDays und = null;
         for(int i = 0; i<listUsersRequest.size(); i++){
             if(listUsersRequest.get(i).getUserId().equals(FirebaseUser.getUid())){
+                und = listUsersRequest.get(i);
                 refuseJoin(listUsersRequest.get(i));
                 listUsersRequest.remove(i);
                 requestAdapter.notifyDataSetChanged();
@@ -412,6 +423,7 @@ public class RideDetailActivity extends AppCompatActivity {
         if (!found) {
             for(int i = 0; i<listUsersJoin.size(); i++) {
                 if (listUsersJoin.get(i).getUserId().equals(FirebaseUser.getUid())) {
+                    und = listUsersJoin.get(i);
                     kickJoin(listUsersJoin.get(i));
                     listUsersJoin.remove(i);
                     joinAdapter.notifyDataSetChanged();
@@ -423,6 +435,7 @@ public class RideDetailActivity extends AppCompatActivity {
         if(found){
             btnExit.setVisibility(View.INVISIBLE);
             btnJoin.setVisibility(View.VISIBLE);
+            sendMessage(und.getUsername(), ride.getAuthorID(), mRideKey, 40);
         }
     }
 
@@ -465,9 +478,31 @@ public class RideDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void sendMessage(String username, String authorID, String rideKey, int code) {
+    private String deleteRide() {
+        String result = "";
+
+        DeleteTask dt = new DeleteTask(this);
+        try {
+            result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
+            if (result.equals("Ok")) {
+                (new SQLConnect()).deleteRide(mRideKey);
+                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
+                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private void sendMessage(String fromUsername, String toUserID, String rideKey, int code) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.creating_account));
+        progressDialog.show();
+
         MessagingPostTask mpt = new MessagingPostTask(this);
-        Messaging m = new Messaging(username, authorID, rideKey, code);
+        Messaging m = new Messaging(fromUsername, toUserID, rideKey, code);
         mpt.setMessaging(m);
 
         try {
@@ -475,6 +510,7 @@ public class RideDetailActivity extends AppCompatActivity {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        progressDialog.dismiss();
     }
 
     @Override
@@ -497,31 +533,19 @@ public class RideDetailActivity extends AppCompatActivity {
                 break;
             case R.id.mnu_delete:
                 String result = deleteRide();
-                if (result.equals("Ok")) {
+                Log.e(TAG, result);
+                if (result.equals("")) {
                     intent = new Intent(RideDetailActivity.this, MenuActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(this, "Error deleting", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case android.R.id.home:
+                finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private String deleteRide() {
-        String result = "";
-
-        DeleteTask dt = new DeleteTask(this);
-        try {
-            result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
-            if (result.equals("Ok")) {
-                (new SQLConnect()).deleteRide(mRideKey);
-                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
-                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

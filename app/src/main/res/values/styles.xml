@@ -25,6 +25,7 @@
         <item name="dialogTheme">@style/AppTheme.PreferenceDialogStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
     </style>
 
     <style name="AppTheme.DarkAction.CollapseTitle">

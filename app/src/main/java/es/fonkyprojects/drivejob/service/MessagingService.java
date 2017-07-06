@@ -28,18 +28,31 @@ public class MessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.e(TAG, "Message data payload: " + remoteMessage.getData());
             int value = Integer.parseInt(remoteMessage.getData().get("value"));
+            String title = "";
+            String body = "";
             if(value == 0){ //User request
-                notUserRequest(remoteMessage.getData().get("username"), remoteMessage.getData().get("key"));
+                title = getString(R.string.notUserRequestTitle);
+                body = getString(R.string.notUserRequestText, remoteMessage.getData().get("username"));
+            } else if(value == 10){ //Refuse join
+                title = getString(R.string.notRefuseJoinTitle);
+                body = getString(R.string.notRefuseJoinText, remoteMessage.getData().get("username"));
+            } else if(value == 20){ //Accept join
+                title = getString(R.string.notAcceptJoinTitle);
+                body = getString(R.string.notAcceptJointText, remoteMessage.getData().get("username"));
+            } else if(value == 30){ //Kick join
+                title = getString(R.string.notKickJoinTitle);
+                body = getString(R.string.notKickJoinText, remoteMessage.getData().get("username"));
+            } else if(value == 40) { //Exit ride
+                title = getString(R.string.notExitRideTitle);
+                body = getString(R.string.notExitRideText, remoteMessage.getData().get("username"));
+            } else if(value == 50) { //Edit Ride
+                title = getString(R.string.notEditRideTitle);
+                body = getString(R.string.notEditRideText, remoteMessage.getData().get("username"));
+            } else if(value == 60) { //Delete Ride
+                title = getString(R.string.notDeleteRideTitle);
+                body = getString(R.string.notDeleteRideText, remoteMessage.getData().get("username"));
             }
-            else if(value == 1){ //User accept
-
-            }
-            else if(value == 2){ //User reject
-
-            }
-            else if(value == 3){ //User gone
-
-            }
+            notificationRide(remoteMessage.getData().get("username"), remoteMessage.getData().get("key"), title, body);
         }
 
         // Check if message contains a notification payload.
@@ -49,7 +62,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
      //Create and show a simple notification containing the received FCM message.
-    private void notUserRequest(String user, String key) {
+    private void notificationRide(String user, String key, String title, String body) {
         Log.e(TAG, "Key = " + key);
         Intent intent = new Intent(this, RideDetailActivity.class);
         intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, key);
@@ -57,12 +70,11 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        String messageBody = getString(R.string.notUserRequestText, user);
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_mylauncher)
-                .setContentTitle(getString(R.string.notUserRequestTitle))
-                .setContentText(messageBody)
+                .setSmallIcon(R.drawable.ic_logo_not)
+                .setContentTitle(title)
+                .setContentText(body)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

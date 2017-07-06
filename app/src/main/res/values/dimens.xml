@@ -21,6 +21,7 @@
     <dimen name="list_bigTextSize">20sp</dimen>
     <dimen name="textTitle">30sp</dimen>
     <dimen name="textNormal">16sp</dimen>
+    <dimen name="textBig">20sp</dimen>
     <dimen name="textLittle">8sp</dimen>
 
     <dimen name="listCar_Height">25dp</dimen>

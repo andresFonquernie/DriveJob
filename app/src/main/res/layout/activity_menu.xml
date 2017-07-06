@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/menu_margin"
         android:layout_marginBottom="@dimen/menu_margin"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/logoname"
+        android:src="@drawable/ic_logo_name"
         android:contentDescription="@string/logoname" />
 
     <!--  Create Button -->

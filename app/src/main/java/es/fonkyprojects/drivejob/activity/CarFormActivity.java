@@ -3,6 +3,9 @@ package es.fonkyprojects.drivejob.activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,12 +35,16 @@ public class CarFormActivity extends AppCompatActivity implements AdapterView.On
     @BindView(R.id.input_model) EditText etModel;
     @BindView(R.id.btn_addCar) Button btnCar;
     @BindView(R.id.input_engine) Spinner etEngine;
+    @BindView(R.id.carFormToolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_form);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //Spinner
         ArrayAdapter<CharSequence> listEngine = ArrayAdapter.createFromResource(this, R.array.engineType, android.R.layout.simple_spinner_item);
@@ -118,5 +125,27 @@ public class CarFormActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_form, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mnu_edit_ok:
+                writeCar(this.findViewById(android.R.id.content));
+                break;
+            case R.id.mnu_edit_cancel:
+                finish();
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -46,6 +46,7 @@
     <string name="avSeatsDay">Seats left per day</string>
 
     <!-- RideDetail Activity -->
+    <string name="ride_detail">Ride</string>
     <string name="edit">Edit</string> <!-- Menu -->
     <string name="delete">Delete</string>
     <string name="fromDetail">From: %s</string> <!-- Form -->
@@ -62,6 +63,7 @@
     <string name="usersrequest">Requests</string>
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
+    <string name="updating_ride">Updating ride</string>
 
     <!-- SearchRide Activity -->
     <string name="searchresults">Search results</string>
@@ -89,6 +91,7 @@
     <string name="dismiss_label">Dismiss</string>
     <string name="clear_all_label">Clear all</string>
 
+    <!-- Days -->
     <string-array name="daysofweek">
         <item>Monday</item>
         <item>Tuesday</item>
@@ -136,6 +139,18 @@
     <!-- Notifications -->
     <string name="notUserRequestTitle">Request</string>
     <string name="notUserRequestText">User %s has requested to join your ride</string>
+    <string name="notRefuseJoinTitle">Refused</string>
+    <string name="notRefuseJoinText">User %s has refused your request to join ride</string>
+    <string name="notAcceptJoinTitle">Accepted</string>
+    <string name="notAcceptJointText">User %s has accepted your request to join ride</string>
+    <string name="notKickJoinTitle">Kicked</string>
+    <string name="notKickJoinText">User %s has kicked you</string>
+    <string name="notExitRideTitle">Exit</string>
+    <string name="notExitRideText">User %s has exit from your ride</string>
+    <string name="notEditRideTitle">Edit</string>
+    <string name="notEditRideText">User %s has edited ride</string>
+    <string name="notDeleteRideTitle">Deleted</string>
+    <string name="notDeleteRideText">User %s has deleted ride</string>
 
     <!-- Errors in forms -->
     <string name="notNull">Not null</string>

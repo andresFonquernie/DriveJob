@@ -4,49 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="@dimen/activity_vertical_margin"
-    android:layout_marginStart="@dimen/activity_vertical_margin"
-    android:layout_marginTop="@dimen/activity_top_margin"
     android:orientation="vertical"
     tools:context=".CarFormActivity">
 
-    <!--  Brand Label -->
-    <android.support.design.widget.TextInputLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/carFormToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/input_brand"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/carBrand"
-            android:inputType="text" />
-    </android.support.design.widget.TextInputLayout>
-
-    <!--  Model Label -->
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/input_model"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/carModel"
-            android:inputType="text" />
-    </android.support.design.widget.TextInputLayout>
-
-    <!--  Engine Label -->
-    <Spinner
-        android:id="@+id/input_engine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Spinner>
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_addCar"
-        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_margin"
-        android:text="@string/add_car"
-        android:onClick="writeCar"/>
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:title="@string/car"
+        app:titleTextColor="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_top_margin">
+
+        <!--  Brand Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/input_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/carBrand"
+                android:inputType="text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--  Model Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/input_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/carModel"
+                android:inputType="text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--  Engine Label -->
+        <Spinner
+            android:id="@+id/input_engine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Spinner>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_addCar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:text="@string/add_car"
+            android:onClick="writeCar"/>
+    </LinearLayout>
 
 </LinearLayout>

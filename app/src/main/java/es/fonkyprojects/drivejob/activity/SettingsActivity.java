@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toolbar;
 
 import es.fonkyprojects.drivejob.preference.SeekBarPreference;
 
@@ -13,6 +14,9 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setActionBar(myToolbar);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
@@ -29,11 +33,11 @@ public class SettingsActivity extends PreferenceActivity {
             getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
             distanceSeek = (SeekBarPreference) this.findPreference("DISTANCE");
-            radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("DISTANCE", 50);
+            radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("DISTANCE", 500);
             distanceSeek.setSummary(this.getString(R.string.goDis).replace("$1", ""+radius));
 
             timeSeek = (SeekBarPreference) this.findPreference("TIME");
-            radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("TIME", 50);
+            radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("TIME", 30);
             timeSeek.setSummary(this.getString(R.string.goDis).replace("$1", ""+radius));
         }
 
@@ -44,7 +48,7 @@ public class SettingsActivity extends PreferenceActivity {
                 distanceSeek.setSummary(this.getString(R.string.goDis).replace("$1", "" + radius));
             }
             else if(key.equals("TIME")){
-                int radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("TIME", 15);
+                int radius = PreferenceManager.getDefaultSharedPreferences(this.getActivity()).getInt("TIME", 30);
                 timeSeek.setSummary(this.getString(R.string.goDis).replace("$1", "" + radius));
             }
         }

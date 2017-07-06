@@ -1,11 +1,17 @@
 package es.fonkyprojects.drivejob.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,14 +37,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Car;
+import es.fonkyprojects.drivejob.model.Messaging;
 import es.fonkyprojects.drivejob.model.Ride;
+import es.fonkyprojects.drivejob.model.UserDays;
 import es.fonkyprojects.drivejob.model.local.MapLocation;
 import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.restMethods.Messaging.MessagingPostTask;
 import es.fonkyprojects.drivejob.restMethods.Rides.RidePutTask;
 import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.MapsActivity;
 
-public class RideEditActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class RideEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "RideEditActivity";
     public static final String EXTRA_RIDE = "ride";
@@ -55,6 +64,7 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
     @BindView(R.id.edit_avSeatsDay) EditText etAvSeatsDay;
     @BindView(R.id.spinner_car) Spinner spinCar;
     @BindView(R.id.btn_edit) Button btnEdit;
+    @BindView(R.id.editToolbar) Toolbar toolbar;
 
     //Form
     private double latGoing;
@@ -95,6 +105,9 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_edit);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // Get post key from intent
         mRide = (Ride) getIntent().getSerializableExtra(EXTRA_RIDE);
@@ -178,6 +191,11 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
     }
 
     public void editRide(View view) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.updating_ride));
+        progressDialog.show();
+
         String placeFrom = etEditPlaceFrom.getText().toString();
         String placeTo = etEditPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
@@ -205,6 +223,8 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
             (new SQLConnect()).updateRide(r, engineId);
 
             if (putKey.equals("Update")) {
+                sendMessage();
+                progressDialog.dismiss();
                 Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
                 intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRide.getID());
                 startActivity(intent);
@@ -338,6 +358,22 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
         mDialog.show();
     }
 
+    private void sendMessage() {
+        List<UserDays> ud = new ArrayList<>(mRide.getRequest());
+        ud.addAll(mRide.getJoin());
+        MessagingPostTask mpt = new MessagingPostTask(this);
+        Messaging m;
+        for(int i=0; i<ud.size(); i++){
+            m = new Messaging(mRide.getAuthor(), ud.get(i).getUserId(), mRide.getID(), 50);
+            mpt.setMessaging(m);
+            try {
+                String result = mpt.execute(Constants.MESSAGING_URL).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private boolean validate(String sPlaceFrom, String sPlaceTo, String sCheckDays, String sPrice, String sPassengers) {
         boolean valid = true;
         if (sPlaceFrom.isEmpty()) {
@@ -417,7 +453,28 @@ public class RideEditActivity extends Activity implements AdapterView.OnItemSele
         }
     }
 
-
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_form, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mnu_edit_ok:
+                editRide(this.findViewById(android.R.id.content));
+                break;
+            case R.id.mnu_edit_cancel:
+                finish();
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

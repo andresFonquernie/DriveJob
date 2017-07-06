@@ -54,7 +54,6 @@ public class SearchRideActivity extends Fragment {
     public String timeR;
     public String days;
 
-
     //Days of week
     @BindArray(R.array.daysofweek) String[] listDays;
     @BindArray(R.array.shortdaysofweek)String[] shortListDays;
@@ -68,10 +67,8 @@ public class SearchRideActivity extends Fragment {
         ButterKnife.bind(this, view);
 
         addOnclick();
-
         mUserDays = new ArrayList<>();
         checkedDays = new boolean[listDays.length];
-
         return view;
     }
 

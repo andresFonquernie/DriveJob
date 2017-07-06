@@ -1,12 +1,15 @@
 package es.fonkyprojects.drivejob.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -16,11 +19,13 @@ import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
 import es.fonkyprojects.drivejob.model.Ride;
 import es.fonkyprojects.drivejob.viewholder.RideViewAdapter;
 
-public class SearchResultActivity extends Activity {
+public class SearchResultActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchResultActivity";
 
     @BindView(R.id.ride_list) RecyclerView recyclerView;
+    @BindView(R.id.detailToolbar) Toolbar toolbar;
+
     public RecyclerView.Adapter adapter;
     public RecyclerView.LayoutManager layoutManager;
 
@@ -42,6 +47,9 @@ public class SearchResultActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         getValues();
@@ -79,5 +87,21 @@ public class SearchResultActivity extends Activity {
         lngGoign = rs.getLngGoing();
         lngReturning = rs.getLngReturn();
         days = rs.getDays();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_blank, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,16 +7,6 @@
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     tools:context=".MyRidesActivity">
 
-    <TextView
-        android:id="@+id/myrides"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_alignParentTop="true"
-        android:textSize="@dimen/textTitle"
-        android:textStyle="bold"
-        android:text="@string/myrides" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/myrides_list"
         tools:listitem="@layout/holder_listride"
@@ -24,7 +14,6 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:scrollbars="vertical"
-        android:layout_below="@+id/myrides"
         android:layout_alignParentStart="true" />
 
 </RelativeLayout>

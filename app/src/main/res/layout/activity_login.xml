@@ -14,7 +14,7 @@
         android:layout_height="124dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/logoname"
-        android:src="@drawable/logoname" />
+        android:src="@drawable/ic_logo_name" />
 
 
     <!--  Email Label -->

@@ -47,12 +47,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(navigationView.getMenu().getItem(0).isChecked()){
+                super.onBackPressed();
+            }
+            else {
+                boolean found = false;
+                int i = 1;
+                while(i<navigationView.getMenu().size() && !found){
+                    if(navigationView.getMenu().getItem(i).isChecked())
+                        found = true;
+                    i++;
+                }
+                if(found)
+                    goHome(this.findViewById(android.R.id.content));
+            }
         }
     }
 
@@ -64,7 +77,7 @@ public class MainActivity extends AppCompatActivity
                 .commit();
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.getMenu().getItem(0).setChecked(false);
-        getSupportActionBar().setTitle(getString(R.string.menu));
+        getSupportActionBar().setTitle(getString(R.string.app_name));
 
         drawer.closeDrawers();
 

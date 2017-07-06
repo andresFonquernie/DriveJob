@@ -3,7 +3,10 @@ package es.fonkyprojects.drivejob.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ public class MyProfileEditActivity extends AppCompatActivity {
     @BindView(R.id.edit_userEmail) TextView userEmail;
     @BindView(R.id.edit_userPhone) TextView userPhone;
     @BindView(R.id.btn_editUser) TextView btnEditUser;
+    @BindView(R.id.editProfileToolbar) Toolbar toolbar;
 
     private User user;
     private String userId;
@@ -38,6 +42,9 @@ public class MyProfileEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // Get user from intent
         user = (User) getIntent().getSerializableExtra(EXTRA_USER);
@@ -114,7 +121,28 @@ public class MyProfileEditActivity extends AppCompatActivity {
         } else {
             userSurname.setError(null);
         }
-
         return valid;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_form, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mnu_edit_ok:
+                editUser(this.findViewById(android.R.id.content));
+                break;
+            case R.id.mnu_edit_cancel:
+                finish();
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

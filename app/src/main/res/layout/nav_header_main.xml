@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
-        app:srcCompat="@drawable/logocomplete"
+        app:srcCompat="@drawable/ic_logo_complete"
         android:background="@android:color/transparent"
         android:contentDescription="@string/app_name"
         android:onClick="goHome"/>
