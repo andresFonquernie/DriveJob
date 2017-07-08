@@ -30,5 +30,5 @@
         android:layout_alignParentEnd="true"
         android:background="@android:color/transparent"
         android:contentDescription="@string/delete_car"
-        android:src="@drawable/ic_cancel_white_24dp" />
+        android:src="@drawable/ic_cancel_black_24dp" />
 </RelativeLayout>

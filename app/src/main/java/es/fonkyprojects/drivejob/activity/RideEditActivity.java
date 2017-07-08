@@ -80,7 +80,7 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
 
     //Google Maps
     private int mapsGR;
-    public static final int MAP_ACTIVITY = 0;
+    public static final int MAP_ACTIVITY = 3;
     public static final String MAPLOC = "MAPLOC";
 
     //Days of week
@@ -252,8 +252,21 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
 
     public void startMapsEdit(View v) {
         mapsGR = v.getId();
-        selection = spinCar.getSelectedItemPosition();
         Intent intent = new Intent(this, MapsActivity.class);
+        if(mapsGR == etEditPlaceFrom.getId()) {
+            if (!etEditPlaceFrom.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etEditPlaceFrom.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngGoing);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latGoing);
+            }
+        }
+        else if(mapsGR == etEditPlaceTo.getId()) {
+            if (!etEditPlaceTo.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etEditPlaceTo.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngReturn);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latReturn);
+            }
+        }
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
@@ -264,12 +277,12 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
                 Bundle MBuddle = data.getExtras();
                 MapLocation ml = (MapLocation) MBuddle.getSerializable(MAPLOC);
                 if (ml != null) {
-                    if(mapsGR == R.id.edit_placeGoing) {
+                    if(mapsGR == etEditPlaceFrom.getId()) {
                         etEditPlaceFrom.setText(ml.getAddress());
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
-                    if(mapsGR == R.id.edit_placeReturn) {
+                    if(mapsGR == etEditPlaceTo.getId()) {
                         etEditPlaceTo.setText(ml.getAddress());
                         lngReturn = ml.getLongitude();
                         latReturn = ml.getLatitude();
@@ -282,8 +295,23 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
     public void showTime(final View view) {
         Calendar mcurrentTime = Calendar.getInstance();
         mcurrentTime.getTime();
-        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
+
+        if(view.getId() == etTimeGoing.getId()){
+            if(timeG!=null){
+                String[] time = timeG.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        } else if(view.getId() == etTimeReturn.getId()){
+            if(timeR!=null){
+                String[] time = timeR.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        }
+
         final TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(RideEditActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override

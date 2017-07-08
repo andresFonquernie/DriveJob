@@ -176,8 +176,8 @@ public class RideCreateActivity extends Fragment implements AdapterView.OnItemSe
             }
         });
     }
-    public void createRide(){
 
+    public void createRide(){
         placeFrom = etPlaceFrom.getText().toString();
         placeTo = etPlaceTo.getText().toString();
         String sPrice = etPrice.getText().toString();
@@ -255,8 +255,21 @@ public class RideCreateActivity extends Fragment implements AdapterView.OnItemSe
 
     public void startMaps(View v){
         mapsGR = v.getId();
-        selection = spinCar.getSelectedItemPosition();
         Intent intent = new Intent(getActivity(), MapsActivity.class);
+        if(mapsGR == etPlaceFrom.getId()) {
+            if (!etPlaceFrom.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etPlaceFrom.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngGoing);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latGoing);
+            }
+        }
+        else if(mapsGR == etPlaceTo.getId()) {
+            if (!etPlaceTo.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etPlaceTo.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngReturning);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latReturning);
+            }
+        }
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
@@ -268,13 +281,13 @@ public class RideCreateActivity extends Fragment implements AdapterView.OnItemSe
                 Bundle mBundle = data.getExtras();
                 MapLocation ml = (MapLocation) mBundle.getSerializable(MAPLOC);
                 if (ml != null) {
-                    if(mapsGR == R.id.input_placeGoing) {
+                    if(mapsGR == etPlaceFrom.getId()) {
                         etPlaceFrom.setText(ml.getAddress());
                         placeFrom = ml.getAddress();
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
-                    if(mapsGR == R.id.input_placeReturn) {
+                    if(mapsGR == etPlaceTo.getId()) {
                         etPlaceTo.setText(ml.getAddress());
                         placeTo = ml.getAddress();
                         lngReturning = ml.getLongitude();
@@ -288,8 +301,23 @@ public class RideCreateActivity extends Fragment implements AdapterView.OnItemSe
     public void showTime(final View view){
         Calendar mcurrentTime = Calendar.getInstance();
         mcurrentTime.getTime();
-        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
+
+        if(view.getId() == etTimeGoing.getId()){
+            if(timeGoing!=null){
+                String[] time = timeGoing.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        } else if(view.getId() == etTimeReturn.getId()){
+            if(timeReturn!=null){
+                String[] time = timeReturn.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        }
+
         final TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override

@@ -131,8 +131,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.logout){
             unsuscribeTopic();
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         if(fragmentTransaction) {

@@ -31,7 +31,7 @@
             android:screenOrientation="portrait" />
         <activity android:name="es.fonkyprojects.drivejob.activity.MainActivity"
             android:screenOrientation="portrait" />
-8        <activity
+        <activity
             android:name="es.fonkyprojects.drivejob.activity.MyProfileActivity"
             android:screenOrientation="portrait" />
         <activity

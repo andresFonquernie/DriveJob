@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
-        android:background="@color/white" />
+        android:background="@color/black" />
 
     <ImageView
         android:id="@+id/authorImage"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/profile"
-        android:src="@drawable/ic_account_circle_white_24dp" />
+        android:src="@drawable/ic_account_circle_black_24dp" />
 
     <TextView
         android:id="@+id/requestUsername"
@@ -38,7 +38,7 @@
         android:background="@android:color/transparent"
         android:visibility="invisible"
         android:contentDescription="@string/accept"
-        android:src="@drawable/ic_cancel_white_24dp"/>
+        android:src="@drawable/ic_cancel_black_24dp"/>
 
     <ImageButton
         android:id="@+id/btnAccept"
@@ -49,6 +49,6 @@
         android:background="@android:color/transparent"
         android:visibility="invisible"
         android:contentDescription="@string/delete"
-        android:src="@drawable/ic_check_circle_white_24dp" />
+        android:src="@drawable/ic_check_circle_black_24dp" />
 
 </RelativeLayout>

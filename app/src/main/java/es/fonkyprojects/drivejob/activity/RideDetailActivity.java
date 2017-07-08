@@ -484,10 +484,9 @@ public class RideDetailActivity extends AppCompatActivity {
         DeleteTask dt = new DeleteTask(this);
         try {
             result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
+            Log.e(TAG, result);
             if (result.equals("Ok")) {
                 (new SQLConnect()).deleteRide(mRideKey);
-                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuser/?rideId=" + mRideKey).get();
-                result = (new DeleteTask(this)).execute(Constants.BASE_URL + "rideuserrequest/?rideId=" + mRideKey).get();
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -529,8 +528,8 @@ public class RideDetailActivity extends AppCompatActivity {
             case R.id.mnu_delete:
                 String result = deleteRide();
                 Log.e(TAG, result);
-                if (result.equals("")) {
-                    intent = new Intent(RideDetailActivity.this, MenuActivity.class);
+                if (result.equals("Ok")) {
+                    intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

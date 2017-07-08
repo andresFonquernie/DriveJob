@@ -116,8 +116,6 @@ public class SearchRideActivity extends Fragment {
         for (boolean checkedDay : checkedDays) {
             days.add(checkedDay);
         }
-
-
         if(validate()) {
             Ride rs = new Ride(FirebaseUser.getUid(), timeG, timeR, latGoing, latReturning, lngGoing, lngReturning, days);
             Intent intent = new Intent(getActivity(), SearchResultActivity.class);
@@ -129,6 +127,20 @@ public class SearchRideActivity extends Fragment {
     public void startMaps(View v){
         mapsGR = v.getId();
         Intent intent = new Intent(getActivity(), MapsActivity.class);
+        if(mapsGR == etPlaceFrom.getId()) {
+            if (!etPlaceFrom.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etPlaceFrom.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngGoing);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latGoing);
+            }
+        }
+        else if(mapsGR == etPlaceTo.getId()) {
+            if (!etPlaceTo.getText().toString().equals("")) {
+                intent.putExtra(MapsActivity.EXTRA_TEXT, etPlaceTo.getText().toString());
+                intent.putExtra(MapsActivity.EXTRA_LNG, lngReturning);
+                intent.putExtra(MapsActivity.EXTRA_LAT, latReturning);
+            }
+        }
         startActivityForResult(intent, MAP_ACTIVITY);
     }
 
@@ -139,12 +151,12 @@ public class SearchRideActivity extends Fragment {
                 Bundle MBuddle = data.getExtras();
                 MapLocation ml = (MapLocation) MBuddle .getSerializable(MAPLOC);
                 if (ml != null) {
-                    if(mapsGR == R.id.input_placeGoing) {
+                    if(mapsGR == etPlaceFrom.getId()) {
                         etPlaceFrom.setText(ml.getAddress());
                         lngGoing = ml.getLongitude();
                         latGoing = ml.getLatitude();
                     }
-                    if(mapsGR == R.id.input_placeReturn) {
+                    if(mapsGR == etPlaceTo.getId()) {
                         etPlaceTo.setText(ml.getAddress());
                         lngReturning = ml.getLongitude();
                         latReturning = ml.getLatitude();
@@ -158,8 +170,23 @@ public class SearchRideActivity extends Fragment {
     public void showTime(final View view){
         Calendar mcurrentTime = Calendar.getInstance();
         mcurrentTime.getTime();
-        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
+
+        if(view.getId() == etTimeGoing.getId()){
+            if(timeG!=null){
+                String[] time = timeG.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        } else if(view.getId() == etTimeReturn.getId()){
+            if(timeR!=null){
+                String[] time = timeR.split(":");
+                hour = Integer.parseInt(time[0]);
+                minute = Integer.parseInt(time[1]);
+            }
+        }
+
         final TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
