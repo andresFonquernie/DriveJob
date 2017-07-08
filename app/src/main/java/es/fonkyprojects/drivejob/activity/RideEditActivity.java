@@ -5,11 +5,11 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -230,6 +230,7 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
                 startActivity(intent);
                 finish();
             } else {
+                progressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Error. Try again later", Toast.LENGTH_LONG).show();
                 btnEdit.setEnabled(true);
             }
@@ -283,7 +284,7 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
         mcurrentTime.getTime();
         final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
-        TimePickerDialog mTimePicker;
+        final TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(RideEditActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
@@ -303,6 +304,13 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
 
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
+        mTimePicker.setOnShowListener( new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                mTimePicker.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                mTimePicker.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+            }
+        });
         mTimePicker.show();
     }
 
@@ -361,9 +369,9 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
     private void sendMessage() {
         List<UserDays> ud = new ArrayList<>(mRide.getRequest());
         ud.addAll(mRide.getJoin());
-        MessagingPostTask mpt = new MessagingPostTask(this);
-        Messaging m;
         for(int i=0; i<ud.size(); i++){
+            MessagingPostTask mpt = new MessagingPostTask(this);
+            Messaging m;
             m = new Messaging(mRide.getAuthor(), ud.get(i).getUserId(), mRide.getID(), 50);
             mpt.setMessaging(m);
             try {

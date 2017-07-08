@@ -1,6 +1,5 @@
 package es.fonkyprojects.drivejob.restMethods.Messaging;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -25,13 +24,11 @@ import es.fonkyprojects.drivejob.model.Messaging;
 
 public class MessagingPostTask extends AsyncTask<String, Void, String> {
 
-    private ProgressDialog progressDialog;
     private Context context;
     private String result;
     private Messaging messaging;
 
     private static final String TAG = "RidePostTask";
-
 
     public MessagingPostTask(Context c) {
         this.context = c;
@@ -44,10 +41,6 @@ public class MessagingPostTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Inserting data");
-        progressDialog.show();
     }
 
     @Override
@@ -64,12 +57,7 @@ public class MessagingPostTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
         this.result = result;
-
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     private String postData(String uriPath) throws IOException, JSONException {
@@ -80,10 +68,10 @@ public class MessagingPostTask extends AsyncTask<String, Void, String> {
 
         JSONObject data = new JSONObject();
 
-        data.put("username", messaging.getUsername());
+        data.put("username", messaging.getUsernameFrom());
         data.put("key", messaging.getKey());
         data.put("value", messaging.getValue());
-        data.put("topic", "news");
+        data.put("topic", messaging.getUseridTo());
 
         try {
             //Initialize and config request, the connect to server

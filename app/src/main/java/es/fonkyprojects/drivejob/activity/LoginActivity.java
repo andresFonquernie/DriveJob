@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setEnabled(false);
 
         //Show progress bar
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.authenticating));
         progressDialog.show();

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,6 @@ public class MyRidesActivity extends Fragment {
         try {
             //MyRides
             String userId = FirebaseUser.getUid();
-            Log.e(TAG, userId);
             //String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
             String result = new GetTask(getActivity()).execute("https://secret-meadow-74492.herokuapp.com/api/ride").get();
             Type type = new TypeToken<List<Ride>>(){}.getType();

@@ -22,7 +22,6 @@
         android:id="@+id/btn_create"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="createRideMenu"
         android:text="@string/create_ride" />
 
     <!--  Search Button -->
@@ -30,7 +29,6 @@
         android:id="@+id/btn_search"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="searchRideMenu"
         android:text="@string/search" />
 
     <!--  MyRides Button -->
@@ -38,7 +36,6 @@
         android:id="@+id/btn_myrides"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="myRidesMenu"
         android:text="@string/myrides" />
 
     <!--  Car Button -->
@@ -46,7 +43,6 @@
         android:id="@+id/btn_car"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/myCar"
-        android:onClick="myCarMenu"/>
+        android:text="@string/myCar"/>
 
 </LinearLayout>

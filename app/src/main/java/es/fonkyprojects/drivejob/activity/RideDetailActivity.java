@@ -1,6 +1,5 @@
 package es.fonkyprojects.drivejob.activity;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -203,7 +202,7 @@ public class RideDetailActivity extends AppCompatActivity {
         }, new UserRequestViewAdapter.OnRefuseClickListener() {
             @Override
             public void onRefuseClick(UsernameDays item) {
-                refuseJoin(item);
+                refuseJoin(item, true);
                 listUsersRequest.remove(item);
                 requestAdapter.notifyDataSetChanged();
             }
@@ -240,7 +239,7 @@ public class RideDetailActivity extends AppCompatActivity {
         }, new UserJoinViewAdapter.OnRefuseClickListener() {
             @Override
             public void onRefuseClick(UsernameDays item) {
-                kickJoin(item);
+                kickJoin(item, true);
                 listUsersJoin.remove(item);
                 joinAdapter.notifyDataSetChanged();
             }
@@ -386,13 +385,14 @@ public class RideDetailActivity extends AppCompatActivity {
         sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 10);
     }
 
-    private void refuseJoin(UsernameDays und) {
+    private void refuseJoin(UsernameDays und, boolean mes) {
         deleteRequest(und);
         updateAvSeats(und.getDays(), 1);
-        sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 20);
+        if(mes)
+            sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 20);
     }
 
-    private void kickJoin(UsernameDays und) {
+    private void kickJoin(UsernameDays und, boolean mes) {
         UserDays ud = new UserDays(und.getUserId(), und.getDays());
         List<UserDays> listUd = ride.getJoin();
         listUd.remove(ud);
@@ -405,7 +405,8 @@ public class RideDetailActivity extends AppCompatActivity {
         }
         //Update seats +1
         updateAvSeats(und.getDays(), 1);
-        sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 30);
+        if(mes)
+            sendMessage(ride.getAuthor(), und.getUserId(), mRideKey, 30);
     }
 
     public void exitRide(View view){
@@ -414,7 +415,7 @@ public class RideDetailActivity extends AppCompatActivity {
         for(int i = 0; i<listUsersRequest.size(); i++){
             if(listUsersRequest.get(i).getUserId().equals(FirebaseUser.getUid())){
                 und = listUsersRequest.get(i);
-                refuseJoin(listUsersRequest.get(i));
+                refuseJoin(listUsersRequest.get(i), false);
                 listUsersRequest.remove(i);
                 requestAdapter.notifyDataSetChanged();
                 found = true;
@@ -424,7 +425,7 @@ public class RideDetailActivity extends AppCompatActivity {
             for(int i = 0; i<listUsersJoin.size(); i++) {
                 if (listUsersJoin.get(i).getUserId().equals(FirebaseUser.getUid())) {
                     und = listUsersJoin.get(i);
-                    kickJoin(listUsersJoin.get(i));
+                    kickJoin(listUsersJoin.get(i), false);
                     listUsersJoin.remove(i);
                     joinAdapter.notifyDataSetChanged();
                     found = true;
@@ -460,7 +461,6 @@ public class RideDetailActivity extends AppCompatActivity {
         //AvSeats to String
         String sAvSeatsDay = avSeats.toString();
         avSeatsDayView.setText(getString(R.string.avSeatsDayDetail, sAvSeatsDay));
-
         return result;
     }
 
@@ -480,7 +480,7 @@ public class RideDetailActivity extends AppCompatActivity {
 
     private String deleteRide() {
         String result = "";
-
+        sendMessageCreateList();
         DeleteTask dt = new DeleteTask(this);
         try {
             result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
@@ -496,11 +496,6 @@ public class RideDetailActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String fromUsername, String toUserID, String rideKey, int code) {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getString(R.string.creating_account));
-        progressDialog.show();
-
         MessagingPostTask mpt = new MessagingPostTask(this);
         Messaging m = new Messaging(fromUsername, toUserID, rideKey, code);
         mpt.setMessaging(m);
@@ -510,16 +505,16 @@ public class RideDetailActivity extends AppCompatActivity {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        progressDialog.dismiss();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (FirebaseUser.getUid().equals(authorID)) {
             getMenuInflater().inflate(R.menu.mnu_ride_detail, menu);
-            return true;
+        }else {
+            getMenuInflater().inflate(R.menu.mnu_blank, menu);
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -547,5 +542,13 @@ public class RideDetailActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendMessageCreateList() {
+        List<UserDays> ud = new ArrayList<>(ride.getRequest());
+        ud.addAll(ride.getJoin());
+        for(int i=0; i<ud.size(); i++){
+            sendMessage(ride.getAuthor(), ud.get(i).getUserId(), ride.getID(), 60);
+        }
     }
 }

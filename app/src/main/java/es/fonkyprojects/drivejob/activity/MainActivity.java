@@ -15,10 +15,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.IOException;
+
+import es.fonkyprojects.drivejob.fragment.OnFragmentInteractionListener;
+import es.fonkyprojects.drivejob.utils.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -52,20 +58,18 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(navigationView.getMenu().getItem(0).isChecked()){
-                super.onBackPressed();
-            }
-            else {
-                boolean found = false;
-                int i = 1;
-                while(i<navigationView.getMenu().size() && !found){
-                    if(navigationView.getMenu().getItem(i).isChecked())
-                        found = true;
-                    i++;
+            boolean found = false;
+            int i = 0;
+            while(i<navigationView.getMenu().size() && !found){
+                if(navigationView.getMenu().getItem(i).isChecked())
+                    found = true;
+                i++;
                 }
-                if(found)
-                    goHome(this.findViewById(android.R.id.content));
-            }
+            if(found)
+                goHome(this.findViewById(android.R.id.content));
+            else
+                super.onBackPressed();
+
         }
     }
 
@@ -87,10 +91,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        changeFragment(-1, item);
+        return true;
+    }
+
+    @Override
+    public void fragmentButton(int id) {
+        changeFragment(id, null);
+    }
+
+    private void changeFragment(int id, MenuItem item){
         boolean fragmentTransaction = false;
         Fragment fragment = null;
+        if(id >= 0){
+            item = navigationView.getMenu().getItem(id);
+            id = item.getItemId();
+        } else if(item != null) {
+            id = item.getItemId();
+        }
 
         if (id == R.id.create) {
             fragment = new RideCreateActivity();
@@ -128,16 +146,20 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     //subscribe topics
     public void suscribeTopic(){
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseMessaging.getInstance().subscribeToTopic(FirebaseUser.getUid());
     }
 
     //unsubscribe topics
     public void unsuscribeTopic(){
-        FirebaseMessaging.getInstance().unsubscribeFromTopic("news");
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseUser.getUid());
+        try {
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

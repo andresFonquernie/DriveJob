@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import es.fonkyprojects.drivejob.activity.R;
+
 /**
  * Created by andre on 28/01/2017.
  */
@@ -32,7 +34,8 @@ public class GetTask extends AsyncTask<String, Void, String> {
         super.onPreExecute();
 
         progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("loading data...");
+        progressDialog.setMessage(context.getString(R.string.updating_ride));
+        progressDialog.show();
     }
 
     @Override

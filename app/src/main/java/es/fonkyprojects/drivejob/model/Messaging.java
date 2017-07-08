@@ -2,8 +2,9 @@ package es.fonkyprojects.drivejob.model;
 
 public class Messaging {
 
-    private String username;
-    private String userIdDestination;
+    private String _id;
+    private String usernameFrom;
+    private String useridTo;
     private String key;
     private int value;
 
@@ -11,19 +12,23 @@ public class Messaging {
     public Messaging() {
     }
 
-    public Messaging(String username, String userId, String key, int value) {
-        this.username = username;
-        this.userIdDestination = userId;
+    public Messaging(String usernameFrom, String useridTo, String key, int value) {
+        this.usernameFrom = usernameFrom;
+        this.useridTo = useridTo;
         this.key = key;
         this.value = value;
     }
 
-    public String getUsername() {
-        return username;
+    public String get_id() {
+        return _id;
     }
 
-    public String getUserIdDestination() {
-        return userIdDestination;
+    public String getUsernameFrom() {
+        return usernameFrom;
+    }
+
+    public String getUseridTo() {
+        return useridTo;
     }
 
     public String getKey() {
@@ -34,12 +39,16 @@ public class Messaging {
         return value;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
-    public void setUserIdDestination(String userIdDestination) {
-        this.userIdDestination = userIdDestination;
+    public void setUsernameFrom(String usernameFrom) {
+        this.usernameFrom = usernameFrom;
+    }
+
+    public void setUseridTo(String useridTo) {
+        this.useridTo = useridTo;
     }
 
     public void setKey(String key) {
