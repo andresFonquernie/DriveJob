@@ -154,7 +154,14 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
 
             //Get avSeats
             oldAvSeatsDay = mRide.getAvSeats();
-            etAvSeatsDay.setText(oldAvSeatsDay.toString());
+            String sAvSeatsDay = "";
+            for(int i=0; i<oldAvSeatsDay.size(); i++){
+                if(oldDays.get(i)){
+                    sAvSeatsDay += shortListDays[i] + "=" + oldAvSeatsDay.get(i) + ",";
+                }
+            }
+            sAvSeatsDay = sAvSeatsDay.substring(0, sAvSeatsDay.length() -1);
+            etAvSeatsDay.setText(sAvSeatsDay);
 
             //Get allCars from User
             String userId = mRide.getAuthorID();
@@ -213,7 +220,6 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
                 } else {
                     days.add(false);
                 }
-
             }
 
             Ride r = new Ride(timeG, timeR, placeFrom, placeTo, latGoing, latReturn, lngGoing, lngReturn, days, avSeatsDay,
@@ -225,9 +231,9 @@ public class RideEditActivity extends AppCompatActivity implements AdapterView.O
             if (putKey.equals("Update")) {
                 sendMessage();
                 progressDialog.dismiss();
-                Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
-                intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRide.getID());
-                startActivity(intent);
+                //Intent intent = new Intent(RideEditActivity.this, RideDetailActivity.class);
+                //intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, mRide.getID());
+                //startActivity(intent);
                 finish();
             } else {
                 progressDialog.dismiss();

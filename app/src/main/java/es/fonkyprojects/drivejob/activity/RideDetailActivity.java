@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.SQLQuery.SQLConnect;
@@ -59,6 +60,7 @@ public class RideDetailActivity extends AppCompatActivity {
     private List<UsernameDays> listUsersRequest;
     private List<UsernameDays> listUsersJoin;
     private List<Integer> avSeats;
+    @BindArray(R.array.shortdaysofweek)String[] shortListDays;
 
     @BindView(R.id.userrequest_list)
     RecyclerView requestRecyclerView;
@@ -125,7 +127,6 @@ public class RideDetailActivity extends AppCompatActivity {
 
                 //Get days -> Convert from array days to string
                 List<Boolean> listDays = ride.getDays();
-                String[] shortListDays = getResources().getStringArray(R.array.shortdaysofweek);
                 String sDays = "";
                 for (int i = 0; i < listDays.size(); i++) {
                     if (listDays.get(i)) {
@@ -137,7 +138,13 @@ public class RideDetailActivity extends AppCompatActivity {
 
                 //AvSeatsDays to String
                 avSeats = ride.getAvSeats();
-                String sAvSeatsDay = ride.getAvSeats().toString();
+                String sAvSeatsDay = "";
+                for(int i=0; i<avSeats.size(); i++){
+                    if(avSeats.get(i)>0){
+                        sAvSeatsDay += shortListDays[i] + "=" + avSeats.get(i) + ",";
+                    }
+                }
+                sAvSeatsDay = sAvSeatsDay.substring(0, sAvSeatsDay.length() -1);
                 avSeatsDayView.setText(getString(R.string.avSeatsDayDetail, sAvSeatsDay));
 
                 //Get car from CarId
@@ -459,8 +466,16 @@ public class RideDetailActivity extends AppCompatActivity {
         }
 
         //AvSeats to String
-        String sAvSeatsDay = avSeats.toString();
+        //AvSeatsDays to String
+        String sAvSeatsDay = "";
+        for(int i=0; i<avSeats.size(); i++){
+            if(avSeats.get(i)>0){
+                sAvSeatsDay += shortListDays[i] + "=" + avSeats.get(i) + ",";
+            }
+        }
+        sAvSeatsDay = sAvSeatsDay.substring(0, sAvSeatsDay.length() -1);
         avSeatsDayView.setText(getString(R.string.avSeatsDayDetail, sAvSeatsDay));
+
         return result;
     }
 
