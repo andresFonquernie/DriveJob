@@ -5,19 +5,34 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.fonkyprojects.drivejob.preference.SeekBarPreference;
 
 public class SettingsActivity extends PreferenceActivity {
+
+    @BindView(R.id.my_toolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setActionBar(myToolbar);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+        ButterKnife.bind(this);
+
+        setActionBar(toolbar);
+        getActionBar().setTitle(R.string.settings);
+        int titleId = getResources().getIdentifier(getString(R.string.settings), "id", getPackageName());
+        TextView abTitle = (TextView) findViewById(titleId);
+        abTitle.setTextColor(getResources().getColor(R.color.white));
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
+
+        getFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
     }
 
 
@@ -52,5 +67,21 @@ public class SettingsActivity extends PreferenceActivity {
                 timeSeek.setSummary(this.getString(R.string.goDis).replace("$1", "" + radius));
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_blank, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

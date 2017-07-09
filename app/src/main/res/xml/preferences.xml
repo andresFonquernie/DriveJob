@@ -10,7 +10,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/time">
         <es.fonkyprojects.drivejob.preference.SeekBarPreference
-                android:defaultValue="15"
+                android:defaultValue="30"
                 android:key="TIME"
                 android:max="60"
                 android:summary="@string/goTime"

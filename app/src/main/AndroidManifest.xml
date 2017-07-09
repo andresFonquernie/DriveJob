@@ -48,7 +48,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="es.fonkyprojects.drivejob.activity.SettingsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name="es.fonkyprojects.drivejob.utils.MapsActivity"
             android:label="@string/title_activity_maps" />

@@ -65,8 +65,7 @@ public class RideDetailActivity extends AppCompatActivity {
     public RecyclerView.Adapter requestAdapter;
     public RecyclerView.LayoutManager requestLayoutManager;
 
-    @BindView(R.id.userjoin_list)
-    RecyclerView joinRecyclerView;
+    @BindView(R.id.userjoin_list) RecyclerView joinRecyclerView;
     public RecyclerView.Adapter joinAdapter;
     public RecyclerView.LayoutManager joinLayoutManager;
 

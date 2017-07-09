@@ -58,6 +58,9 @@ public class MyProfileActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         // Get post key from intent
         userId = (String) getIntent().getSerializableExtra(EXTRA_USER_ID);
         if (userId == null) {
@@ -126,8 +129,10 @@ public class MyProfileActivity extends AppCompatActivity {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.mnu_profile, menu);
             return true;
+        } else {
+            getMenuInflater().inflate(R.menu.mnu_blank, menu);
+            return true;
         }
-        return false;
     }
 
     @Override
@@ -154,6 +159,9 @@ public class MyProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(MyProfileActivity.this, MyProfileEditActivity.class);
                 intent.putExtra(MyProfileEditActivity.EXTRA_USER, user);
                 startActivity(intent);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
