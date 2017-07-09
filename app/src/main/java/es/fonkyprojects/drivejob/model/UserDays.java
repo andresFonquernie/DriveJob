@@ -1,13 +1,10 @@
 package es.fonkyprojects.drivejob.model;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.Serializable;
 import java.util.List;
-
-/**
- * Created by andre on 21/05/2017.
- */
 
 public class UserDays implements Serializable, Comparable<UserDays> {
 
@@ -40,7 +37,7 @@ public class UserDays implements Serializable, Comparable<UserDays> {
     }
 
     @Override
-    public int compareTo(UserDays ud) {
+    public int compareTo(@NonNull UserDays ud) {
         Log.e("COMPARE", this.userId + " " + ud.toString());
         return ud.userId.compareTo(this.userId);
     }
@@ -52,5 +49,10 @@ public class UserDays implements Serializable, Comparable<UserDays> {
             return ud.userId.equals(this.userId);
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.getUserId();
     }
 }

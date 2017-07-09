@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -93,6 +91,7 @@ public class RideDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ride_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -356,9 +355,12 @@ public class RideDetailActivity extends AppCompatActivity {
         String uid = FirebaseUser.getUid();
         List<UserDays> listUd = ride.getRequest();
         listUd.add(new UserDays(uid, selectedDays));
+        List<String> listUser = ride.getRequestUser();
+        listUser.add(uid);
         try {
             RideRequestPutTask rrpt = new RideRequestPutTask(getApplicationContext());
             rrpt.setRideRequestPutTask(listUd);
+            rrpt.setRideRequestUserPutTask(listUser);
             String result = rrpt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -381,9 +383,13 @@ public class RideDetailActivity extends AppCompatActivity {
         String uid = und.getUserId();
         List<UserDays> listUd = ride.getJoin();
         listUd.add(new UserDays(uid, und.getDays()));
+        List<String> listId = ride.getJoinUser();
+        listId.add(uid);
+
         try {
             RideJoinPutTask rupt = new RideJoinPutTask(getApplicationContext());
             rupt.setRideJoinPutTask(listUd);
+            rupt.setRideJoinUserPutTask(listId);
             String result = rupt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -483,10 +489,12 @@ public class RideDetailActivity extends AppCompatActivity {
         UserDays ud = new UserDays(und.getUserId(), und.getDays());
         List<UserDays> listUd = ride.getRequest();
         boolean b = listUd.remove(ud);
-        Log.e(TAG, b + " " + Arrays.toString(listUd.toArray()));
+        List<String> listId = ride.getRequestUser();
+        b = listId.remove(und.getUserId());
         try {
             RideRequestPutTask rrpt = new RideRequestPutTask(getApplicationContext());
             rrpt.setRideRequestPutTask(listUd);
+            rrpt.setRideRequestUserPutTask(listId);
             String result = rrpt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -499,7 +507,6 @@ public class RideDetailActivity extends AppCompatActivity {
         DeleteTask dt = new DeleteTask(this);
         try {
             result = dt.execute(Constants.BASE_URL + "ride/" + mRideKey).get();
-            Log.e(TAG, result);
             if (result.equals("Ok")) {
                 (new SQLConnect()).deleteRide(mRideKey);
             }
@@ -542,7 +549,6 @@ public class RideDetailActivity extends AppCompatActivity {
                 break;
             case R.id.mnu_delete:
                 String result = deleteRide();
-                Log.e(TAG, result);
                 if (result.equals("Ok")) {
                     intent = new Intent(this, MainActivity.class);
                     startActivity(intent);

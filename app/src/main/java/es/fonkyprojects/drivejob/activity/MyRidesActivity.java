@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,9 +29,21 @@ public class MyRidesActivity extends Fragment {
 
     private static final String TAG = "MyRidestActivity";
 
-    @BindView(R.id.myrides_list) RecyclerView recyclerView;
-    public RecyclerView.Adapter adapter;
-    public RecyclerView.LayoutManager layoutManager;
+    @BindView(R.id.myRidesCreated) TextView txtCreate;
+    @BindView(R.id.myRidesRequest) TextView txtRequest;
+    @BindView(R.id.myRidesJoin) TextView txtJoin;
+
+    @BindView(R.id.myridescreated_list) RecyclerView recyclerViewCreated;
+    public RecyclerView.Adapter adapterCreated;
+    public RecyclerView.LayoutManager layoutManagerCreated;
+
+    @BindView(R.id.myridesrequest_list) RecyclerView recyclerViewRequest;
+    public RecyclerView.Adapter adapterRequest;
+    public RecyclerView.LayoutManager layoutManagerRequest;
+
+    @BindView(R.id.myridesjoin_list) RecyclerView recyclerViewJoin;
+    public RecyclerView.Adapter adapterJoin;
+    public RecyclerView.LayoutManager layoutManagerJoin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,45 +60,78 @@ public class MyRidesActivity extends Fragment {
         try {
             //MyRides
             String userId = FirebaseUser.getUid();
-            //String result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/ride/?authorID=" + userId).get();
-            String result = new GetTask(getActivity()).execute("https://secret-meadow-74492.herokuapp.com/api/ride").get();
+            String result = new GetTask(getActivity()).execute(Constants.BASE_URL + "ride/?authorID=" + userId).get();
             Type type = new TypeToken<List<Ride>>(){}.getType();
             List<Ride> listRides = new Gson().fromJson(result, type);
 
-            //RidesJoin
-            //TODO
-            /*result = new GetTask(this).execute("https://secret-meadow-74492.herokuapp.com/api/rideuser/?userId=" + userId).get();
-            type = new TypeToken<List<RideUser>>(){}.getType();
-            List<RideUser> inpList = new Gson().fromJson(result, type);
-            if(inpList.size()>0) {
-                RideUser rideUser = inpList.get(0);
-                String[] ridesJoin = rideUser.getRideId().split(",");
-                for (String aRidesJoin : ridesJoin) {
-                    if (!aRidesJoin.equals("")) {
-                        Ride r = getRide(aRidesJoin);
-                        listRides.add(r);
+            if(listRides.size()>0) {
+                //Add to ListView
+                adapterCreated = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Ride item) {
+                        Intent intent = new Intent(getActivity(), RideDetailActivity.class);
+                        intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
+                        startActivity(intent);
                     }
-                }
-            }*/
+                });
+                layoutManagerCreated = new LinearLayoutManager(getActivity());
+                recyclerViewCreated.setLayoutManager(layoutManagerCreated);
+                recyclerViewCreated.setAdapter(adapterCreated);
+            } else {
+                txtCreate.setVisibility(View.GONE);
+                recyclerViewCreated.setVisibility(View.GONE);
+            }
 
-            //Add to ListView
-            adapter = new RideViewAdapter(listRides, new RideViewAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Ride item) {
-                    Intent intent = new Intent(getActivity(), RideDetailActivity.class);
-                    intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
-                    startActivity(intent);
-                }
-            });
-            layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+            //RidesRequest
+            result = new GetTask(getActivity()).execute(Constants.BASE_URL + "ride/?requestUser[]=" + userId).get();
+            Type typeRequest = new TypeToken<List<Ride>>(){}.getType();
+            List<Ride> listRidesRequest = new Gson().fromJson(result, typeRequest);
+            if(listRidesRequest.size()>0) {
+                //Add to ListView
+                adapterRequest = new RideViewAdapter(listRidesRequest, new RideViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Ride item) {
+                        Intent intent = new Intent(getActivity(), RideDetailActivity.class);
+                        intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
+                        startActivity(intent);
+                    }
+                });
+                layoutManagerRequest = new LinearLayoutManager(getActivity());
+                recyclerViewRequest.setLayoutManager(layoutManagerRequest);
+                recyclerViewRequest.setAdapter(adapterRequest);
+            } else {
+                txtRequest.setVisibility(View.GONE);
+                recyclerViewRequest.setVisibility(View.GONE);
+            }
+
+
+            result = new GetTask(getActivity()).execute(Constants.BASE_URL + "ride/?joinUser[]=" + userId).get();
+            Type typeJoin = new TypeToken<List<Ride>>(){}.getType();
+            List<Ride> listRidesJoin = new Gson().fromJson(result, typeJoin);
+            if(listRidesJoin.size()>0) {
+                //Add to ListView
+                adapterJoin = new RideViewAdapter(listRidesJoin, new RideViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Ride item) {
+                        Intent intent = new Intent(getActivity(), RideDetailActivity.class);
+                        intent.putExtra(RideDetailActivity.EXTRA_RIDE_KEY, item.getID());
+                        startActivity(intent);
+                    }
+                });
+                layoutManagerJoin = new LinearLayoutManager(getActivity());
+                recyclerViewJoin.setLayoutManager(layoutManagerJoin);
+                recyclerViewJoin.setAdapter(adapterJoin);
+            } else {
+                txtJoin.setVisibility(View.GONE);
+                recyclerViewJoin.setVisibility(View.GONE);
+            }
+
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
 
-    public Ride getRide(String rideId){
+    private Ride getRide(String rideId){
         Ride ride = new Ride();
         try {
             GetTask rgt = new GetTask(getActivity());

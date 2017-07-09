@@ -18,10 +18,6 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.Messaging;
 
-/**
- * Created by andre on 07/05/2017.
- */
-
 public class MessagingPostTask extends AsyncTask<String, Void, String> {
 
     private Context context;

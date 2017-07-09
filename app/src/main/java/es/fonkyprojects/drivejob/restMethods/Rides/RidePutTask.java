@@ -16,10 +16,6 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.Ride;
 
-/**
- * Created by andre on 29/01/2017.
- */
-
 public class RidePutTask extends AsyncTask<String, Void, String> {
 
     Context context;

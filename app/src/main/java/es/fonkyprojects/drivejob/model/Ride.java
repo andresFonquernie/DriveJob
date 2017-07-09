@@ -28,6 +28,8 @@ public class Ride implements Serializable {
     private int engineId;
     private List<UserDays> request;
     private List<UserDays> join;
+    private List<String> requestUser;
+    private List<String> joinUser;
 
     public Ride() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -36,7 +38,8 @@ public class Ride implements Serializable {
     //Complete constructor
     public Ride(String _id, String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
                 double latGoing, double latReturn, double lngGoing, double lngReturn, List<Boolean> days, List<Integer> avSeats,
-                int price, int passengers, String carID, int engineId, List<UserDays> request, List<UserDays> join) {
+                int price, int passengers, String carID, int engineId, List<UserDays> request, List<UserDays> join,
+                List<String> requestUser, List<String> joinUser) {
         this._id = _id;
         this.authorID = authorID;
         this.author = author;
@@ -56,12 +59,15 @@ public class Ride implements Serializable {
         this.engineId = engineId;
         this.request = request;
         this.join = join;
+        this.requestUser = requestUser;
+        this.joinUser = joinUser;
     }
 
     //Create ride constructor
     public Ride(String authorID, String author, String timeGoing, String timeReturn, String placeGoing, String placeReturn,
                 double latGoing, double latReturn, double lngGoing, double lngReturn, List<Boolean> days, List<Integer> avSeats,
-                int price, int passengers, String carID, List<UserDays> request, List<UserDays> join) {
+                int price, int passengers, String carID, List<UserDays> request, List<UserDays> join,
+                List<String> requestUser, List<String> joinUser) {
         this.authorID = authorID;
         this.author = author;
         this.timeGoing = timeGoing;
@@ -79,6 +85,8 @@ public class Ride implements Serializable {
         this.carID = carID;
         this.request = request;
         this.join = join;
+        this.requestUser = requestUser;
+        this.joinUser = joinUser;
     }
 
     //Edit ride constructor
@@ -214,6 +222,14 @@ public class Ride implements Serializable {
         return join;
     }
 
+    public List<String> getRequestUser() {
+        return requestUser;
+    }
+
+    public List<String> getJoinUser() {
+        return joinUser;
+    }
+
     public void setID (String _id){
         this._id = _id;
     }
@@ -286,6 +302,14 @@ public class Ride implements Serializable {
 
     public void setRequest(List<UserDays> request) {
         this.request = request;
+    }
+
+    public void setRequestUser(List<String> requestUser) {
+        this.requestUser = requestUser;
+    }
+
+    public void setJoinUser(List<String> joinUser) {
+        this.joinUser = joinUser;
     }
 }
 // [END ride_class]

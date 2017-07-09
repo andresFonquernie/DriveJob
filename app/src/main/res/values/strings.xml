@@ -69,6 +69,11 @@
     <string name="searchresults">Search results</string>
     <string name="timeHour" translatable="false">00:00</string>
 
+    <!-- MyRideActivity -->
+    <string name="ride_created">Created</string>
+    <string name="ride_request">Requests</string>
+    <string name="ride_join">Joins</string>
+
     <!-- MyCarActivity -->
     <string name="car">Car</string>
     <string name="add_car">Add car</string>
@@ -140,14 +145,14 @@
     <string name="notUserRequestTitle">Request</string>
     <string name="notUserRequestText">User %s has requested to join your ride</string>
     <string name="notRefuseJoinTitle">Refused</string>
-    <string name="notRefuseJoinText">User %s has refused your request to join ride</string>
+    <string name="notRefuseJoinText">User %s has refused your request</string>
     <string name="notAcceptJoinTitle">Accepted</string>
     <string name="notAcceptJointText">User %s has accepted your request to join ride</string>
     <string name="notKickJoinTitle">Kicked</string>
     <string name="notKickJoinText">User %s has kicked you</string>
-    <string name="notExitRideTitle">Exit</string>
-    <string name="notExitRideText">User %s has exit from your ride</string>
-    <string name="notEditRideTitle">Edit</string>
+    <string name="notExitRideTitle">Exited</string>
+    <string name="notExitRideText">User %s has exited from your ride</string>
+    <string name="notEditRideTitle">Edited</string>
     <string name="notEditRideText">User %s has edited ride</string>
     <string name="notDeleteRideTitle">Deleted</string>
     <string name="notDeleteRideText">User %s has deleted ride</string>

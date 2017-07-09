@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by andre on 03/02/2017.
- */
-
 public class DeleteTask extends AsyncTask<String, Void, String> {
 
     Context context;

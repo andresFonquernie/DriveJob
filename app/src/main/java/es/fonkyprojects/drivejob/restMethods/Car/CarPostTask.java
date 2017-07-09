@@ -28,7 +28,6 @@ public class CarPostTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "CarPostTask";
 
-
     public CarPostTask(Context c) {
         this.context = c;
     }
@@ -36,7 +35,6 @@ public class CarPostTask extends AsyncTask<String, Void, String> {
     public void setCarPost(Car car){
         this.car = car;
     }
-
 
     @Override
     protected void onPreExecute() {

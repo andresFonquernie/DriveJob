@@ -201,13 +201,13 @@ public class RideCreateActivity extends Fragment implements AdapterView.OnItemSe
                 }
             }
 
-            List<UserDays> request = new ArrayList<>();
-            List<UserDays> join = new ArrayList<>();
+            List<UserDays> emptyUserDays = new ArrayList<>();
+            List<String> emptyString = new ArrayList<>();
 
             String username = getUsername(userID);
             Log.e(TAG, "SEND " + carID);
             Ride ride = new Ride(userID, username, timeGoing, timeReturn, placeFrom, placeTo, latGoing, latReturning, lngGoing,
-                    lngReturning, days, avSeatsDay, price, passengers, carID, request, join);
+                    lngReturning, days, avSeatsDay, price, passengers, carID, emptyUserDays, emptyUserDays, emptyString, emptyString);
             String postKey = writeNewRide(ride);
             ride.setID(postKey);
             (new SQLConnect()).insertRide(ride, engineId);

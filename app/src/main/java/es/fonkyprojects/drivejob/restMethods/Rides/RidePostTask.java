@@ -20,10 +20,6 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.Ride;
 
-/**
- * Created by andre on 17/01/2017.
- */
-
 public class RidePostTask extends AsyncTask<String, Void, String> {
 
     private ProgressDialog progressDialog;
@@ -121,6 +117,10 @@ public class RidePostTask extends AsyncTask<String, Void, String> {
         }
         dataToSend.put("join", jsJoin);
 
+        JSONArray jsRequestId = new JSONArray(ride.getRequestUser());
+        dataToSend.put("requestUser", jsRequestId);
+        JSONArray jsJoinId = new JSONArray(ride.getJoinUser());
+        dataToSend.put("joinUser", jsJoinId);
 
         try {
             //Initialize and config request, the connect to server

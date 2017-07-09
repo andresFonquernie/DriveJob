@@ -178,7 +178,7 @@ public class SQLConnect {
                     "HAVING (distanceGo BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
                     "AND (distanceReturn BETWEEN -" + maxDistanceF + " AND " + maxDistanceF + ") " +
                     "AND (DifGo BETWEEN -" + maxTime + " AND " + maxTime + ") AND (DifReturn BETWEEN -" + maxTime + " AND " + maxTime + ")" +
-                    //"AND authorID <> '" + authorId + "' " +
+                    "AND authorID <> '" + authorId + "' " +
                     "AND " + searchDays;
             Log.e(TAG, sql);
 

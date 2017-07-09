@@ -36,10 +36,10 @@ public class CarListActivity extends Fragment {
     private static final String TAG = "CarListActivity";
 
     @BindView(R.id.btnAddCar) Button btnAddCar;
+    @BindView(R.id.mycar_list) RecyclerView recyclerView;
 
-    public RecyclerView recyclerView;
-    public RecyclerView.Adapter adapter;
-    public RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class CarListActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_my_car, container, false);
         ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
-        recyclerView = (RecyclerView) view.findViewById(R.id.mycar_list);
         btnAddCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

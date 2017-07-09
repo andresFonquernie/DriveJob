@@ -16,10 +16,6 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.model.User;
 
-/**
- * Created by andre on 03/02/2017.
- */
-
 public class UserPutTask  extends AsyncTask<String, Void, String> {
 
     ProgressDialog progressDialog;

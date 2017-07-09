@@ -128,4 +128,21 @@
     <string name="notZero">No 0</string>
     <string name="recover_password">¿Ha olvidado su contraseña?</string>
     <string name="selectCar">Escoga coche</string>
+    <string name="email_verify">Verifica tu email</string>
+    <string name="exit_ride">Salir</string>
+    <string name="menu">Menu</string>
+    <string name="notAcceptJoinTitle">Aceptado</string>
+    <string name="notAcceptJointText">El usuario %s ha aceptado tu solicitud para unirte a la ruta</string>
+    <string name="notDeleteRideText">El usuario %s ha eliminado una ruta</string>
+    <string name="notDeleteRideTitle">Eliminada</string>
+    <string name="notEditRideTitle">Editada</string>
+    <string name="notExitRideTitle">Salido</string>
+    <string name="notKickJoinTitle">Expulsado</string>
+    <string name="notRefuseJoinTitle">Rechaado</string>
+    <string name="updating_ride">Actualizando ruta</string>
+    <string name="ride_detail">Ruta</string>
+    <string name="notEditRideText">El usuario %s ha editedo la ruta</string>
+    <string name="notExitRideText">El usuario %s ha abandonado la ruta</string>
+    <string name="notKickJoinText">El usuario % te ha expulsado</string>
+    <string name="notRefuseJoinText">El usuario %s ha rechazado tu solicitud</string>
 </resources>

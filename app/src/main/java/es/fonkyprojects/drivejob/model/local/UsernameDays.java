@@ -3,10 +3,6 @@ package es.fonkyprojects.drivejob.model.local;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by andre on 11/06/2017.
- */
-
 public class UsernameDays implements Serializable {
 
     private String userId;

@@ -1,9 +1,5 @@
 package es.fonkyprojects.drivejob.utils;
 
-/**
- * Created by andre on 25/01/2017.
- */
-
 public class Constants {
 
     //NodeJS Server

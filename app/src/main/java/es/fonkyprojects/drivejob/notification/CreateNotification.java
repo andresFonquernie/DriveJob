@@ -2,6 +2,7 @@ package es.fonkyprojects.drivejob.notification;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -73,7 +74,7 @@ public class CreateNotification {
         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
-        (NotificationManager) MyApp.getAppContext().getSystemService(MyApp.getAppContext().NOTIFICATION_SERVICE);
+        (NotificationManager) MyApp.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
         Random rand = new Random();
         int i = rand.nextInt(999 + 1);
         notificationManager.notify(i, notificationBuilder.build());

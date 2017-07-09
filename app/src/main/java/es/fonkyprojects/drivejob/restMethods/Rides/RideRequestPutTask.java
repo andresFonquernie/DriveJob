@@ -18,9 +18,10 @@ import java.util.List;
 import es.fonkyprojects.drivejob.model.UserDays;
 public class RideRequestPutTask extends AsyncTask<String, Void, String> {
 
-    Context context;
-    String result;
+    private Context context;
+    private String result;
     private List<UserDays> ud;
+    private List<String> id;
 
     public RideRequestPutTask(Context c) {
         this.context = c;
@@ -28,6 +29,10 @@ public class RideRequestPutTask extends AsyncTask<String, Void, String> {
 
     public void setRideRequestPutTask(List<UserDays> ud){
         this.ud = ud;
+    }
+
+    public void setRideRequestUserPutTask(List<String> id){
+        this.id = id;
     }
 
     @Override
@@ -68,6 +73,8 @@ public class RideRequestPutTask extends AsyncTask<String, Void, String> {
             jsRequest.put(jso);
         }
         dataToSend.put("request", jsRequest);
+        JSONArray jsRequestId = new JSONArray(id);
+        dataToSend.put("requestUser", jsRequestId);
 
         try {
             //Initialize and config request, the connect to server

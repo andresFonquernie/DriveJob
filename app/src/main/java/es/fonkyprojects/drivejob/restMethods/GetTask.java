@@ -13,10 +13,6 @@ import java.net.URL;
 
 import es.fonkyprojects.drivejob.activity.R;
 
-/**
- * Created by andre on 28/01/2017.
- */
-
 public class GetTask extends AsyncTask<String, Void, String> {
 
     private ProgressDialog progressDialog;
