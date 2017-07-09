@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/distance">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <es.fonkyprojects.drivejob.preference.MyPreferenceCategory android:title="@string/distance">
         <es.fonkyprojects.drivejob.preference.SeekBarPreference
             android:defaultValue="500"
             android:key="DISTANCE"
             android:max="1000"
             android:summary="@string/goDis"
-            android:text="@string/metres"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/time">
+            android:text="@string/metres"
+            android:icon="@drawable/ic_location_on_black_24dp"/>
+    </es.fonkyprojects.drivejob.preference.MyPreferenceCategory>
+    <es.fonkyprojects.drivejob.preference.MyPreferenceCategory android:title="@string/time">
         <es.fonkyprojects.drivejob.preference.SeekBarPreference
-                android:defaultValue="30"
-                android:key="TIME"
-                android:max="60"
-                android:summary="@string/goTime"
-                android:text="@string/minutes"/>
-    </PreferenceCategory>
+            android:defaultValue="30"
+            android:key="TIME"
+            android:max="60"
+            android:summary="@string/goTime"
+            android:text="@string/minutes"
+            android:icon="@drawable/ic_schedule_black_24dp"/>
+    </es.fonkyprojects.drivejob.preference.MyPreferenceCategory>
 </PreferenceScreen>

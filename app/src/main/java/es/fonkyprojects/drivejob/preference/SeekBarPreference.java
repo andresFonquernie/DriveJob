@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -12,6 +13,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import es.fonkyprojects.drivejob.activity.R;
+import es.fonkyprojects.drivejob.utils.MyApp;
 
 
 public class SeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener, OnClickListener
@@ -29,6 +33,12 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
     // ------------------------------------------------------------------------------------------
 
 
+    @Override
+    protected void onBindView(View view) {
+        super.onBindView(view);
+        TextView titleView = (TextView) view.findViewById(android.R.id.title);
+        titleView.setTextColor(ContextCompat.getColor(MyApp.getAppContext(), R.color.white));
+    }
 
     // ------------------------------------------------------------------------------------------
     // Constructor :

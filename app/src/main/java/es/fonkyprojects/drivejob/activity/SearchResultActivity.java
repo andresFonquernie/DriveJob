@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -61,6 +62,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         int maxDistance = sharedPref.getInt("DISTANCE",0);
         int maxTime = sharedPref.getInt("TIME",0);
+        Log.e(TAG, "DIST: " + maxDistance + "//TIME: " + maxTime);
 
         List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning,
                 timeGoing, timeReturn, days, maxDistance, maxTime);

@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toolbar;
 
 import butterknife.BindView;
@@ -24,11 +24,9 @@ public class SettingsActivity extends PreferenceActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
 
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+        toolbar.setTitle(R.string.settings);
         setActionBar(toolbar);
-        getActionBar().setTitle(R.string.settings);
-        int titleId = getResources().getIdentifier(getString(R.string.settings), "id", getPackageName());
-        TextView abTitle = (TextView) findViewById(titleId);
-        abTitle.setTextColor(getResources().getColor(R.color.white));
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setDisplayShowHomeEnabled(true);
 
