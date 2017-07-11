@@ -60,8 +60,8 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        int maxDistance = sharedPref.getInt("DISTANCE",0);
-        int maxTime = sharedPref.getInt("TIME",0);
+        int maxDistance = sharedPref.getInt("DISTANCE",500);
+        int maxTime = sharedPref.getInt("TIME",30);
         Log.e(TAG, "DIST: " + maxDistance + "//TIME: " + maxTime);
 
         List<Ride> listRides = (new SQLConnect()).searchRide(authorId, latGoing, latReturning, lngGoign, lngReturning,

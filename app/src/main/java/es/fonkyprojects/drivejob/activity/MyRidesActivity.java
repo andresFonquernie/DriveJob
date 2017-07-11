@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +109,7 @@ public class MyRidesActivity extends Fragment {
             result = new GetTask(getActivity()).execute(Constants.BASE_URL + "ride/?joinUser[]=" + userId).get();
             Type typeJoin = new TypeToken<List<Ride>>(){}.getType();
             List<Ride> listRidesJoin = new Gson().fromJson(result, typeJoin);
+            Log.e(TAG, listRidesJoin.size() + "");
             if(listRidesJoin.size()>0) {
                 //Add to ListView
                 adapterJoin = new RideViewAdapter(listRidesJoin, new RideViewAdapter.OnItemClickListener() {

@@ -84,6 +84,8 @@ public class RideDetailActivity extends AppCompatActivity {
     @BindView(R.id.btn_exit) Button btnExit;
     @BindView(R.id.detailToolbar) Toolbar toolbar;
 
+    private boolean showUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +153,10 @@ public class RideDetailActivity extends AppCompatActivity {
 
                 boolean request = getUserRequest();
                 boolean join = getUserJoin();
+                showUser = (FirebaseUser.getUid().equals(authorID) || join);
+
+                createRequestAdapter();
+                createJoinAdapter();
 
                 //Check if avSeats AND if author, request or join
                 boolean avSeatsFree = false;
@@ -184,7 +190,10 @@ public class RideDetailActivity extends AppCompatActivity {
             }
             listUsersRequest.add(ud);
         }
+        return request;
+    }
 
+    private void createRequestAdapter() {
         requestAdapter = new UserRequestViewAdapter(listUsersRequest, new UserRequestViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(UsernameDays item) {
@@ -211,12 +220,11 @@ public class RideDetailActivity extends AppCompatActivity {
                 listUsersRequest.remove(item);
                 requestAdapter.notifyDataSetChanged();
             }
-        }, FirebaseUser.getUid().equals(authorID));
+        }, FirebaseUser.getUid().equals(authorID), showUser);
 
         requestLayoutManager = new LinearLayoutManager(this);
         requestRecyclerView.setLayoutManager(requestLayoutManager);
         requestRecyclerView.setAdapter(requestAdapter);
-        return request;
     }
 
     private boolean getUserJoin() {
@@ -232,7 +240,10 @@ public class RideDetailActivity extends AppCompatActivity {
             }
             listUsersJoin.add(ud);
         }
+        return join;
+    }
 
+    private void createJoinAdapter(){
         joinAdapter = new UserJoinViewAdapter(listUsersJoin, new UserJoinViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(UsernameDays item) {
@@ -248,11 +259,10 @@ public class RideDetailActivity extends AppCompatActivity {
                 listUsersJoin.remove(item);
                 joinAdapter.notifyDataSetChanged();
             }
-        }, FirebaseUser.getUid().equals(authorID));
+        }, FirebaseUser.getUid().equals(authorID), showUser);
         joinLayoutManager = new LinearLayoutManager(this);
         joinRecyclerView.setLayoutManager(joinLayoutManager);
         joinRecyclerView.setAdapter(joinAdapter);
-        return join;
     }
 
     private User getUser(String userId) {

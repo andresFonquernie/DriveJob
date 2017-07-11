@@ -21,11 +21,11 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
 
     private List<UsernameDays> data = new ArrayList<>();
     private boolean visible;
+    private boolean showUser;
     private final UserRequestViewAdapter.OnItemClickListener listener;
     private final UserRequestViewAdapter.OnAcceptClickListener listenerAccept;
     private final UserRequestViewAdapter.OnRefuseClickListener listenerRefuse;
     private String[] daysOfWeek;
-    private UserRequestHolder holder;
 
     public interface OnItemClickListener{
         void onItemClick(UsernameDays item);
@@ -40,13 +40,14 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
     }
 
     public UserRequestViewAdapter(List<UsernameDays> data, UserRequestViewAdapter.OnItemClickListener listener, UserRequestViewAdapter.OnAcceptClickListener listenerAccept,
-                                  UserRequestViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible) {
+                                  UserRequestViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible, boolean showUser) {
         this.data = data;
         this.listener = listener;
         this.listenerAccept = listenerAccept;
         this.listenerRefuse = listenerRefuse;
         daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
         this.visible = visible;
+        this.showUser = showUser;
 
     }
 
@@ -67,7 +68,7 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         }
         shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
 
-        this.holder = holder;
+        holder.setShowUser(showUser);
         holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToAccept(data.get(position), listenerAccept);
@@ -89,9 +90,12 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         @BindView(R.id.btnAccept) ImageButton btnAccept;
         @BindView(R.id.btnRefuse) ImageButton btnRefuse;
 
+        private boolean showUser;
+
         UserRequestHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            showUser = false;
         }
 
         public void setButtonVisibility(){
@@ -100,7 +104,8 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
         }
 
         public void bind(final UsernameDays user, final UserRequestViewAdapter.OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
+            if(showUser)
+                itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
                 }
@@ -123,6 +128,10 @@ public class UserRequestViewAdapter extends RecyclerView.Adapter<UserRequestView
                     listener.onRefuseClick(user);
                 }
             });
+        }
+
+        public void setShowUser(boolean showUser){
+            this.showUser = showUser;
         }
     }
 }

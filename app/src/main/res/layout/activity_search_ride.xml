@@ -85,6 +85,8 @@
             <EditText android:id="@+id/input_days"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_date_range_black_24dp"
+                android:drawablePadding="@dimen/min_margin"
                 android:inputType="time"
                 android:hint="@string/days"
                 android:focusable="false" />

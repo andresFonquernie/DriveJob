@@ -16,14 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import es.fonkyprojects.drivejob.fragment.OnFragmentInteractionListener;
+import es.fonkyprojects.drivejob.model.Car;
+import es.fonkyprojects.drivejob.restMethods.GetTask;
+import es.fonkyprojects.drivejob.utils.Constants;
 import es.fonkyprojects.drivejob.utils.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
@@ -77,7 +86,6 @@ public class MainActivity extends AppCompatActivity
                 goHome(this.findViewById(android.R.id.content));
             else
                 super.onBackPressed();
-
         }
     }
 
@@ -119,8 +127,22 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.create) {
-            fragment = new RideCreateActivity();
-            fragmentTransaction = true;
+            try {
+                String userId = FirebaseUser.getUid();
+                String result = new GetTask(this).execute(Constants.BASE_URL + "car/?authorID=" + userId).get();
+                Type type = new TypeToken<List<Car>>() {}.getType();
+                List<Car> listCars = new Gson().fromJson(result, type);
+                if(listCars.size()>0) {
+                    fragment = new RideCreateActivity();
+                    fragmentTransaction = true;
+                } else {
+                    Toast.makeText(this, R.string.noCarsWarning , Toast.LENGTH_LONG).show();
+                    fragmentTransaction = false;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
         } else if (id == R.id.search) {
             fragment = new SearchRideActivity();
             fragmentTransaction = true;
@@ -142,6 +164,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();
         }
 
         if(fragmentTransaction) {

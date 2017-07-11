@@ -21,7 +21,7 @@
         android:id="@+id/myridescreated_list"
         tools:listitem="@layout/holder_listride"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/myridesrequest_list"
         tools:listitem="@layout/holder_listride"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
@@ -55,7 +55,7 @@
         android:id="@+id/myridesjoin_list"
         tools:listitem="@layout/holder_listride"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 

@@ -21,6 +21,7 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
 
     private List<UsernameDays> data = new ArrayList<>();
     private boolean visible;
+    private boolean showUser;
     private final UserJoinViewAdapter.OnItemClickListener listener;
     private final UserJoinViewAdapter.OnRefuseClickListener listenerRefuse;
     private String[] daysOfWeek;
@@ -34,12 +35,13 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
     }
 
     public UserJoinViewAdapter(List<UsernameDays> data, UserJoinViewAdapter.OnItemClickListener listener,
-                               UserJoinViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible) {
+                               UserJoinViewAdapter.OnRefuseClickListener listenerRefuse, boolean visible, boolean showUser) {
         this.data = data;
-        this.listener = listener;
         this.listenerRefuse = listenerRefuse;
         daysOfWeek = MyApp.getAppContext().getResources().getStringArray(R.array.shortdaysofweek);
         this.visible = visible;
+        this.listener = listener;
+        this.showUser = showUser;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
 
     @Override
     public void onBindViewHolder(UserJoinViewAdapter.UserJoinHolder holder, final int position) {
+
         UsernameDays user = data.get(position);
         List<Integer> listUserDays = user.getDays();
         String shortDays = "(";
@@ -58,6 +61,7 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         }
         shortDays = shortDays.substring(0, shortDays.length()-2) + ")";
 
+        holder.setShowUser(showUser);
         holder.txtUsername.setText(user.getUsername() + " " + shortDays);
         holder.bind(data.get(position), listener);
         holder.bindToRefuse(data.get(position), listenerRefuse);
@@ -76,10 +80,12 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         @BindView(R.id.authorImage) ImageView img;
         @BindView(R.id.joinUsername) TextView txtUsername;
         @BindView(R.id.btnKick) ImageButton btnKick;
+        private boolean showUser;
 
         UserJoinHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            showUser = false;
         }
 
         public void setButtonVisibility(){
@@ -87,7 +93,8 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
         }
 
         public void bind(final UsernameDays user, final UserJoinViewAdapter.OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
+            if(showUser)
+                itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(user);
                 }
@@ -102,5 +109,10 @@ public class UserJoinViewAdapter extends RecyclerView.Adapter<UserJoinViewAdapte
                 }
             });
         }
+
+        public void setShowUser(boolean showUser){
+            this.showUser = showUser;
+        }
+
     }
 }

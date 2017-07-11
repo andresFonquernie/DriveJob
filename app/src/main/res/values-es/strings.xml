@@ -138,11 +138,15 @@
     <string name="notEditRideTitle">Editada</string>
     <string name="notExitRideTitle">Salido</string>
     <string name="notKickJoinTitle">Expulsado</string>
-    <string name="notRefuseJoinTitle">Rechaado</string>
+    <string name="notRefuseJoinTitle">Rechazado</string>
     <string name="updating_ride">Actualizando ruta</string>
     <string name="ride_detail">Ruta</string>
     <string name="notEditRideText">El usuario %s ha editedo la ruta</string>
     <string name="notExitRideText">El usuario %s ha abandonado la ruta</string>
-    <string name="notKickJoinText">El usuario % te ha expulsado</string>
+    <string name="notKickJoinText">El usuario %s te ha expulsado</string>
     <string name="notRefuseJoinText">El usuario %s ha rechazado tu solicitud</string>
+    <string name="checkEmail">Check email</string>
+    <string name="ride_created">Creada</string>
+    <string name="ride_join">Unido</string>
+    <string name="ride_request">Solicitud</string>
 </resources>

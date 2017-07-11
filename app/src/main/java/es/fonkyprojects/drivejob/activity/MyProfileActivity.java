@@ -3,7 +3,9 @@ package es.fonkyprojects.drivejob.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -78,10 +78,10 @@ public class MyProfileActivity extends AppCompatActivity {
             toolbar.setTitle(user.getUsername() + " " + user.getSurname());
             userName.setText(user.getUsername() + " " + user.getSurname());
             userEmail.setText(user.getEmail());
-            collapsingToolbar.setTitle(user.getUsername() + " " +  user.getSurname());
+            collapsingToolbar.setTitle(user.getUsername() + " " + user.getSurname());
             userImage.setImageResource(R.drawable.ln_logo);
 
-            if(!user.getEmailVerify()){
+            if (!user.getEmailVerify()) {
                 verifyEmail.setImageResource(R.drawable.ic_cancel_white_24dp);
                 btnCheck.setVisibility(View.VISIBLE);
             }
@@ -93,8 +93,8 @@ public class MyProfileActivity extends AppCompatActivity {
 
     public void checkEmail(View view) {
         final com.google.firebase.auth.FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        firebaseUser.reload();
         boolean verified = firebaseUser.isEmailVerified();
-        Log.e(TAG, String.valueOf(verified));
         if (verified) {
             try {
                 user.setEmailVerify(true);
@@ -102,11 +102,11 @@ public class MyProfileActivity extends AppCompatActivity {
                 upt.setUserPut(user);
                 String result = upt.execute(Constants.BASE_URL + "user/" + user.get_id()).get();
                 btnCheck.setVisibility(View.INVISIBLE);
+                verifyEmail.setImageResource(R.drawable.ic_check_circle_white_24dp);
+
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        } else {
-            Toast.makeText(this, "Email is not verified", Toast.LENGTH_LONG).show();
         }
     }
 
